@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, FlatList, Button } from 'react-native';
+import { View, Text, TouchableOpacity, FlatList, Button, Image } from 'react-native';
 import { getWorkById, getForm, postQualityControl } from '../services/workService'; 
 import { getProductInfo } from '../services/productService'; 
 import { RouteProp } from '@react-navigation/native';
@@ -11,10 +11,11 @@ import { QualityControl } from '../models/QualityControl';
 import { ProductInfo } from '../models/ProductInfo';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import cameraIcon from '../assets/camera_icon.png';
+import { ImageCount } from '../models/ImageCount';
 
 type WorkOrderScreenRouteProp = RouteProp<RootStackParamList, 'WorkOrderScreen'>;
-type navigationProp = StackNavigationProp<RootStackParamList, 'PdfViewerScreen'>;
+type navigationProp = StackNavigationProp<RootStackParamList, 'PdfViewerScreen'> | StackNavigationProp<RootStackParamList, 'Kamera'>;
 
 const WorkOrderScreen = ({route}: {route: WorkOrderScreenRouteProp}) => {
   const [work, setWork] = useState<WorkInfo[]>([]);
@@ -22,6 +23,7 @@ const WorkOrderScreen = ({route}: {route: WorkOrderScreenRouteProp}) => {
   const [formId, setFormId] = useState<number | null>(null);
   const [qualityControlData, setQualityControlData] = useState<QualityControl[]>();
   const [productInfo, setProductInfo] = useState<ProductInfo | null>(null);
+
   const navigation = useNavigation<navigationProp>();
   
   useEffect(() => {
@@ -44,7 +46,7 @@ const WorkOrderScreen = ({route}: {route: WorkOrderScreenRouteProp}) => {
       console.log('getProductInfo response: ', productInfoResponse);
       setProductInfo(productInfoResponse.productInfo[0]);
       console.log('SetProductInfo: ', productInfoResponse.productInfo[0]);
-
+      
       navigation.setOptions({ title: productInfoResponse.productInfo[0].name });
     };
     
@@ -59,10 +61,7 @@ const WorkOrderScreen = ({route}: {route: WorkOrderScreenRouteProp}) => {
     <View>
       {work.length > 0 ? (
         <>
-          <Text>Work ID: {work[0].id}</Text>
-          <Text>Vendor ID: {work[0].vendor_id}</Text>
-          <Text>Quality Responsible ID: {work[0].quality_responsible_id}</Text>
-          <Text>Form ID: {formId}</Text>
+          <Text>Work ID: {work[0].id}, Vendor ID: {work[0].vendor_id}, QR ID: {work[0].quality_responsible_id}, Form ID: {formId}</Text>
           {productInfo ? (
           <View style={buttonstyles.buttonContainer}>
             <Button
@@ -89,14 +88,24 @@ const WorkOrderScreen = ({route}: {route: WorkOrderScreenRouteProp}) => {
             data={qualityControlData}
             keyExtractor={(item, index) => `key-${index}`}
             renderItem={({item}) => (
-              <TouchableOpacity>
-                  <View style={workstyles.card}>
-                      <Text style={workstyles.text}>{item.step_name}</Text>
-                      <Text style={workstyles.text}>Teknik Çizim Numarası: {item.technical_drawing_numbering}</Text>
-                      <Text style={workstyles.text}>Work ID: {item.work_id}</Text>
-                      <Icon name="camera" size={30} color="#000" /> 
+              <View style={workstyles.card}>
+                  <View style={{flexDirection: 'row'}}>
+                      <View style={{flex: 0.1, justifyContent: 'center', alignItems: 'center'}}>
+                          <Text style={workstyles.text}>{item.sample_quantity}</Text>
+                      </View>
+                      <View style={{flex: 0.7}}>
+                          <Text style={workstyles.text}>{item.step_name}</Text>
+                          <Text style={workstyles.text}>Teknik Çizim Numarası: {item.technical_drawing_numbering}</Text>
+                          <Text style={workstyles.text}>ID: {item.id}</Text>
+                      </View>
+                      <View style={{flex: 0.2, justifyContent: 'center', alignItems: 'center'}}>
+                      <TouchableOpacity onPress={() => item.example_visual_url && navigation.navigate('Kamera', { example_visual_url: item.example_visual_url })}>
+                        <Image source={cameraIcon} style={{width: 40, height: 40}} />
+                      </TouchableOpacity>
+                      <Text style={workstyles.text2}>Fotoğraf Çek</Text>
+                      </View>
                   </View>
-              </TouchableOpacity>
+              </View>
             )}
           />
         </>

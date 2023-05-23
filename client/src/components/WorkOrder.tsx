@@ -11,6 +11,9 @@ const workstyles = StyleSheet.create({
     text: {
       fontSize: 16,
     },
+    text2:{
+      fontSize: 12,
+    }
   });
 
 export default workstyles;

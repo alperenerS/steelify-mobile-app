@@ -5,6 +5,7 @@ import TabNavigator from './TabNavigator';
 import LoginScreen from '../screens/LoginScreen';
 import WorkOrderScreen from '../screens/WorkOrderScreen';
 import PdfViewerScreen from '../screens/PdfViewerScreen'; 
+import CameraScreen from '../screens/CameraScreen'; 
 import { getData } from '../utils/storage';
 
 export type RootStackParamList = {
@@ -12,6 +13,7 @@ export type RootStackParamList = {
   Main: undefined;
   WorkOrderScreen: { workId: number; productId: number };
   PdfViewerScreen: { pdfUrl: string };
+  Kamera: { example_visual_url: string };
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -44,6 +46,7 @@ const StackNavigator = () => {
       <Stack.Screen name="Main" component={TabNavigator} options={{headerShown: false}}/>
       <Stack.Screen name="WorkOrderScreen" component={WorkOrderScreen}/>
       <Stack.Screen name="PdfViewerScreen" component={PdfViewerScreen}/>
+      <Stack.Screen name="Kamera" component={CameraScreen}/>
     </Stack.Navigator>
   );
 }
