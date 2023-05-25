@@ -68,8 +68,8 @@ fastify.register(ImageRoutes);
 
 const start = async () => {
   try {
-    await fastify.listen({ port: process.env.PORT || 3001, host: '0.0.0.0' });
-    fastify.log.info(`server listening on ${process.env.PORT || 3001}`);
+    await fastify.listen({ port: process.env.PORT || 3002, host: '0.0.0.0' });
+    fastify.log.info(`server listening on ${process.env.PORT || 3002}`);
   } catch (err) {
     fastify.log.error(err);
   }
