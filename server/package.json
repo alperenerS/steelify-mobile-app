@@ -11,7 +11,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@azure/storage-blob": "^12.14.0",
     "@fastify/cors": "^8.2.1",
+    "azure-storage": "^2.10.7",
     "bcrypt": "^5.1.0",
     "dotenv": "^16.0.3",
     "fastify": "^4.17.0",

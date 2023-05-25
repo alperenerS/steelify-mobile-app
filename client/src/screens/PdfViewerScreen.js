@@ -12,12 +12,6 @@ const PdfViewerScreen = ({route}) => {
             <Pdf
                 trustAllCerts={false} // Sertifika ayarı canlıya çıkarken silincek.
                 source={source}
-                onLoadComplete={(numberOfPages, filePath)=>{
-                    console.log(`number of pages: ${numberOfPages}`);
-                }}
-                onPageChanged={(page, numberOfPages)=>{
-                    console.log(`current page: ${page}`);
-                }}
                 onError={(error)=>{
                     console.log(error);
                 }}

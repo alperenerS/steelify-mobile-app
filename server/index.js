@@ -10,6 +10,7 @@ const WorkProductsRoutes = require("./routes/workProducts");
 const FormsRoutes = require("./routes/form");
 const QualityControlRoutes = require("./routes/qualityControl");
 const ProductInfoRoutes = require("./routes/productinfo");
+const ImageRoutes = require("./routes/images");
 
 const db = require('./config/db');
 
@@ -62,6 +63,8 @@ QualityControlRoutes.forEach((route) => {
 ProductInfoRoutes.forEach((route) => {
     fastify.route(route);
   });
+
+fastify.register(ImageRoutes);
 
 const start = async () => {
   try {

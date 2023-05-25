@@ -1,4 +1,7 @@
 {
   "extends": "@tsconfig/react-native/tsconfig.json",
-  "include": ["./typings.d.ts", "./src/**/*.ts", "./src/**/*.tsx"]
+  "include": ["./typings.d.ts", "./src/**/*.ts", "./src/**/*.tsx"],
+  "compilerOptions": {
+    "types": ["node"]
+  }
 }

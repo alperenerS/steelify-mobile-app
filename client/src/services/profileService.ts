@@ -2,7 +2,7 @@ import axios from 'axios';
 import { getData, storeData } from '../utils/storage';
 import NetInfo from '@react-native-community/netinfo';
 
-const BASE_URL = 'http://10.0.2.2:3001';
+const BASE_URL = 'https://portal-test.yenaengineering.nl';
 
 export const getUserInfo = async (token: string): Promise<any> => {
   const netInfo = await NetInfo.fetch();

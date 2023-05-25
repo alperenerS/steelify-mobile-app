@@ -1,28 +1,32 @@
 import React, { useRef, useState } from 'react';
-import { View, Image, TouchableOpacity, } from 'react-native';
+import { View, Image, TouchableOpacity } from 'react-native';
 import { RNCamera } from 'react-native-camera';
 import { RouteProp } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/StackNavigator'; 
-import captureIcon from '../assets/camera_capture.png';
 import camerastyles from '../components/Camera';
+import captureIcon from '../assets/camera_capture.png';
 
 type CameraScreenRouteProp = RouteProp<RootStackParamList, 'Kamera'>;
+type CameraScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Kamera'>;
 
-const CameraScreen = ({route}: {route: CameraScreenRouteProp}) => {
+interface CameraScreenProps {
+  route: CameraScreenRouteProp;
+  navigation: CameraScreenNavigationProp;
+}
+
+const CameraScreen: React.FC<CameraScreenProps> = ({route, navigation}) => {
   const cameraRef = useRef<RNCamera | null>(null);
-  const { example_visual_url } = route.params;
-  console.log('Example Image URL' ,example_visual_url);
-
-  const [lastPictureUri, setLastPictureUri] = useState<string | null>(null);
+  const { example_visual_url, workId, quality_control_id, productId } = route.params;
 
   const takePicture = async () => {
     if (cameraRef.current) {
       const options = {quality: 0.5, base64: true};
       const data = await cameraRef.current.takePictureAsync(options);
-      setLastPictureUri(data.uri);
+      navigation.navigate('Önizleme', { pictureUri: data.uri, example_visual_url, workId, quality_control_id, productId});
     }
   };
-
+  
   return (
     <View style={{flex: 1}}>
       <RNCamera
@@ -36,22 +40,19 @@ const CameraScreen = ({route}: {route: CameraScreenRouteProp}) => {
         <Image
             source={{ uri: example_visual_url }}
             style={camerastyles.smallThumbnail}
-            onLoadStart={() => console.log('Load start')}
-            onLoad={() => console.log('Load successful')}
-            onError={(error) => console.log('Load error', error)}
         />
         </View>
       </RNCamera>
 
       <View style={camerastyles.bottomBar}>
-        {lastPictureUri && 
+        {/* {lastPictureUri && 
           <View style={camerastyles.bottomLeftCorner}>
             <Image 
               source={{ uri: lastPictureUri }}
               style={camerastyles.smallThumbnail} 
             />
           </View>
-        }
+        } */}
         <TouchableOpacity style={camerastyles.captureButton} onPress={takePicture}>
           <Image source={captureIcon} style={camerastyles.captureIcon} />
         </TouchableOpacity>

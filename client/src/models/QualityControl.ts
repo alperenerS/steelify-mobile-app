@@ -20,6 +20,7 @@ export interface QualityControl {
     substep_id: number;
     work_id: number;
     sample_quantity: number;
+    imageCount?: number;
   }
   
   

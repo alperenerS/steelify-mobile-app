@@ -3,7 +3,7 @@ import axios from 'axios';
 import { getData, storeData } from '../utils/storage';
 import NetInfo from "@react-native-community/netinfo"; 
 
-const BASE_URL = 'http://10.0.2.2:3001';
+const BASE_URL = 'https://portal-test.yenaengineering.nl';
 
 export const getProductInfo = async (productId: number): Promise<{ productInfo: ProductInfo[] }> => {
   const netInfo = await NetInfo.fetch();
@@ -13,7 +13,7 @@ export const getProductInfo = async (productId: number): Promise<{ productInfo: 
       const response = await axios.post(`${BASE_URL}/api/productinfo`, {
         product_id: productId,
       });
-      console.log('getProductInfo response: ', response);
+
       const productInfo: ProductInfo[] = response.data;
 
       // Save product info to cache

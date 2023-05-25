@@ -9,7 +9,7 @@ import { getData, storeData } from '../utils/storage';
 import NetInfo from '@react-native-community/netinfo';
 
 
-const BASE_URL = 'http://10.0.2.2:3001';
+const BASE_URL = 'https://portal-test.yenaengineering.nl';
 
 export const getWorks = async (token: string): Promise<{ works: Work[], workSteps: WorkSteps[], workProducts: WorkProducts[] }> => {
   const netInfo = await NetInfo.fetch();
@@ -115,6 +115,7 @@ export const getWorkById = async (workId: number): Promise<{ workInfo: WorkInfo[
     }
   }
 };
+
 export const getForm = async (productId: number, vendorId: number): Promise<{ form: Form[] }> => {
   const netInfo = await NetInfo.fetch();
   const cacheKey = `form-${productId}-${vendorId}`;
@@ -125,7 +126,6 @@ export const getForm = async (productId: number, vendorId: number): Promise<{ fo
         product_id: productId,
         vendor_id: vendorId
       });
-      console.log('getForm response: ', response);
       const form: Form[] = response.data;
 
       // Save post data to cache
@@ -160,7 +160,6 @@ export const postQualityControl = async (formId: number, workId: number): Promis
         form_id: formId,
         work_id: workId
       });
-      console.log('postQualityControl response: ', response); // <--- Add this
       const qualitycontrol: QualityControl[] = response.data;
 
       // Save post data to cache

@@ -32,7 +32,6 @@ const TasksScreen = () => {
   }, [isFocused]);
 
   const handlePress = (workId: number, productId: number) => {
-    console.log(`Navigating to WorkOrderScreen with work_id: ${workId} and product_id: ${productId}`);
     navigation.navigate('WorkOrderScreen', { workId: workId, productId: productId });
   };
 
