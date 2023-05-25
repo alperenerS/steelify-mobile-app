@@ -5,7 +5,7 @@ const upload = fastifyMulter({ storage: storage });
 
 const routes = (fastify, options, done) => {
   fastify.post(
-    "/api/images",
+    "/mobilapi/images",
     { preHandler: upload.array('images') },
     async (request, reply) => {
       try {
@@ -33,7 +33,7 @@ const routes = (fastify, options, done) => {
     }
   );
 
-  fastify.post("/api/images/count", imagesControllers.getImageCount);
+  fastify.post("/mobilapi/images/count", imagesControllers.getImageCount);
   done();
 };
 

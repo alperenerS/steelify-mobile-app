@@ -3,7 +3,7 @@ const workStepsController = require('../controllers/work_steps');
 const routes = [
   {
     method: "POST",
-    path: "/api/worksteps",
+    path: "/mobilapi/worksteps",
     handler: workStepsController.getOpenQualityControlStepsByWorkIds,
   },
 ];

@@ -3,12 +3,12 @@ const workController = require('../controllers/works');
 const routes = [
   {
     method: "GET",
-    path: "/api/worksbyid",
+    path: "/mobilapi/worksbyid",
     handler: workController.getWorks,
   },
   {
     method: "GET",
-    path: "/api/work/:workId",
+    path: "/mobilapi/work/:workId",
     handler: workController.getWorkById,
   }  
 ];

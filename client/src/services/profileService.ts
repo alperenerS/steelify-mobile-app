@@ -9,7 +9,7 @@ export const getUserInfo = async (token: string): Promise<any> => {
   
   if (netInfo.isConnected && netInfo.isInternetReachable) {
     try {
-      const response = await axios.get(`${BASE_URL}/api/userinfo`, {
+      const response = await axios.get(`${BASE_URL}/mobilapi/userinfo`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

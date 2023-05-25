@@ -3,7 +3,7 @@ const qualityControlController = require('../controllers/qualityControl');
 const routes = [
   {
     method: "POST",
-    path: "/api/qualitycontrol",
+    path: "/mobilapi/qualitycontrol",
     handler: qualityControlController.getQualityControlByFormAndWork,
   },
 ];

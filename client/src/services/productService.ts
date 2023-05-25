@@ -10,7 +10,7 @@ export const getProductInfo = async (productId: number): Promise<{ productInfo: 
 
   if (netInfo.isConnected && netInfo.isInternetReachable) {
     try {
-      const response = await axios.post(`${BASE_URL}/api/productinfo`, {
+      const response = await axios.post(`${BASE_URL}/mobilapi/productinfo`, {
         product_id: productId,
       });
 

@@ -3,7 +3,7 @@ const loginController = require('../controllers/login');
 const routes = [
     {
         method: "POST",
-        path: "/api/mobillogin",
+        path: "/mobilapi/mobillogin",
         handler: loginController.login,
     }
 ];

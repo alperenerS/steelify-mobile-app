@@ -3,7 +3,7 @@ const formController = require('../controllers/form');
 const routes = [
   {
     method: "POST",
-    path: "/api/formids",
+    path: "/mobilapi/formids",
     handler: formController.getFormIds,
   },
 ];

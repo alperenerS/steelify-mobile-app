@@ -6,7 +6,7 @@ const BASE_URL = 'https://portal-test.yenaengineering.nl';
 
 export const login = async (phone: string, password: string): Promise<string> => {
     try {
-      const response = await axios.post(`${BASE_URL}/api/mobillogin`, { phone, password });
+      const response = await axios.post(`${BASE_URL}/mobilapi/mobillogin`, { phone, password });
       if (response.status === 200) {
         return response.data.token;
       } else {

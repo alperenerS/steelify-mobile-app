@@ -11,7 +11,7 @@ export const getImageCounts = async (qualityControlIds: number[], workId: number
 
   if (netInfo.isConnected && netInfo.isInternetReachable) {
     try {
-      const response = await axios.post(`${BASE_URL}/api/images/count`, {
+      const response = await axios.post(`${BASE_URL}/mobilapi/images/count`, {
         work_id: workId,
         quality_control_ids: qualityControlIds
       });

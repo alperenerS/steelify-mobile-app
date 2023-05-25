@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 const BASE_URL = 'https://portal-test.yenaengineering.nl';
 
 export const uploadImage = async (imageUri: string, workId: string, quality_control_id: string, status: string) => {
-  const url = `${BASE_URL}/api/images`;
+  const url = `${BASE_URL}/mobilapi/images`;
 
   // Create a new FormData object
   let formData = new FormData();

@@ -5,7 +5,7 @@ const productinfoController = require('../controllers/productinfo');
 const routes = [
   {
     method: "POST",
-    path: "/api/productinfo",
+    path: "/mobilapi/productinfo",
     handler: productinfoController.getProductInfo,
   },
 ];

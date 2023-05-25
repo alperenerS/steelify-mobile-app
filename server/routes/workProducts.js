@@ -3,7 +3,7 @@ const workProductsController = require('../controllers/workProducts');
 const routes = [
   {
     method: "POST",
-    path: "/api/workproducts",
+    path: "/mobilapi/workproducts",
     handler: workProductsController.getProductIdsByWorkIds,
   },
 ];
