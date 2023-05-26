@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, Alert, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack'; // import StackNavigationProp
 import { login } from '../services/authService';
 import { storeData } from '../utils/storage';
+import loginstyles from '../components/Login';
+import yenalogo from '../assets/yena_logo.png';
 
 type RootStackParamList = {
     Login: undefined;
@@ -32,13 +34,21 @@ const LoginScreen = () => {
     }
   };
 
+  
   return (
-    <View>
-      <TextInput placeholder="Telefon Numarası" onChangeText={setPhone} value={phone} />
-      <TextInput placeholder="Parola" onChangeText={setPassword} value={password} secureTextEntry />
-      <Button title="Giriş Yap" onPress={handleLogin} />
+    <View style={loginstyles.container}>
+      <Image source={yenalogo} style={loginstyles.logo}/>
+      <View style={loginstyles.inputView} >
+        <TextInput style={loginstyles.inputText} placeholder="Telefon Numarası" placeholderTextColor="black" onChangeText={setPhone} value={phone} />
+      </View>
+      <View style={loginstyles.inputView} >
+        <TextInput style={loginstyles.inputText} placeholder="Parola" placeholderTextColor="black" onChangeText={setPassword} value={password} secureTextEntry />
+      </View>    
+      <TouchableOpacity style={loginstyles.loginBtn} onPress={handleLogin}>
+          <Text style={loginstyles.loginText}>Giriş Yap</Text>
+      </TouchableOpacity>
     </View>
-  );
+  );  
 };
 
 export default LoginScreen;
