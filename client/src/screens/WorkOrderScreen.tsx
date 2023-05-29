@@ -113,7 +113,7 @@ const WorkOrderScreen = ({route}: {route: WorkOrderScreenRouteProp}) => {
                               <Text style={workstyles.text}>ID: {item.id}</Text>
                           </View>
                           <View style={{flex: 0.2, justifyContent: 'center', alignItems: 'center'}}>
-                            <TouchableOpacity onPress={() => item.example_visual_url && navigation.navigate('Kamera', { example_visual_url: item.example_visual_url, workId: item.work_id , quality_control_id: item.id, productId: productId })}>
+                            <TouchableOpacity onPress={() => navigation.navigate('Kamera', { example_visual_url: item.example_visual_url || null, workId: item.work_id , quality_control_id: item.id, productId: productId })}>
                               <Image source={cameraIcon} style={{width: 40, height: 40}} />
                             </TouchableOpacity>
                             <Text style={workstyles.text2}>Fotoğraf Çek</Text>

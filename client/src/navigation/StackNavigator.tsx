@@ -14,8 +14,8 @@ export type RootStackParamList = {
   Main: undefined;
   WorkOrderScreen: { workId: number; productId: number };
   PdfViewerScreen: { pdfUrl: string };
-  Kamera: { example_visual_url: string, workId: number, quality_control_id: number , productId: number };
-  Önizleme: { pictureUri: string, example_visual_url: string, workId: number, quality_control_id: number, productId: number  };
+  Kamera: { example_visual_url: string | null, workId: number, quality_control_id: number , productId: number };
+  Önizleme: { pictureUri: string, example_visual_url: string | null, workId: number, quality_control_id: number, productId: number  };
 };
 
 const Stack = createStackNavigator<RootStackParamList>();

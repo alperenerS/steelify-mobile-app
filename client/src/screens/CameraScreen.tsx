@@ -38,7 +38,7 @@ const CameraScreen: React.FC<CameraScreenProps> = ({route, navigation}) => {
       >
         <View style={camerastyles.topLeftCorner}>
         <Image
-            source={{ uri: example_visual_url }}
+            source={require('../assets/default_image.png')}
             style={camerastyles.smallThumbnail}
         />
         </View>
