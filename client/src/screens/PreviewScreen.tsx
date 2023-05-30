@@ -5,6 +5,8 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/StackNavigator';
 import previewstyles from '../components/Preview';
 import { uploadImage } from '../services/PreviewService';
+import NetInfo from '@react-native-community/netinfo';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 global.Buffer = global.Buffer || require('buffer').Buffer;
 
@@ -20,17 +22,31 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({ route, navigation }) => {
   const { pictureUri, example_visual_url, workId, quality_control_id, productId  } = route.params;
 
   const sendPicture = async () => {
-    try {
-      // replace 'status' with the actual status
-      const response = await uploadImage(pictureUri, workId.toString(), quality_control_id.toString(), 'status');
-      console.log('Image uploaded successfully: ', response);
-      
-      // Navigate back to WorkOrderScreen with workId and productId
-      navigation.navigate('WorkOrderScreen', {workId, productId});
-    } catch (error) {
-      console.error('Error uploading image: ', error);
+    const netInfo = await NetInfo.fetch();
+  
+    if (!netInfo.isConnected || !netInfo.isInternetReachable) {
+      try {
+        await AsyncStorage.setItem('cachedPhoto', JSON.stringify({
+          uri: pictureUri,
+          workId,
+          quality_control_id,
+          status: 'status',
+        }));
+        console.log('Image cached successfully');
+      } catch (error) {
+        console.error('Error caching image: ', error);
+      }
+    } else {
+      try {
+        const response = await uploadImage(pictureUri, workId.toString(), quality_control_id.toString(), 'status');
+        console.log('Image uploaded successfully: ', response);
+      } catch (error) {
+        console.error('Error uploading image: ', error);
+      }
     }
+    navigation.navigate('WorkOrderScreen', {workId, productId});
   };
+  
   
   const navigateToCameraScreen = () => {
     navigation.navigate('Kamera', {example_visual_url, workId, quality_control_id , productId});
