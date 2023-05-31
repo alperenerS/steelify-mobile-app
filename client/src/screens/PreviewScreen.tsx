@@ -5,8 +5,10 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/StackNavigator';
 import previewstyles from '../components/Preview';
 import { uploadImage } from '../services/PreviewService';
-import NetInfo from '@react-native-community/netinfo';
+import NetInfo, { NetInfoState } from '@react-native-community/netinfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useEffect } from 'react';
+ 
 
 global.Buffer = global.Buffer || require('buffer').Buffer;
 
@@ -20,6 +22,31 @@ interface PreviewScreenProps {
 
 const PreviewScreen: React.FC<PreviewScreenProps> = ({ route, navigation }) => {
   const { pictureUri, example_visual_url, workId, quality_control_id, productId  } = route.params;
+
+  useEffect(() => {
+    const handleConnectivityChange = async (state: NetInfoState) => {
+      if (state.isConnected && state.isInternetReachable) {
+        try {
+          const cachedPhoto = await AsyncStorage.getItem('cachedPhoto');
+          if (cachedPhoto != null) {
+            const { uri, workId, quality_control_id, status } = JSON.parse(cachedPhoto);
+            const response = await uploadImage(uri, workId.toString(), quality_control_id.toString(), status);
+            console.log('Image uploaded successfully: ', response);
+            await AsyncStorage.removeItem('cachedPhoto'); // Remove the photo from cache after successful upload
+          }
+        } catch (error) {
+          console.error('Error uploading cached image: ', error);
+        }
+      }
+    };
+
+    const unsubscribe = NetInfo.addEventListener(handleConnectivityChange);
+
+    // Clean up function
+    return () => {
+      unsubscribe();
+    };
+  }, []);
 
   const sendPicture = async () => {
     const netInfo = await NetInfo.fetch();
@@ -46,7 +73,6 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({ route, navigation }) => {
     }
     navigation.navigate('WorkOrderScreen', {workId, productId});
   };
-  
   
   const navigateToCameraScreen = () => {
     navigation.navigate('Kamera', {example_visual_url, workId, quality_control_id , productId});
