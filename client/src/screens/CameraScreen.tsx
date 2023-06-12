@@ -33,7 +33,7 @@ const CameraScreen: React.FC<CameraScreenProps> = ({route, navigation}) => {
         ref={cameraRef}
         style={{flex: 1}}
         type={RNCamera.Constants.Type.back}
-        flashMode={RNCamera.Constants.FlashMode.on}
+        flashMode={RNCamera.Constants.FlashMode.off}
         captureAudio={false}
       >
         <View style={camerastyles.topLeftCorner}>

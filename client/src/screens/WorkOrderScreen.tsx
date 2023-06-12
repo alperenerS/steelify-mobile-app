@@ -1,5 +1,3 @@
-// client/src/screens/WorkOrderScreen.tsx
-
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, FlatList, Button, Image, SafeAreaView } from 'react-native';
 import { getWorkById, getForm, postQualityControl } from '../services/workService'; 
@@ -12,7 +10,7 @@ import buttonstyles from '../components/Button';
 import { WorkInfo } from '../models/WorkInfo';
 import { QualityControl } from '../models/QualityControl';
 import { ProductInfo } from '../models/ProductInfo';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useIsFocused } from '@react-navigation/native'; // <-- make sure to import useIsFocused
 import { StackNavigationProp } from '@react-navigation/stack';
 import cameraIcon from '../assets/camera_icon.png';
 import { ImageCount } from '../models/ImageCount';
@@ -28,47 +26,49 @@ const WorkOrderScreen = ({route}: {route: WorkOrderScreenRouteProp}) => {
   const [productInfo, setProductInfo] = useState<ProductInfo | null>(null);
 
   const navigation = useNavigation<navigationProp>();
+  const isFocused = useIsFocused(); // <-- use isFocused to check if screen is focused
 
   useEffect(() => {
-    const fetchData = async () => {
-      const workDataPromise = getWorkById(workId);
-      const productInfoPromise = getProductInfo(productId);
-  
-      const [workData, productInfoResponse] = await Promise.all([workDataPromise, productInfoPromise]);
-  
-      setWork(workData.workInfo);
-      setProductInfo(productInfoResponse.productInfo[0]);
-      navigation.setOptions({ title: productInfoResponse.productInfo[0].name });
-  
-      const formResponsePromise = getForm(productId, workData.workInfo[0].vendor_id);
-      const qualityControlResponsePromise = formResponsePromise.then(formResponse => 
-        postQualityControl(formResponse.form[0].id, workId)
-      );
-  
-      const [formResponse, qualityControlResponse] = await Promise.all([formResponsePromise, qualityControlResponsePromise]);
-  
-      setFormId(formResponse.form[0].id);
-  
-      const qualityControlIds = qualityControlResponse.qualitycontrol.map(qc => qc.id);
-      const imageCountDataPromise = getImageCounts(qualityControlIds, workId);
-      const imageCountData = await imageCountDataPromise;
-  
-      const imageCountRecord: Record<string, number> = {};
-  
-      imageCountData.forEach(ic => {
-        imageCountRecord[ic.quality_control_id] = ic.count;
-      });
-  
-      const updatedQualityControlData = qualityControlResponse.qualitycontrol.map(qc => ({
-        ...qc,
-        imageCount: imageCountRecord[qc.id] || 0,
-      }));
-  
-      setQualityControlData(updatedQualityControlData);
-    };
-  
-    fetchData();
-  }, [workId]);
+    if (isFocused) { // <-- check if the screen is focused
+      const fetchData = async () => {
+        const workDataPromise = getWorkById(workId);
+        const productInfoPromise = getProductInfo(productId);
+        
+        const [workData, productInfoResponse] = await Promise.all([workDataPromise, productInfoPromise]);
+
+        setWork(workData.workInfo);
+        setProductInfo(productInfoResponse.productInfo[0]);
+        navigation.setOptions({ title: productInfoResponse.productInfo[0].name });
+
+        const formResponsePromise = getForm(productId, workData.workInfo[0].vendor_id);
+        const formResponse = await formResponsePromise;
+
+        setFormId(formResponse.form[0].id);
+
+        const qualityControlResponsePromise = postQualityControl(formResponse.form[0].id, workId);
+        const qualityControlResponse = await qualityControlResponsePromise;
+
+        const qualityControlIds = qualityControlResponse.qualitycontrol.map(qc => qc.id);
+        const imageCountDataPromise = getImageCounts(qualityControlIds, workId);
+        const imageCountData = await imageCountDataPromise;
+
+        const imageCountRecord: Record<string, number> = {};
+
+        imageCountData.forEach(ic => {
+          imageCountRecord[ic.quality_control_id] = ic.count;
+        });
+
+        const updatedQualityControlData = qualityControlResponse.qualitycontrol.map(qc => ({
+          ...qc,
+          imageCount: imageCountRecord[qc.id] || 0,
+        }));
+
+        setQualityControlData(updatedQualityControlData);
+      };
+
+      fetchData();
+    }
+  }, [workId, isFocused]);
   
 
   if (!work) {
