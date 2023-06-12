@@ -10,9 +10,11 @@ const workstyles = StyleSheet.create({
     },
     text: {
       fontSize: 16,
+      color: 'black',
     },
     text2:{
       fontSize: 12,
+      color: 'black',
     }
   });
 

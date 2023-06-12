@@ -15,7 +15,7 @@ const loginstyles = StyleSheet.create({
       },
       
     loginText:{
-        color:"white"
+        color:"black"
       },
     loginBtn:{
         width:"50%",

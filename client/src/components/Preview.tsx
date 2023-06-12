@@ -23,7 +23,7 @@ const previewstyles = StyleSheet.create({
         alignItems: 'center', 
       },
       buttonText: {
-        color: 'white',
+        color: 'black',
         fontWeight: 'bold',
         textAlign: 'center',
       },
@@ -52,7 +52,7 @@ const previewstyles = StyleSheet.create({
         marginBottom: 5
       },
       addPhotoText: {
-        color: 'white', 
+        color: 'black', 
         fontWeight: 'bold',
         fontSize: 10
       }

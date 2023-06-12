@@ -34,7 +34,7 @@ const profilestyles = StyleSheet.create({
   },
   buttonText: {
     textAlign: 'center',
-    color: 'white',
+    color: 'black',
     fontSize: 20,
   },
   button: {

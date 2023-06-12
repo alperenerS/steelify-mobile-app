@@ -7,6 +7,7 @@ import { useIsFocused, useNavigation } from '@react-navigation/native';
 import taskstyles from '../components/Task';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/StackNavigator';
+import { getProductInfo } from '../services/productService';
 
 type navigationProp = StackNavigationProp<RootStackParamList, 'WorkOrderScreen'>;
 
@@ -19,13 +20,23 @@ const TasksScreen = () => {
     const fetchData = async () => {
       const token = await getData('userToken');
       if (token) {
-        const data = await getWorks(token);
-        setWorkProducts(data.workProducts);
+        const workProductsData = await getWorks(token);
+        
+        // For each workProduct, get the product info and attach it to the workProduct
+        const workProducts = await Promise.all(workProductsData.workProducts.map(async (workProduct) => {
+          const productInfoData = await getProductInfo(workProduct.product_id);
+          return {
+            ...workProduct,
+            productInfo: productInfoData.productInfo[0],  // Assuming that getProductInfo returns a single product info
+          };
+        }));
+  
+        setWorkProducts(workProducts);
       } else {
         console.log('No token found');
       }
     };
-
+  
     if (isFocused) {
       fetchData();
     }
@@ -43,7 +54,7 @@ const TasksScreen = () => {
         renderItem={({item}) => (
           <TouchableOpacity onPress={() => handlePress(item.work_id, item.product_id)}>
             <View style={taskstyles.card}>
-              <Text style={taskstyles.text}>Product ID: {item.product_id}</Text>
+              <Text style={taskstyles.text}>Product Name: {item.productInfo?.name}</Text>
               <Text style={taskstyles.text}>Work ID: {item.work_id}</Text>
             </View>
           </TouchableOpacity>

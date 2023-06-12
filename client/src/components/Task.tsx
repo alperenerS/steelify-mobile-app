@@ -10,6 +10,7 @@ const taskstyles = StyleSheet.create({
     },
     text: {
       fontSize: 16,
+      color: 'black',
     },
   });
 
