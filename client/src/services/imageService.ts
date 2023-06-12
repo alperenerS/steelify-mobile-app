@@ -5,6 +5,11 @@ import NetInfo from "@react-native-community/netinfo";
 
 const BASE_URL = 'https://portal-test.yenaengineering.nl';
 
+const getDataFromCache = async (cacheKey: string): Promise<ImageCount[]> => {
+  const cachedImageCounts = await getData(cacheKey);
+  return cachedImageCounts ? JSON.parse(cachedImageCounts) : [];
+}
+
 export const getImageCounts = async (qualityControlIds: number[], workId: number): Promise<ImageCount[]> => {
   const netInfo = await NetInfo.fetch();
   const cacheKey = `imageCounts-${workId}`;
@@ -23,12 +28,10 @@ export const getImageCounts = async (qualityControlIds: number[], workId: number
       return imageCounts;
     } catch (error) {
       // If an error occurred while fetching, get data from cache
-      const cachedImageCounts = await getData(cacheKey);
-      return cachedImageCounts ? JSON.parse(cachedImageCounts) : [];
+      return await getDataFromCache(cacheKey);
     }
   } else {
     // If there's no internet connection, get data from cache
-    const cachedImageCounts = await getData(cacheKey);
-    return cachedImageCounts ? JSON.parse(cachedImageCounts) : [];
+    return await getDataFromCache(cacheKey);
   }
 };
