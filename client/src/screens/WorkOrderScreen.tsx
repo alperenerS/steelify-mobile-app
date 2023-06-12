@@ -33,41 +33,43 @@ const WorkOrderScreen = ({route}: {route: WorkOrderScreenRouteProp}) => {
     const fetchData = async () => {
       const workDataPromise = getWorkById(workId);
       const productInfoPromise = getProductInfo(productId);
-      
+  
       const [workData, productInfoResponse] = await Promise.all([workDataPromise, productInfoPromise]);
-
+  
       setWork(workData.workInfo);
       setProductInfo(productInfoResponse.productInfo[0]);
       navigation.setOptions({ title: productInfoResponse.productInfo[0].name });
-
+  
       const formResponsePromise = getForm(productId, workData.workInfo[0].vendor_id);
-      const formResponse = await formResponsePromise;
-
+      const qualityControlResponsePromise = formResponsePromise.then(formResponse => 
+        postQualityControl(formResponse.form[0].id, workId)
+      );
+  
+      const [formResponse, qualityControlResponse] = await Promise.all([formResponsePromise, qualityControlResponsePromise]);
+  
       setFormId(formResponse.form[0].id);
-
-      const qualityControlResponsePromise = postQualityControl(formResponse.form[0].id, workId);
-      const qualityControlResponse = await qualityControlResponsePromise;
-
+  
       const qualityControlIds = qualityControlResponse.qualitycontrol.map(qc => qc.id);
       const imageCountDataPromise = getImageCounts(qualityControlIds, workId);
       const imageCountData = await imageCountDataPromise;
-
+  
       const imageCountRecord: Record<string, number> = {};
-
+  
       imageCountData.forEach(ic => {
         imageCountRecord[ic.quality_control_id] = ic.count;
       });
-
+  
       const updatedQualityControlData = qualityControlResponse.qualitycontrol.map(qc => ({
         ...qc,
         imageCount: imageCountRecord[qc.id] || 0,
       }));
-
+  
       setQualityControlData(updatedQualityControlData);
     };
-
+  
     fetchData();
   }, [workId]);
+  
 
   if (!work) {
     return <View><Text>Loading...</Text></View>;
