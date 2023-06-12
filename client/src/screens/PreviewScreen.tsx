@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Image, View, TouchableOpacity, Text } from 'react-native';
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -7,8 +7,6 @@ import previewstyles from '../components/Preview';
 import { uploadImage } from '../services/PreviewService';
 import NetInfo, { NetInfoState } from '@react-native-community/netinfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useEffect } from 'react';
- 
 
 global.Buffer = global.Buffer || require('buffer').Buffer;
 
@@ -22,6 +20,7 @@ interface PreviewScreenProps {
 
 const PreviewScreen: React.FC<PreviewScreenProps> = ({ route, navigation }) => {
   const { pictureUri, example_visual_url, workId, quality_control_id, productId  } = route.params;
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   useEffect(() => {
     const handleConnectivityChange = async (state: NetInfoState) => {
@@ -49,6 +48,8 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({ route, navigation }) => {
   }, []);
 
   const sendPicture = async () => {
+    setIsButtonDisabled(true);
+
     const netInfo = await NetInfo.fetch();
   
     if (!netInfo.isConnected || !netInfo.isInternetReachable) {
@@ -72,8 +73,10 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({ route, navigation }) => {
       }
     }
     navigation.navigate('WorkOrderScreen', {workId, productId});
+
+    setTimeout(() => setIsButtonDisabled(false), 2000);
   };
-  
+
   const navigateToCameraScreen = () => {
     navigation.navigate('Kamera', {example_visual_url, workId, quality_control_id , productId});
   };
@@ -84,7 +87,11 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({ route, navigation }) => {
         source={{uri: pictureUri}}
         style={previewstyles.image}
       />
-      <TouchableOpacity style={previewstyles.button} onPress={sendPicture}>
+      <TouchableOpacity 
+        style={previewstyles.button} 
+        onPress={isButtonDisabled ? undefined : sendPicture}
+        disabled={isButtonDisabled}
+      >
         <Text style={previewstyles.buttonText}>Gönder</Text>
       </TouchableOpacity>
       <TouchableOpacity style={previewstyles.centerButton} onPress={navigateToCameraScreen}>
