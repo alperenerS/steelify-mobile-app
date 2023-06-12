@@ -20,7 +20,7 @@ const Tab = createBottomTabNavigator<TabParamList>();
 
 const TabNavigator = () => {
   return (
-    <Tab.Navigator initialRouteName="Anasayfa" screenOptions={{tabBarStyle:{height: 60,}, tabBarLabelStyle:{fontSize: 16, fontWeight: 'bold'},}}>
+    <Tab.Navigator initialRouteName="Profilim" screenOptions={{tabBarStyle:{height: 60,}, tabBarLabelStyle:{fontSize: 16, fontWeight: 'bold'},}}>
       <Tab.Screen 
         name="Anasayfa" 
         component={HomeScreen} 
