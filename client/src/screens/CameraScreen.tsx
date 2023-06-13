@@ -1,3 +1,4 @@
+// CameraScreen.tsx
 import React, {useRef, useState} from 'react';
 import {View, Image, TouchableOpacity} from 'react-native';
 import {RNCamera} from 'react-native-camera';
@@ -6,6 +7,7 @@ import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParamList} from '../navigation/StackNavigator';
 import camerastyles from '../components/Camera';
 import captureIcon from '../assets/camera_capture.png';
+import ImageViewerModal from '../components/ImageViewerModal';
 
 type CameraScreenRouteProp = RouteProp<RootStackParamList, 'Kamera'>;
 type CameraScreenNavigationProp = StackNavigationProp<
@@ -16,12 +18,14 @@ type CameraScreenNavigationProp = StackNavigationProp<
 interface CameraScreenProps {
   route: CameraScreenRouteProp;
   navigation: CameraScreenNavigationProp;
+  imageUri: string | null;
 }
 
 const CameraScreen: React.FC<CameraScreenProps> = ({route, navigation}) => {
   const cameraRef = useRef<RNCamera | null>(null);
   const {example_visual_url, workId, quality_control_id, productId} =
     route.params;
+  const [modalVisible, setModalVisible] = useState(false);
 
   const takePicture = async () => {
     if (cameraRef.current) {
@@ -44,26 +48,28 @@ const CameraScreen: React.FC<CameraScreenProps> = ({route, navigation}) => {
         type={RNCamera.Constants.Type.back}
         flashMode={RNCamera.Constants.FlashMode.off}
         captureAudio={false}>
-        <View style={camerastyles.topLeftCorner}>
+        <TouchableOpacity
+          style={camerastyles.topLeftCorner}
+          onPress={() => setModalVisible(true)}
+        >
           <Image
-            source={require('../assets/default_image.png')}
+            source={example_visual_url ? {uri: example_visual_url} : require('../assets/default_image.png')}
             style={camerastyles.smallThumbnail}
           />
-        </View>
+        </TouchableOpacity>
       </RNCamera>
 
+      <ImageViewerModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        imageUri ={example_visual_url}
+      />
+
       <View style={camerastyles.bottomBar}>
-        {/* {lastPictureUri && 
-          <View style={camerastyles.bottomLeftCorner}>
-            <Image 
-              source={{ uri: lastPictureUri }}
-              style={camerastyles.smallThumbnail} 
-            />
-          </View>
-        } */}
         <TouchableOpacity
           style={camerastyles.captureButton}
-          onPress={takePicture}>
+          onPress={takePicture}
+        >
           <Image source={captureIcon} style={camerastyles.captureIcon} />
         </TouchableOpacity>
       </View>
