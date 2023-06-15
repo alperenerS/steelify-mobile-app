@@ -7,6 +7,7 @@ import previewstyles from '../components/Preview';
 import { uploadImage } from '../services/PreviewService';
 import NetInfo, { NetInfoState } from '@react-native-community/netinfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import MeasuredValueInput from '../components/MeasuredValueInput';
 
 global.Buffer = global.Buffer || require('buffer').Buffer;
 
@@ -22,6 +23,11 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({ route, navigation }) => {
   const { pictureUri, example_visual_url, workId, quality_control_id, productId  } = route.params;
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
+  // Set measured values' states
+  const [mv1, setMv1] = useState("");
+  const [mv2, setMv2] = useState("");
+  const [mv3, setMv3] = useState("");
+
   useEffect(() => {
     const handleConnectivityChange = async (state: NetInfoState) => {
       if (state.isConnected && state.isInternetReachable) {
@@ -29,7 +35,7 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({ route, navigation }) => {
           const cachedPhoto = await AsyncStorage.getItem('cachedPhoto');
           if (cachedPhoto != null) {
             const { uri, workId, quality_control_id, status } = JSON.parse(cachedPhoto);
-            const response = await uploadImage(uri, workId.toString(), quality_control_id.toString(), status);
+            const response = await uploadImage(pictureUri, workId.toString(), quality_control_id.toString(), 'status', 'project', 'supplier', 'product', 'teknikCizimNumarasi');            ;
             console.log('Image uploaded successfully: ', response);
             await AsyncStorage.removeItem('cachedPhoto'); // Remove the photo from cache after successful upload
           }
@@ -45,7 +51,7 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({ route, navigation }) => {
     return () => {
       unsubscribe();
     };
-  }, []);
+  }, [mv1, mv2, mv3]);
 
   const sendPicture = async () => {
     setIsButtonDisabled(true);
@@ -66,7 +72,7 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({ route, navigation }) => {
       }
     } else {
       try {
-        const response = await uploadImage(pictureUri, workId.toString(), quality_control_id.toString(), 'status');
+        const response = await uploadImage(pictureUri, workId.toString(), quality_control_id.toString(), 'status', 'project', 'supplier', 'product', 'teknikCizimNumarasi');
         console.log('Image uploaded successfully: ', response);
       } catch (error) {
         console.error('Error uploading image: ', error);
@@ -83,6 +89,9 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({ route, navigation }) => {
 
   return (
     <View style={previewstyles.container}>
+      <MeasuredValueInput placeholder="MV1" onChangeText={setMv1} value={mv1} />
+      <MeasuredValueInput placeholder="MV2" onChangeText={setMv2} value={mv2} />
+      <MeasuredValueInput placeholder="MV3" onChangeText={setMv3} value={mv3} />
       <Image
         source={{uri: pictureUri}}
         style={previewstyles.image}

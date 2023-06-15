@@ -3,7 +3,16 @@ import { v4 as uuidv4 } from 'uuid';
 
 const BASE_URL = 'https://portal-test.yenaengineering.nl';
 
-export const uploadImage = async (imageUri: string, workId: string, quality_control_id: string, status: string) => {
+export const uploadImage = async (
+  imageUri: string,
+  workId: string,
+  quality_control_id: string,
+  status: string,
+  proje: string,
+  tedarikci: string,
+  urun: string,
+  teknikCizimNumarasi: string
+) => {
   const url = `${BASE_URL}/mobilapi/images`;
 
   // Create a new FormData object
@@ -15,7 +24,7 @@ export const uploadImage = async (imageUri: string, workId: string, quality_cont
   let image = {
     uri: imageUri,
     type: 'image/jpeg',
-    name: `${uniqueId}.jpg`, // Use the unique id as the image name
+    name: `${proje}/${tedarikci}/${urun}/${teknikCizimNumarasi}%${uniqueId}.jpg`,
   };
   
   formData.append('images', image);
