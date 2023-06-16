@@ -33,20 +33,19 @@ const ImageViewerModal: React.FC<ImageViewerModalProps> = ({visible, onClose, im
       onRequestClose={onClose}>
       <TouchableOpacity style={styles.modalContainer} onPress={onClose} activeOpacity={1}>
         <View style={styles.modalContentTouchable}>
-          <PinchGestureHandler
-            onGestureEvent={onPinchEvent}
-            onHandlerStateChange={onPinchStateChange}
-          >
-            <Animated.View style={[
-              styles.modalContentTouchable,
-              { transform: [{ scale: scale }] }
-            ]}>
-              <Image
-                source={imageUri ? {uri: imageUri} : require('../assets/default_image.png')}
-                style={styles.modalImage}
-              />
-            </Animated.View>
-          </PinchGestureHandler>
+<PinchGestureHandler
+  onGestureEvent={onPinchEvent}
+  onHandlerStateChange={onPinchStateChange}
+>
+  <Animated.Image
+    style={[
+      styles.modalImage,
+      { transform: [{ scale: scale }] },
+    ]}
+    source={imageUri ? {uri: imageUri} : require('../assets/default_image.png')}
+  />
+</PinchGestureHandler>
+
         </View>
       </TouchableOpacity>
     </Modal>
