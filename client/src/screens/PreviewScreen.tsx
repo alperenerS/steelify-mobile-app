@@ -34,7 +34,6 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({ route, navigation }) => {
         const vendorInfo = await getVendorInfo(vendor_id);
         setVendorInfo(vendorInfo);
         if(vendorInfo){
-          console.log('vendor_name:', vendorInfo.name); 
         }
       } catch (error) {
         console.error('Error fetching vendor info: ', error);
@@ -51,7 +50,6 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({ route, navigation }) => {
         const { workInfo } = await getWorkById(workId);
         setWorkInfo(workInfo); // workInfo state'ini güncelleyin.
         if(workInfo.length > 0){
-          console.log('project_number:', workInfo[0].project_number); 
         }
       } catch (error) {
         console.error('Error fetching work info: ', error);
@@ -114,7 +112,6 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({ route, navigation }) => {
         
     }
     const folderPath = `${projectNumberString}/${order_number}_${vendorInfo.name}/${product_name}/`;
-    console.log("konum", folderPath)
     if (!netInfo.isConnected || !netInfo.isInternetReachable) {
         try {
             await AsyncStorage.setItem('cachedPhoto', JSON.stringify({
