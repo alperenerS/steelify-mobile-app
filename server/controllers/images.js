@@ -6,7 +6,6 @@ exports.createImages = async (request) => {
     const images = request.body.images.map(async (image) => {
       const image_buffer = image.image;
       const image_url = await uploadFile(image_buffer.buffer, image_buffer.originalname, image.folderPath);
- 
       return {
         image_url: image_url,
         quality_control_id: image.quality_control_id,

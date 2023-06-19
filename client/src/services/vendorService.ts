@@ -12,7 +12,7 @@ export const getVendorInfo = async (vendorId: number): Promise<any> => {
       const response = await axios.post(`${BASE_URL}/mobilapi/vendorinfo`, 
         { vendor_id: vendorId }, // Vendor ID is sent in the body of the POST request
         );
-
+        console.log("client\src\services\vendorService.ts response",response.data)
       if (response.status === 200) {
         // When the request is successful, update the cached data
         await storeData('vendorInfo', JSON.stringify(response.data));

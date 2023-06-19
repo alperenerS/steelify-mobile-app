@@ -31,10 +31,10 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({ route, navigation }) => {
   useEffect(() => {
     const fetchVendorInfo = async () => {
       try {
-        const { vendorInfo } = await getVendorInfo(vendor_id);
-        setVendorInfo(vendorInfo); // vendorInfo state'ini güncelleyin.
-        if(vendorInfo.length > 0){
-          console.log('vendor_name:', vendorInfo[0].name); 
+        const vendorInfo = await getVendorInfo(vendor_id);
+        setVendorInfo(vendorInfo);
+        if(vendorInfo){
+          console.log('vendor_name:', vendorInfo.name); 
         }
       } catch (error) {
         console.error('Error fetching vendor info: ', error);
@@ -43,6 +43,7 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({ route, navigation }) => {
   
     fetchVendorInfo();
   }, [vendor_id]);
+
 
   useEffect(() => {
     const fetchWorkInfo = async () => {
@@ -80,7 +81,7 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({ route, navigation }) => {
                 projectNumberString = project_number.toString();
             }
             const { uri, workId, quality_control_id, status } = JSON.parse(cachedPhoto);
-            const folderPath = `${projectNumberString}/${order_number}_${vendorInfo[0].name}/${product_name}`;
+            const folderPath = `${projectNumberString}/${order_number}_${vendorInfo.name}/${product_name}/`;
             const response = await uploadImage(uri, workId.toString(), quality_control_id.toString(), status, folderPath, technical_drawing_numbering, step_name);
             console.log('Image uploaded successfully: ', response);
             await AsyncStorage.removeItem('cachedPhoto'); // Remove the photo from cache after successful upload
@@ -112,7 +113,7 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({ route, navigation }) => {
         projectNumberString = project_number.toString();
         
     }
-    const folderPath = `${projectNumberString}/${order_number}_${vendorInfo[0].name}/${product_name}`;
+    const folderPath = `${projectNumberString}/${order_number}_${vendorInfo.name}/${product_name}/`;
     console.log("konum", folderPath)
     if (!netInfo.isConnected || !netInfo.isInternetReachable) {
         try {
@@ -129,7 +130,7 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({ route, navigation }) => {
         }
     } else {
         try {
-            const response = await uploadImage(pictureUri, workId.toString(), quality_control_id.toString(), 'status', folderPath, technical_drawing_numbering, step_name);
+            const response = await uploadImage(pictureUri, workId.toString(), quality_control_id.toString(), 'pending', folderPath, technical_drawing_numbering, step_name);
             console.log('Image uploaded successfully: ', response);
         } catch (error) {
             console.error('Error uploading image: ', error);

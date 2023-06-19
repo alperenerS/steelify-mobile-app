@@ -9,11 +9,10 @@ const Images = {
   },
 
   getCount: async (quality_control_id, work_id) => {
-    const result = await db.one('SELECT COUNT(*) as count FROM images WHERE quality_control_id = $1 AND work_id = $2', [quality_control_id, work_id]);
+    const result = await db.one('SELECT COUNT(*) as count FROM images WHERE quality_control_id = $1 AND work_id = $2 AND (status = $3 OR status = $4)', [quality_control_id, work_id, 'pending', 'approved']);
     const count = parseInt(result.count);
-    console.log(`Count for quality_control_id: ${quality_control_id} and work_id: ${work_id} is ${count}`);
     return count;
-  }
+  } 
 };
 
 

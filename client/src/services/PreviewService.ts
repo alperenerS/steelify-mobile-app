@@ -18,14 +18,12 @@ export const uploadImage = async (imageUri: string, workId: string, quality_cont
     type: 'image/jpeg',
     name: `${step_name}_${technical_drawing_numbering}_${timestamp}.jpg`,
   };
-  
+  folderPath = folderPath.replace(/\s+/g, "_");
   formData.append('images', image);
   formData.append('work_id', workId);
   formData.append('quality_control_id', quality_control_id);
   formData.append('status', status);
-  formData.append('project_number', folderPath);
-  formData.append('project_number', technical_drawing_numbering);
-  
+  formData.append('folderPath', folderPath);
   // Send the request
   const config = {
     headers: {
