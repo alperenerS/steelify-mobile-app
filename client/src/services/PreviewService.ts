@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 const BASE_URL = 'https://portal-test.yenaengineering.nl';
 
-export const uploadImage = async (imageUri: string, workId: string, quality_control_id: string, status: string) => {
+export const uploadImage = async (imageUri: string, workId: string, quality_control_id: string, status: string, projectNumberString: string) => {
   const url = `${BASE_URL}/mobilapi/images`;
 
   // Create a new FormData object
@@ -22,6 +22,7 @@ export const uploadImage = async (imageUri: string, workId: string, quality_cont
   formData.append('work_id', workId);
   formData.append('quality_control_id', quality_control_id);
   formData.append('status', status);
+  formData.append('project_number', projectNumberString);
 
   // Send the request
   const config = {

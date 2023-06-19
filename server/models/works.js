@@ -7,7 +7,7 @@ const Works = {
   },
 
   findWorkById: async (workId) => {
-    return await db.any('SELECT id, vendor_id, quality_responsible_id FROM works WHERE id = $1', [workId]);
+    return await db.any('SELECT id, vendor_id, quality_responsible_id, order_number, project_number FROM works WHERE id = $1', [workId]);
   }
 
 };

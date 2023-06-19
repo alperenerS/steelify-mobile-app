@@ -5,14 +5,15 @@ exports.createImages = async (request) => {
   try {
     const images = request.body.images.map(async (image) => {
       const image_buffer = image.image;
-      const image_url = await uploadFile(image_buffer.buffer, image_buffer.originalname);
+      const folderPath = `${image.project_number}/${image.quality_control_id}/`;
+      const image_url = await uploadFile(image_buffer.buffer, image_buffer.originalname, folderPath);
       console.log(image.work_id);
       return {
         image_url: image_url,
         quality_control_id: image.quality_control_id,
         status: image.status,
         work_id: image.work_id,
-        
+        projectNumberString: image.projectNumberString
       };
     });
 

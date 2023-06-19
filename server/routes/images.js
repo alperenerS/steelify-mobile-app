@@ -14,7 +14,8 @@ const routes = (fastify, options, done) => {
             image: file,
             quality_control_id: request.body.quality_control_id,
             status: request.body.status,
-            work_id: request.body.work_id
+            work_id: request.body.work_id,
+            project_number: request.body.projectNumberString
           }
         });
         

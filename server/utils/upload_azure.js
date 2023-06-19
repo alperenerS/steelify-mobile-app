@@ -9,11 +9,11 @@ const blobServiceClient = BlobServiceClient.fromConnectionString(
   `DefaultEndpointsProtocol=https;AccountName=${AZURE_STORAGE_ACCOUNT_NAME};AccountKey=${AZURE_STORAGE_ACCOUNT_KEY};EndpointSuffix=core.windows.net`
 );
 
-async function uploadFile(fileData, fileName) {
+async function uploadFile(fileData, fileName, folderPath) {
   const containerClient = blobServiceClient.getContainerClient(AZURE_STORAGE_CONTAINER_NAME);
   await containerClient.createIfNotExists();
-  const blockBlobClient = containerClient.getBlockBlobClient(fileName);
-
+  const blockBlobClient = containerClient.getBlockBlobClient(`${folderPath}${fileName}`);
+  
   await blockBlobClient.uploadData(fileData);
   return blockBlobClient.url;
 }
