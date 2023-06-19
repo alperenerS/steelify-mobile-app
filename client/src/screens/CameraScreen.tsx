@@ -8,6 +8,7 @@ import {RootStackParamList} from '../navigation/StackNavigator';
 import camerastyles from '../components/Camera';
 import captureIcon from '../assets/camera_capture.png';
 import ImageViewerModal from '../components/ImageViewerModal';
+import CameraAccessModal from '../components/CameraAccessModal'; // New Modal imported
 
 type CameraScreenRouteProp = RouteProp<RootStackParamList, 'Kamera'>;
 type CameraScreenNavigationProp = StackNavigationProp<
@@ -26,6 +27,7 @@ const CameraScreen: React.FC<CameraScreenProps> = ({route, navigation}) => {
   const {example_visual_url, workId, quality_control_id, productId} =
     route.params;
   const [modalVisible, setModalVisible] = useState(false);
+  const [accessModalVisible, setAccessModalVisible] = useState(true); // New State
 
   const takePicture = async () => {
     if (cameraRef.current) {
@@ -58,6 +60,11 @@ const CameraScreen: React.FC<CameraScreenProps> = ({route, navigation}) => {
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
         imageUri ={example_visual_url}
+      />
+
+      <CameraAccessModal // New Modal
+        visible={accessModalVisible}
+        onConfirm={() => setAccessModalVisible(false)}
       />
 
       <View style={camerastyles.bottomBar}>

@@ -1,6 +1,7 @@
 // ImageViewerModal.tsx
-import React from 'react';
-import { View, Image, Modal, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useRef } from 'react';
+import { View, Modal, TouchableOpacity, StyleSheet, Animated, Image } from 'react-native';
+import { PinchGestureHandler, State, PinchGestureHandlerStateChangeEvent, PinchGestureHandlerGestureEvent } from 'react-native-gesture-handler';
 
 interface ImageViewerModalProps {
   visible: boolean;
@@ -9,22 +10,44 @@ interface ImageViewerModalProps {
 }
 
 const ImageViewerModal: React.FC<ImageViewerModalProps> = ({visible, onClose, imageUri}) => {
+  const scale = useRef(new Animated.Value(1)).current;
+  const onPinchEvent = Animated.event<PinchGestureHandlerGestureEvent>(
+    [{ nativeEvent: { scale: scale } }],
+    { useNativeDriver: true }
+  );
+
+  const onPinchStateChange = (event: PinchGestureHandlerStateChangeEvent) => {
+    if (event.nativeEvent.oldState === State.ACTIVE) {
+      Animated.spring(scale, {
+        toValue: 1,
+        useNativeDriver: true
+      }).start();
+    }
+  };
+
   return (
     <Modal
       animationType="slide"
       transparent={true}
       visible={visible}
       onRequestClose={onClose}>
-        <TouchableOpacity style={styles.modalContainer} onPress={onClose} activeOpacity={1}>
-          <View style={styles.modalContentTouchable}>
-            <TouchableOpacity activeOpacity={1}>
-              <Image
-                source={imageUri ? {uri: imageUri} : require('../assets/default_image.png')}
-                style={styles.modalImage}
-              />
-            </TouchableOpacity>
-          </View>
-        </TouchableOpacity>
+      <TouchableOpacity style={styles.modalContainer} onPress={onClose} activeOpacity={1}>
+        <View style={styles.modalContentTouchable}>
+<PinchGestureHandler
+  onGestureEvent={onPinchEvent}
+  onHandlerStateChange={onPinchStateChange}
+>
+  <Animated.Image
+    style={[
+      styles.modalImage,
+      { transform: [{ scale: scale }] },
+    ]}
+    source={imageUri ? {uri: imageUri} : require('../assets/default_image.png')}
+  />
+</PinchGestureHandler>
+
+        </View>
+      </TouchableOpacity>
     </Modal>
   );
 };

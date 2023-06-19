@@ -15,7 +15,7 @@ export const uploadImage = async (imageUri: string, workId: string, quality_cont
   let image = {
     uri: imageUri,
     type: 'image/jpeg',
-    name: `${uniqueId}.jpg`, // Use the unique id as the image name
+    name: `${uniqueId}.jpg`,
   };
   
   formData.append('images', image);
