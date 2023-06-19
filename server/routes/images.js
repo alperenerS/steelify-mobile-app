@@ -15,13 +15,11 @@ const routes = (fastify, options, done) => {
             quality_control_id: request.body.quality_control_id,
             status: request.body.status,
             work_id: request.body.work_id,
-            project_number: request.body.projectNumberString
+            folderPath: request.body.folderPath
           }
         });
-        
         // Add the images to the request object
-        request.body.images = images;
-  
+        request.body.images = images;  
         const result = await imagesControllers.createImages(request);
         reply.code(201).send(result);
       } catch (err) {

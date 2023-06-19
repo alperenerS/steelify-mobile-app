@@ -10,6 +10,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getWorkById } from '../services/workService';
 import { WorkInfo } from '../models/WorkInfo';
 import MeasuredValueInput from '../components/MeasuredValueInput';
+import { getVendorInfo } from '../services/vendorService';
 
 global.Buffer = global.Buffer || require('buffer').Buffer;
 
@@ -22,10 +23,26 @@ interface PreviewScreenProps {
 }
 
 const PreviewScreen: React.FC<PreviewScreenProps> = ({ route, navigation }) => {
-  const { pictureUri, example_visual_url, workId, quality_control_id, productId  } = route.params;
+  const { pictureUri, example_visual_url, workId, quality_control_id, productId, technical_drawing_numbering, step_name, order_number, product_name, vendor_id } = route.params;
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [workInfo, setWorkInfo] = useState<WorkInfo[] | null>(null);
-
+  const [vendorInfo, setVendorInfo] = useState<any | null>(null);
+  
+  useEffect(() => {
+    const fetchVendorInfo = async () => {
+      try {
+        const { vendorInfo } = await getVendorInfo(vendor_id);
+        setVendorInfo(vendorInfo); // vendorInfo state'ini güncelleyin.
+        if(vendorInfo.length > 0){
+          console.log('vendor_name:', vendorInfo[0].name); 
+        }
+      } catch (error) {
+        console.error('Error fetching vendor info: ', error);
+      }
+    };
+  
+    fetchVendorInfo();
+  }, [vendor_id]);
 
   useEffect(() => {
     const fetchWorkInfo = async () => {
@@ -63,7 +80,8 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({ route, navigation }) => {
                 projectNumberString = project_number.toString();
             }
             const { uri, workId, quality_control_id, status } = JSON.parse(cachedPhoto);
-            const response = await uploadImage(uri, workId.toString(), quality_control_id.toString(), status, projectNumberString);
+            const folderPath = `${projectNumberString}/${order_number}_${vendorInfo[0].name}/${product_name}`;
+            const response = await uploadImage(uri, workId.toString(), quality_control_id.toString(), status, folderPath, technical_drawing_numbering, step_name);
             console.log('Image uploaded successfully: ', response);
             await AsyncStorage.removeItem('cachedPhoto'); // Remove the photo from cache after successful upload
           }
@@ -92,8 +110,10 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({ route, navigation }) => {
         projectNumberString = 'unknown';
     } else {
         projectNumberString = project_number.toString();
+        
     }
-
+    const folderPath = `${projectNumberString}/${order_number}_${vendorInfo[0].name}/${product_name}`;
+    console.log("konum", folderPath)
     if (!netInfo.isConnected || !netInfo.isInternetReachable) {
         try {
             await AsyncStorage.setItem('cachedPhoto', JSON.stringify({
@@ -101,7 +121,7 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({ route, navigation }) => {
             workId,
             quality_control_id,
             status: 'status',
-            project_number: projectNumberString,
+            folderPath: folderPath,
             }));
             console.log('Image cached successfully');
         } catch (error) {
@@ -109,7 +129,7 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({ route, navigation }) => {
         }
     } else {
         try {
-            const response = await uploadImage(pictureUri, workId.toString(), quality_control_id.toString(), 'status', projectNumberString);
+            const response = await uploadImage(pictureUri, workId.toString(), quality_control_id.toString(), 'status', folderPath, technical_drawing_numbering, step_name);
             console.log('Image uploaded successfully: ', response);
         } catch (error) {
             console.error('Error uploading image: ', error);
@@ -122,7 +142,7 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({ route, navigation }) => {
 
 
   const navigateToCameraScreen = () => {
-    navigation.navigate('Kamera', {example_visual_url, workId, quality_control_id , productId});
+    navigation.navigate('Kamera', {example_visual_url, workId, quality_control_id , productId, technical_drawing_numbering, step_name, order_number, product_name, vendor_id });
   };
 
   return (

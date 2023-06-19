@@ -114,9 +114,10 @@ const WorkOrderScreen = ({route}: {route: WorkOrderScreenRouteProp}) => {
                 if (imageCount === undefined) {
                   return null;
                 }
-                
+
                 // If imageCount is less than sample_quantity, then render the item
                 if(imageCount < item.sample_quantity) {
+                  console.log(productInfo?.name)
                   return (
                     <View style={workstyles.card}>
                         <View style={{flexDirection: 'row'}}>
@@ -129,7 +130,19 @@ const WorkOrderScreen = ({route}: {route: WorkOrderScreenRouteProp}) => {
                                 <Text style={workstyles.text}>ID: {item.id}</Text>
                             </View>
                             <View style={{flex: 0.2, justifyContent: 'center', alignItems: 'center'}}>
-                              <TouchableOpacity onPress={() => navigation.navigate('Kamera', { example_visual_url: item.example_visual_url || null, workId: item.work_id , quality_control_id: item.id, productId: productId })}>
+                              <TouchableOpacity onPress={() => navigation.navigate('Kamera', 
+                              { 
+                                example_visual_url: item.example_visual_url || null, 
+                                workId: item.work_id , 
+                                quality_control_id: item.id, 
+                                productId: productId,
+                                technical_drawing_numbering: item.technical_drawing_numbering,
+                                step_name: item.step_name,
+                                order_number: work[0].order_number,
+                                product_name: productInfo ? productInfo.name : null,
+                                vendor_id: work[0].vendor_id
+                              }
+                              )}>
                                 <Image source={cameraIcon} style={{width: 40, height: 40}} />
                               </TouchableOpacity>
                               <Text style={workstyles.text2}>Fotoğraf Çek</Text>

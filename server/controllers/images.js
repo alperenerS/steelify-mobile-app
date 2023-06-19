@@ -5,15 +5,14 @@ exports.createImages = async (request) => {
   try {
     const images = request.body.images.map(async (image) => {
       const image_buffer = image.image;
-      const folderPath = `${image.project_number}/${image.quality_control_id}/`;
-      const image_url = await uploadFile(image_buffer.buffer, image_buffer.originalname, folderPath);
-      console.log(image.work_id);
+      const image_url = await uploadFile(image_buffer.buffer, image_buffer.originalname, image.folderPath);
+ 
       return {
         image_url: image_url,
         quality_control_id: image.quality_control_id,
         status: image.status,
         work_id: image.work_id,
-        projectNumberString: image.projectNumberString
+        folderPath: image.folderPath
       };
     });
 
@@ -42,3 +41,4 @@ exports.getImageCount = async (request, reply) => {
     return reply.status(500).send({ error: 'An error occurred while fetching image counts' });
   }
 };
+

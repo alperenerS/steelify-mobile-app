@@ -11,6 +11,7 @@ const FormsRoutes = require("./routes/form");
 const QualityControlRoutes = require("./routes/qualityControl");
 const ProductInfoRoutes = require("./routes/productinfo");
 const ImageRoutes = require("./routes/images");
+const VendorsRoutes = require("./routes/vendor");
 
 const db = require('./config/db');
 
@@ -61,6 +62,10 @@ QualityControlRoutes.forEach((route) => {
   });
 
 ProductInfoRoutes.forEach((route) => {
+    fastify.route(route);
+  });
+
+VendorsRoutes.forEach((route) => {
     fastify.route(route);
   });
 
