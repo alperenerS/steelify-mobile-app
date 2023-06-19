@@ -107,17 +107,14 @@ const WorkOrderScreen = ({route}: {route: WorkOrderScreenRouteProp}) => {
               data={qualityControlData}
               keyExtractor={(item, index) => `key-${index}`}
               renderItem={({item}) => {
-                // Directly use item.imageCount
                 const imageCount = item.imageCount;
               
-                // If imageCount is not defined, return null
                 if (imageCount === undefined) {
                   return null;
                 }
 
                 // If imageCount is less than sample_quantity, then render the item
                 if(imageCount < item.sample_quantity) {
-                  console.log(productInfo?.name)
                   return (
                     <View style={workstyles.card}>
                         <View style={{flexDirection: 'row'}}>

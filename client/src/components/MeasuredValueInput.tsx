@@ -23,12 +23,13 @@ const MeasuredValueInput: React.FC<MeasuredValueInputProps> = ({ placeholder, on
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
+    width: '30%',
     marginBottom: 10,
   },
   input: {
     height: 40,
     borderColor: 'gray',
+    backgroundColor: 'white',
     borderWidth: 1,
     paddingLeft: 10,
   },

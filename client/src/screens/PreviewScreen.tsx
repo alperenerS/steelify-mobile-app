@@ -148,9 +148,19 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({ route, navigation }) => {
 
   return (
     <View style={previewstyles.container}>
-      <MeasuredValueInput placeholder="MV1" onChangeText={setMv1} value={mv1} />
-      <MeasuredValueInput placeholder="MV2" onChangeText={setMv2} value={mv2} />
-      <MeasuredValueInput placeholder="MV3" onChangeText={setMv3} value={mv3} />
+      <View style={{ 
+          position: 'absolute', 
+          top: '5%', 
+          left: '5%',
+          right: '5%',
+          flexDirection: 'row', 
+          justifyContent: 'space-around',
+          zIndex: 2
+      }}>
+        <MeasuredValueInput placeholder="Measur 1" onChangeText={setMv1} value={mv1} />
+        <MeasuredValueInput placeholder="Measur 2" onChangeText={setMv2} value={mv2} />
+        <MeasuredValueInput placeholder="Measur 3" onChangeText={setMv3} value={mv3} />
+      </View>
       <Image
         source={{uri: pictureUri}}
         style={previewstyles.image}
