@@ -1,7 +1,18 @@
-// ImageViewerModal.tsx
-import React, { useRef } from 'react';
-import { View, Modal, TouchableOpacity, StyleSheet, Animated, Image } from 'react-native';
-import { PinchGestureHandler, State, PinchGestureHandlerStateChangeEvent, PinchGestureHandlerGestureEvent } from 'react-native-gesture-handler';
+import React, {useRef} from 'react';
+import {
+  View,
+  Modal,
+  TouchableOpacity,
+  StyleSheet,
+  Animated,
+  Image,
+} from 'react-native';
+import {
+  PinchGestureHandler,
+  State,
+  PinchGestureHandlerStateChangeEvent,
+  PinchGestureHandlerGestureEvent,
+} from 'react-native-gesture-handler';
 
 interface ImageViewerModalProps {
   visible: boolean;
@@ -9,18 +20,22 @@ interface ImageViewerModalProps {
   imageUri: string | null;
 }
 
-const ImageViewerModal: React.FC<ImageViewerModalProps> = ({visible, onClose, imageUri}) => {
+const ImageViewerModal: React.FC<ImageViewerModalProps> = ({
+  visible,
+  onClose,
+  imageUri,
+}) => {
   const scale = useRef(new Animated.Value(1)).current;
   const onPinchEvent = Animated.event<PinchGestureHandlerGestureEvent>(
-    [{ nativeEvent: { scale: scale } }],
-    { useNativeDriver: true }
+    [{nativeEvent: {scale: scale}}],
+    {useNativeDriver: true},
   );
 
   const onPinchStateChange = (event: PinchGestureHandlerStateChangeEvent) => {
     if (event.nativeEvent.oldState === State.ACTIVE) {
       Animated.spring(scale, {
         toValue: 1,
-        useNativeDriver: true
+        useNativeDriver: true,
       }).start();
     }
   };
@@ -31,21 +46,25 @@ const ImageViewerModal: React.FC<ImageViewerModalProps> = ({visible, onClose, im
       transparent={true}
       visible={visible}
       onRequestClose={onClose}>
-      <TouchableOpacity style={styles.modalContainer} onPress={onClose} activeOpacity={1}>
+      <TouchableOpacity
+        style={styles.modalContainer}
+        onPress={onClose}
+        activeOpacity={1}>
         <View style={styles.modalContentTouchable}>
-<PinchGestureHandler
-  onGestureEvent={onPinchEvent}
-  onHandlerStateChange={onPinchStateChange}
->
-  <Animated.Image
-    style={[
-      styles.modalImage,
-      { transform: [{ scale: scale }] },
-    ]}
-    source={imageUri ? {uri: imageUri} : require('../assets/default_image.png')}
-  />
-</PinchGestureHandler>
-
+          <PinchGestureHandler
+            onGestureEvent={onPinchEvent}
+            onHandlerStateChange={onPinchStateChange}>
+            <TouchableOpacity activeOpacity={1} onPress={() => {}}>
+              <Animated.Image
+                style={[styles.modalImage, {transform: [{scale: scale}]}]}
+                source={
+                  imageUri
+                    ? {uri: imageUri}
+                    : require('../assets/default_image.png')
+                }
+              />
+            </TouchableOpacity>
+          </PinchGestureHandler>
         </View>
       </TouchableOpacity>
     </Modal>
