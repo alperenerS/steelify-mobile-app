@@ -1,7 +1,13 @@
-// ImageViewerModal.tsx
-import React, { useRef } from 'react';
-import { View, Modal, TouchableOpacity, StyleSheet, Animated, Image } from 'react-native';
-import { PinchGestureHandler, State, PinchGestureHandlerStateChangeEvent, PinchGestureHandlerGestureEvent } from 'react-native-gesture-handler';
+import React, { useState, useRef } from 'react';
+import {
+  View,
+  Modal,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+} from 'react-native';
+import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view';
+import { GestureHandlerStateChangeNativeEvent, TapGestureHandler, State } from 'react-native-gesture-handler';
 
 interface ImageViewerModalProps {
   visible: boolean;
@@ -9,19 +15,18 @@ interface ImageViewerModalProps {
   imageUri: string | null;
 }
 
-const ImageViewerModal: React.FC<ImageViewerModalProps> = ({visible, onClose, imageUri}) => {
-  const scale = useRef(new Animated.Value(1)).current;
-  const onPinchEvent = Animated.event<PinchGestureHandlerGestureEvent>(
-    [{ nativeEvent: { scale: scale } }],
-    { useNativeDriver: true }
-  );
+const ImageViewerModal: React.FC<ImageViewerModalProps> = ({
+  visible,
+  onClose,
+  imageUri,
+}) => {
+  const [zoom, setZoom] = useState(1);
+  const doubleTapRef = useRef(null);
+  const zoomableViewRef = useRef(null);
 
-  const onPinchStateChange = (event: PinchGestureHandlerStateChangeEvent) => {
-    if (event.nativeEvent.oldState === State.ACTIVE) {
-      Animated.spring(scale, {
-        toValue: 1,
-        useNativeDriver: true
-      }).start();
+  const onDoubleTap = ({ nativeEvent }: { nativeEvent: GestureHandlerStateChangeNativeEvent }) => {
+    if (nativeEvent.state === State.ACTIVE) {
+      setZoom(prevZoom => prevZoom === 1 ? 1.5 : 1);
     }
   };
 
@@ -31,21 +36,35 @@ const ImageViewerModal: React.FC<ImageViewerModalProps> = ({visible, onClose, im
       transparent={true}
       visible={visible}
       onRequestClose={onClose}>
-      <TouchableOpacity style={styles.modalContainer} onPress={onClose} activeOpacity={1}>
+      <TouchableOpacity
+        style={styles.modalContainer}
+        onPress={onClose}
+        activeOpacity={1}>
         <View style={styles.modalContentTouchable}>
-<PinchGestureHandler
-  onGestureEvent={onPinchEvent}
-  onHandlerStateChange={onPinchStateChange}
->
-  <Animated.Image
-    style={[
-      styles.modalImage,
-      { transform: [{ scale: scale }] },
-    ]}
-    source={imageUri ? {uri: imageUri} : require('../assets/default_image.png')}
-  />
-</PinchGestureHandler>
-
+          <TapGestureHandler
+            ref={doubleTapRef}
+            numberOfTaps={2}
+            onHandlerStateChange={onDoubleTap}
+          >
+            <ReactNativeZoomableView
+              ref={zoomableViewRef}
+              maxZoom={3}
+              minZoom={1}
+              zoomStep={0.5}
+              initialZoom={zoom}
+              bindToBorders={true}
+              style={styles.modalImage}
+            >
+              <Image
+                style={styles.modalImage}
+                source={
+                  imageUri
+                    ? {uri: imageUri}
+                    : require('../assets/default_image.png')
+                }
+              />
+            </ReactNativeZoomableView>
+          </TapGestureHandler>
         </View>
       </TouchableOpacity>
     </Modal>
