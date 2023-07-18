@@ -9,7 +9,7 @@ import NetInfo, { NetInfoState } from '@react-native-community/netinfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getWorkById } from '../services/workService';
 import { WorkInfo } from '../models/WorkInfo';
-import MeasuredValueInput from '../components/MeasuredValueInput';
+//import MeasuredValueInput from '../components/MeasuredValueInput';
 import { getVendorInfo } from '../services/vendorService';
 
 global.Buffer = global.Buffer || require('buffer').Buffer;
@@ -60,9 +60,9 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({ route, navigation }) => {
   }, [workId]);
   
   // Set measured values' states
-  const [mv1, setMv1] = useState("");
-  const [mv2, setMv2] = useState("");
-  const [mv3, setMv3] = useState("");
+  //const [mv1, setMv1] = useState("");
+  //const [mv2, setMv2] = useState("");
+  //const [mv3, setMv3] = useState("");
 
   useEffect(() => {
     const handleConnectivityChange = async (state: NetInfoState) => {
@@ -96,7 +96,7 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({ route, navigation }) => {
     return () => {
       unsubscribe();
     };
-  }, [mv1, mv2, mv3]);
+  }, []);
 
   const sendPicture = async () => {
     setIsButtonDisabled(true);
@@ -145,19 +145,6 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({ route, navigation }) => {
 
   return (
     <View style={previewstyles.container}>
-      <View style={{ 
-          position: 'absolute', 
-          top: '5%', 
-          left: '5%',
-          right: '5%',
-          flexDirection: 'row', 
-          justifyContent: 'space-around',
-          zIndex: 2
-      }}>
-        <MeasuredValueInput placeholder="Measur 1" onChangeText={setMv1} value={mv1} />
-        <MeasuredValueInput placeholder="Measur 2" onChangeText={setMv2} value={mv2} />
-        <MeasuredValueInput placeholder="Measur 3" onChangeText={setMv3} value={mv3} />
-      </View>
       <Image
         source={{uri: pictureUri}}
         style={previewstyles.image}

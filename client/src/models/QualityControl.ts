@@ -21,6 +21,7 @@ export interface QualityControl {
     work_id: number;
     sample_quantity: number;
     imageCount?: number;
+    row_number: number;
   }
   
   

@@ -10,7 +10,7 @@ import buttonstyles from '../components/Button';
 import { WorkInfo } from '../models/WorkInfo';
 import { QualityControl } from '../models/QualityControl';
 import { ProductInfo } from '../models/ProductInfo';
-import { useNavigation, useIsFocused } from '@react-navigation/native'; // <-- make sure to import useIsFocused
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import cameraIcon from '../assets/camera_icon.png';
 import { ImageCount } from '../models/ImageCount';
@@ -26,10 +26,10 @@ const WorkOrderScreen = ({route}: {route: WorkOrderScreenRouteProp}) => {
   const [productInfo, setProductInfo] = useState<ProductInfo | null>(null);
 
   const navigation = useNavigation<navigationProp>();
-  const isFocused = useIsFocused(); // <-- use isFocused to check if screen is focused
+  const isFocused = useIsFocused();
 
   useEffect(() => {
-    if (isFocused) { // <-- check if the screen is focused
+    if (isFocused) {
       const fetchData = async () => {
         const workDataPromise = getWorkById(workId);
         const productInfoPromise = getProductInfo(productId);
@@ -63,13 +63,14 @@ const WorkOrderScreen = ({route}: {route: WorkOrderScreenRouteProp}) => {
           imageCount: imageCountRecord[qc.id] || 0,
         }));
 
-        setQualityControlData(updatedQualityControlData);
+        const sortedQualityControlData = updatedQualityControlData.sort((a, b) => a.row_number - b.row_number);
+
+        setQualityControlData(sortedQualityControlData);
       };
 
       fetchData();
     }
   }, [workId, isFocused]);
-  
 
   if (!work) {
     return <View><Text>Loading...</Text></View>;
@@ -113,7 +114,6 @@ const WorkOrderScreen = ({route}: {route: WorkOrderScreenRouteProp}) => {
                   return null;
                 }
 
-                // If imageCount is less than sample_quantity, then render the item
                 if(imageCount < item.sample_quantity) {
                   return (
                     <View style={workstyles.card}>
