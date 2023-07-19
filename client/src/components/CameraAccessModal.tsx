@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   confirmButtonText: {
-    color: 'white',
+    color: 'black',
     textAlign: 'center',
   }
 });

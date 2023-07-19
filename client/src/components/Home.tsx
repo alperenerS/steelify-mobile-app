@@ -8,7 +8,7 @@ const homestyles = StyleSheet.create({
     },
     text: {
       fontSize: 30,
-      color: '#000'
+      color: 'black'
     }
   });
 

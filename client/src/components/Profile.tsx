@@ -55,7 +55,7 @@ const profilestyles = StyleSheet.create({
     marginBottom: 16,
   },
   profileIconText: {
-    color: 'white',
+    color: 'black',
     fontSize: 24,
   },
 });
