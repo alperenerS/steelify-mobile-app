@@ -11,16 +11,19 @@ const profilestyles = StyleSheet.create({
     marginBottom: 16,
   },
   infoContainer: {
+    color: 'black',
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 8,
   },
   label: {
+    color: 'black',
     fontSize: 20,
     fontWeight: 'bold',
     marginRight: 8,
   },
   value: {
+    color: 'black',
     fontSize: 20,
     flex: 1,
   },

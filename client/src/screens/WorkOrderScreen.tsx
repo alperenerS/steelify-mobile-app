@@ -81,7 +81,7 @@ const WorkOrderScreen = ({route}: {route: WorkOrderScreenRouteProp}) => {
       <View>
         {work.length > 0 ? (
           <>
-            <Text>Work ID: {work[0].id}, Vendor ID: {work[0].vendor_id}, QR ID: {work[0].quality_responsible_id}, Form ID: {formId}</Text>
+            <Text  style={{ color: 'black'}}>Work ID: {work[0].id}, Vendor ID: {work[0].vendor_id}, QR ID: {work[0].quality_responsible_id}, Form ID: {formId}</Text>
             {productInfo ? (
             <View style={buttonstyles.buttonContainer}>
               <Button

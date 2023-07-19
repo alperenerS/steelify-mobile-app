@@ -147,6 +147,7 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({ route, navigation }) => {
     <View style={previewstyles.container}>
       <Image
         source={{uri: pictureUri}}
+        resizeMode='contain' 
         style={previewstyles.image}
       />
       <TouchableOpacity 

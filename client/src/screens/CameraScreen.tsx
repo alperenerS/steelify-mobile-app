@@ -31,7 +31,7 @@ const CameraScreen: React.FC<CameraScreenProps> = ({route, navigation}) => {
     navigation.setOptions({
       headerRight: () => (
         <View style={{ paddingRight: 10 }}>
-          <Text>Teknik Çizim No: {String(technical_drawing_numbering)}</Text>
+          <Text  style={{ color: 'black'}}>Teknik Çizim No: {String(technical_drawing_numbering)}</Text>
         </View>
       ),
     });
