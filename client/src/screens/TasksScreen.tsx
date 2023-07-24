@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, FlatList } from 'react-native';
 import { WorkProducts } from '../models/WorkProducts'; 
-import { getWorks } from '../services/workService'; 
+import { getWorks, getWorkById } from '../services/workService'; 
 import { getData } from '../utils/storage'; 
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import taskstyles from '../components/Task';
@@ -25,9 +25,11 @@ const TasksScreen = () => {
         // For each workProduct, get the product info and attach it to the workProduct
         const workProducts = await Promise.all(workProductsData.workProducts.map(async (workProduct) => {
           const productInfoData = await getProductInfo(workProduct.product_id);
+          const workInfoData = await getWorkById(workProduct.work_id);
           return {
             ...workProduct,
             productInfo: productInfoData.productInfo[0],  // Assuming that getProductInfo returns a single product info
+            order_number: workInfoData.workInfo[0].order_number, // Adding the order_number from WorkInfo to WorkProduct
           };
         }));
   
@@ -56,6 +58,7 @@ const TasksScreen = () => {
             <View style={taskstyles.card}>
               <Text style={taskstyles.text}>Product Name: {item.productInfo?.name}</Text>
               <Text style={taskstyles.text}>Work ID: {item.work_id}</Text>
+              <Text style={taskstyles.text}>Order Number: {item.order_number}</Text>
             </View>
           </TouchableOpacity>
         )}
