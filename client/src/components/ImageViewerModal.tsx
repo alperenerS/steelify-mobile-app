@@ -62,6 +62,7 @@ const ImageViewerModal: React.FC<ImageViewerModalProps> = ({
                     ? {uri: imageUri}
                     : require('../assets/default_image.png')
                 }
+                resizeMode='contain'
               />
             </ReactNativeZoomableView>
           </TapGestureHandler>
@@ -81,8 +82,6 @@ const styles = StyleSheet.create({
   modalContentTouchable: {
     width: '80%',
     aspectRatio: 1,
-    borderColor: 'white',
-    borderWidth: 1,
   },
   modalImage: {
     width: '100%',

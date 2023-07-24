@@ -59,6 +59,7 @@ const CameraScreen: React.FC<CameraScreenProps> = ({route, navigation}) => {
         >
           <Image
             source={example_visual_url ? {uri: example_visual_url} : require('../assets/default_image.png')}
+            resizeMode='contain' 
             style={camerastyles.smallThumbnail}
           />
         </TouchableOpacity>
