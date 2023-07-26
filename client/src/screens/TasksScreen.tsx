@@ -9,6 +9,7 @@ import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParamList} from '../navigation/StackNavigator';
 import {getProductInfo} from '../services/productService';
 import pdfIcon from '../assets/pdfIcon.png';
+import SearchBar from '../components/SearchBar';
 
 type navigationProp = StackNavigationProp<
   RootStackParamList,
@@ -18,6 +19,7 @@ type navigationProp = StackNavigationProp<
 const TasksScreen = () => {
   const navigation = useNavigation<navigationProp>();
   const [workProducts, setWorkProducts] = useState<WorkProducts[]>([]);
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const isFocused = useIsFocused();
 
   useEffect(() => {
@@ -52,6 +54,10 @@ const TasksScreen = () => {
     }
   }, [isFocused]);
 
+  const filteredWorkProducts = workProducts.filter(workProduct =>
+    (`${workProduct.work_id}-${workProduct.productInfo?.name}-${workProduct.order_number}`.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
+
   const handlePress = (workId: number, productId: number) => {
     navigation.navigate('WorkOrderScreen', {
       workId: workId,
@@ -67,8 +73,12 @@ const TasksScreen = () => {
 
   return (
     <View>
+       <SearchBar
+        searchQuery={searchQuery}
+        onSearchQueryChange={(newSearchQuery) => setSearchQuery(newSearchQuery)}
+      />
       <FlatList
-        data={workProducts}
+        data={filteredWorkProducts }
         keyExtractor={item => `${item.work_id}-${item.product_id}`}
         renderItem={({item}) => (
           <View style={taskstyles.card}>
