@@ -44,8 +44,6 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({ route, navigation }) => {
   }, [vendor_id]);
 
 
-
-
   useEffect(() => {
     const fetchWorkInfo = async () => {
       try {
