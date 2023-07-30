@@ -2,11 +2,11 @@
 
 import axios from 'axios';
 
-const BASE_URL = 'https://portal-test.yenaengineering.nl';
+const BASE_URL = process.env.REACT_APP_API_URL;
 
 export const login = async (phone: string, password: string): Promise<string> => {
     try {
-      const response = await axios.post(`${BASE_URL}/mobilapi/mobillogin`, { phone, password });
+      const response = await axios.post(`${BASE_URL}/mobillogin`, { phone, password });
       if (response.status === 200) {
         return response.data.token;
       } else {

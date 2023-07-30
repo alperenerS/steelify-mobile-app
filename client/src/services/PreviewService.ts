@@ -1,9 +1,9 @@
 import axios from 'axios';
 
-const BASE_URL = 'https://portal-test.yenaengineering.nl';
+const BASE_URL = process.env.REACT_APP_API_URL;
 
 export const uploadImage = async (imageUri: string, workId: string, quality_control_id: string, status: string, folderPath: string, technical_drawing_numbering: string, step_name: string) => {
-  const url = `${BASE_URL}/mobilapi/images`;
+  const url = `${BASE_URL}/images`;
 
   // Create a new FormData object
   let formData = new FormData();

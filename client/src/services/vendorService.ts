@@ -2,14 +2,14 @@ import axios from 'axios';
 import { getData, storeData } from '../utils/storage';
 import NetInfo from '@react-native-community/netinfo';
 
-const BASE_URL = 'https://portal-test.yenaengineering.nl';
+const BASE_URL = process.env.REACT_APP_API_URL;
 
 export const getVendorInfo = async (vendorId: number): Promise<any> => {
   const netInfo = await NetInfo.fetch();
   
   if (netInfo.isConnected && netInfo.isInternetReachable) {
     try {
-      const response = await axios.post(`${BASE_URL}/mobilapi/vendorinfo`, 
+      const response = await axios.post(`${BASE_URL}/vendorinfo`, 
         { vendor_id: vendorId }, // Vendor ID is sent in the body of the POST request
         );
         console.log("client\src\services\vendorService.ts response",response.data)
