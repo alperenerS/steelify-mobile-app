@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const BASE_URL = process.env.REACT_APP_API_URL;
 
-export const uploadImage = async (imageUri: string, workId: string, quality_control_id: string, status: string, folderPath: string, technical_drawing_numbering: string, step_name: string) => {
+export const uploadImage = async (imageUri: string, workId: string, quality_control_id: string, status: string, folderPath: string, technical_drawing_numbering: string, step_name: string, imageName: string) => {
   const url = `${BASE_URL}/images`;
 
   // Create a new FormData object
@@ -16,7 +16,7 @@ export const uploadImage = async (imageUri: string, workId: string, quality_cont
   let image = {
     uri: imageUri,
     type: 'image/jpeg',
-    name: `${step_name}_${technical_drawing_numbering}_${timestamp}.jpg`,
+    name: `${imageName}_${timestamp}.jpg`,
   };
   folderPath = folderPath.replace(/\s+/g, "_");
   formData.append('images', image);

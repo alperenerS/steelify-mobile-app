@@ -22,7 +22,7 @@ interface CameraScreenProps {
 
 const CameraScreen: React.FC<CameraScreenProps> = ({route, navigation}) => {
   const cameraRef = useRef<RNCamera | null>(null);
-  const {example_visual_url, workId, quality_control_id, productId, technical_drawing_numbering, step_name, order_number, product_name, vendor_id} =
+  const {example_visual_url, workId, quality_control_id, productId, technical_drawing_numbering, lower_tolerance, upper_tolerance, step_name, order_number, product_name, vendor_id} =
     route.params;
   const [modalVisible, setModalVisible] = useState(false);
   const [accessModalVisible, setAccessModalVisible] = useState(true);
@@ -41,10 +41,10 @@ const CameraScreen: React.FC<CameraScreenProps> = ({route, navigation}) => {
     if (cameraRef.current) {
       const options = {quality: 0.5, base64: true};
       const data = await cameraRef.current.takePictureAsync(options);
-      navigation.navigate('Önizleme', { pictureUri: data.uri, example_visual_url, workId, quality_control_id, productId, technical_drawing_numbering, step_name, order_number, product_name, vendor_id});
+      navigation.navigate('Önizleme', { pictureUri: data.uri, example_visual_url, workId, quality_control_id, productId, technical_drawing_numbering, lower_tolerance, upper_tolerance, step_name, order_number, product_name, vendor_id});
     }
   };
-
+  
   return (
     <View style={{flex: 1}}>
       <RNCamera

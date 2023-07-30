@@ -11,6 +11,7 @@ import { getWorkById } from '../services/workService';
 import { WorkInfo } from '../models/WorkInfo';
 //import MeasuredValueInput from '../components/MeasuredValueInput';
 import { getVendorInfo } from '../services/vendorService';
+import { Dimensions } from 'react-native';
 
 global.Buffer = global.Buffer || require('buffer').Buffer;
 
@@ -23,11 +24,11 @@ interface PreviewScreenProps {
 }
 
 const PreviewScreen: React.FC<PreviewScreenProps> = ({ route, navigation }) => {
-  const { pictureUri, example_visual_url, workId, quality_control_id, productId, technical_drawing_numbering, step_name, order_number, product_name, vendor_id } = route.params;
+  const { pictureUri, example_visual_url, workId, quality_control_id, productId, technical_drawing_numbering, lower_tolerance, upper_tolerance, step_name, order_number, product_name, vendor_id } = route.params;
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [workInfo, setWorkInfo] = useState<WorkInfo[] | null>(null);
   const [vendorInfo, setVendorInfo] = useState<any | null>(null);
-  
+  const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
   useEffect(() => {
     const fetchVendorInfo = async () => {
       try {
@@ -80,7 +81,8 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({ route, navigation }) => {
             }
             const { uri, workId, quality_control_id, status } = JSON.parse(cachedPhoto);
             const folderPath = `${projectNumberString}/${order_number}_${vendorInfo.name}/${product_name}/`;
-            const response = await uploadImage(uri, workId.toString(), quality_control_id.toString(), status, folderPath, technical_drawing_numbering, step_name);
+            const imageName= `${projectNumberString}_${product_name}_${step_name}_${technical_drawing_numbering}`;
+            const response = await uploadImage(pictureUri, workId.toString(), quality_control_id.toString(), 'pending', folderPath, technical_drawing_numbering, step_name, imageName);
             console.log('Image uploaded successfully: ', response);
             await AsyncStorage.removeItem('cachedPhoto'); // Remove the photo from cache after successful upload
           }
@@ -112,6 +114,7 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({ route, navigation }) => {
         
     }
     const folderPath = `${projectNumberString}/${order_number}_${vendorInfo.name}/${product_name}/`;
+    const imageName= `${projectNumberString}_${product_name}_${step_name}_${technical_drawing_numbering}`;
     if (!netInfo.isConnected || !netInfo.isInternetReachable) {
         try {
             await AsyncStorage.setItem('cachedPhoto', JSON.stringify({
@@ -127,7 +130,7 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({ route, navigation }) => {
         }
     } else {
         try {
-            const response = await uploadImage(pictureUri, workId.toString(), quality_control_id.toString(), 'pending', folderPath, technical_drawing_numbering, step_name);
+            const response = await uploadImage(pictureUri, workId.toString(), quality_control_id.toString(), 'pending', folderPath, technical_drawing_numbering, step_name, imageName);
             console.log('Image uploaded successfully: ', response);
         } catch (error) {
             console.error('Error uploading image: ', error);
@@ -140,16 +143,23 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({ route, navigation }) => {
 
 
   const navigateToCameraScreen = () => {
-    navigation.navigate('Kamera', {example_visual_url, workId, quality_control_id , productId, technical_drawing_numbering, step_name, order_number, product_name, vendor_id });
+    navigation.navigate('Kamera', {example_visual_url, workId, quality_control_id , productId, technical_drawing_numbering, lower_tolerance, upper_tolerance, step_name, order_number, product_name, vendor_id });
   };
-
+  
   return (
     <View style={previewstyles.container}>
       <Image
         source={{uri: pictureUri}}
-        resizeMode='contain' 
-        style={previewstyles.image}
+        style={{
+          width: SCREEN_WIDTH,
+          height: 'auto',
+          aspectRatio: 1 // Bu, orijinal resim oranını korumaya yardımcı olur
+        }}
       />
+      <View style={previewstyles.toleranceContainer}>
+        <Text style={previewstyles.toleranceText}>Lower Tolerance: {lower_tolerance}</Text>
+        <Text style={previewstyles.toleranceText}>Upper Tolerance: {upper_tolerance}</Text>
+      </View>
       <TouchableOpacity 
         style={previewstyles.button} 
         onPress={isButtonDisabled ? undefined : sendPicture}
