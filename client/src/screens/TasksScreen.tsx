@@ -8,7 +8,7 @@ import taskstyles from '../components/Task';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParamList} from '../navigation/StackNavigator';
 import {getProductInfo} from '../services/productService';
-import pdfIcon from '../assets/pdfIcon.png';
+import pdfIcon from '../assets/pdfIcon.png'
 import SearchBar from '../components/SearchBar';
 
 type navigationProp = StackNavigationProp<
@@ -84,6 +84,7 @@ const TasksScreen = () => {
           <View style={taskstyles.card}>
             <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <TouchableOpacity
+                style={{ flex: 0.8 }}
                 onPress={() => handlePress(item.work_id, item.product_id)}>
                 <Text style={taskstyles.text}>
                   Product Name: {item.productInfo?.name}
@@ -94,15 +95,16 @@ const TasksScreen = () => {
                 </Text>
               </TouchableOpacity>
               {item.productInfo?.technicaldrawingurl && (
-                <TouchableOpacity
-                style={{justifyContent: 'center'}}
-                  onPress={() =>
-                    item.productInfo?.technicaldrawingurl
-                      ? handlePDFPress(item.productInfo?.technicaldrawingurl)
-                      : null
-                  }>
-                  <Image source={pdfIcon} style={{width: 40, height: 40}} />
-                </TouchableOpacity>
+              <TouchableOpacity
+                style={{ flex: 0.2, flexDirection: 'row', justifyContent: 'center' }}
+                onPress={() =>
+                  item.productInfo?.technicaldrawingurl
+                    ? handlePDFPress(item.productInfo?.technicaldrawingurl)
+                    : null
+                }
+              >
+                <Image source={pdfIcon} style={{ width: 40, height: 40 }} />
+              </TouchableOpacity>
               )}
             </View>
           </View>

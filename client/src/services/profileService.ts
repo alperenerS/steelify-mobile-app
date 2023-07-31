@@ -2,14 +2,14 @@ import axios from 'axios';
 import { getData, storeData } from '../utils/storage';
 import NetInfo from '@react-native-community/netinfo';
 
-const BASE_URL = 'https://portal-test.yenaengineering.nl';
+const BASE_URL = process.env.REACT_APP_API_URL;
 
 export const getUserInfo = async (token: string): Promise<any> => {
   const netInfo = await NetInfo.fetch();
   
   if (netInfo.isConnected && netInfo.isInternetReachable) {
     try {
-      const response = await axios.get(`${BASE_URL}/mobilapi/userinfo`, {
+      const response = await axios.get(`${BASE_URL}/userinfo`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
