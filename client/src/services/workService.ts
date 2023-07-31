@@ -9,7 +9,7 @@ import { getData, storeData } from '../utils/storage';
 import NetInfo from '@react-native-community/netinfo';
 
 
-const BASE_URL = 'https://portal-test.yenaengineering.nl';
+const BASE_URL = process.env.REACT_APP_API_URL;
 
 export const getWorks = async (token: string): Promise<{ works: Work[], workSteps: WorkSteps[], workProducts: WorkProducts[] }> => {
   const netInfo = await NetInfo.fetch();
@@ -20,7 +20,7 @@ export const getWorks = async (token: string): Promise<{ works: Work[], workStep
 
   if (netInfo.isConnected && netInfo.isInternetReachable) {
     try {
-      const response = await axios.get(`${BASE_URL}/mobilapi/worksbyid`, {
+      const response = await axios.get(`${BASE_URL}/worksbyid`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -33,14 +33,14 @@ export const getWorks = async (token: string): Promise<{ works: Work[], workStep
         const ids = works.map((work: Work) => work.id);
 
         // Make request to worksteps with work_ids
-        const workStepsResponse = await axios.post(`${BASE_URL}/mobilapi/worksteps`, { ids });
+        const workStepsResponse = await axios.post(`${BASE_URL}/worksteps`, { ids });
 
         if (workStepsResponse.status === 200) {
           const workSteps = workStepsResponse.data;
           const workIds = workSteps.map((workStep: { work_id: number }) => workStep.work_id);
 
           // Make request to workproducts with work_ids
-          const workProductsResponse = await axios.post(`${BASE_URL}/mobilapi/workproducts`, { ids: workIds });
+          const workProductsResponse = await axios.post(`${BASE_URL}/workproducts`, { ids: workIds });
 
           if (workProductsResponse.status === 200) {
             const workProducts = workProductsResponse.data;
@@ -95,7 +95,7 @@ export const getWorkById = async (workId: number): Promise<{ workInfo: WorkInfo[
 
   if (netInfo.isConnected && netInfo.isInternetReachable) {
     try {
-      const response = await axios.get(`${BASE_URL}/mobilapi/work/${workId}`);
+      const response = await axios.get(`${BASE_URL}/work/${workId}`);
       const workInfo: WorkInfo[] = response.data;
       // Save work to cache
       await storeData(workInfoKey, JSON.stringify(workInfo));
@@ -122,7 +122,7 @@ export const getForm = async (productId: number, vendorId: number): Promise<{ fo
 
   if (netInfo.isConnected && netInfo.isInternetReachable) {
     try {
-      const response = await axios.post(`${BASE_URL}/mobilapi/formids`, {
+      const response = await axios.post(`${BASE_URL}/formids`, {
         product_id: productId,
         vendor_id: vendorId
       });
@@ -156,7 +156,7 @@ export const postQualityControl = async (formId: number, workId: number): Promis
 
   if (netInfo.isConnected && netInfo.isInternetReachable) {
     try {
-      const response = await axios.post(`${BASE_URL}/mobilapi/qualitycontrol`, {
+      const response = await axios.post(`${BASE_URL}/qualitycontrol`, {
         form_id: formId,
         work_id: workId
       });

@@ -1,8 +1,10 @@
 import { StyleSheet } from 'react-native';
 
 const previewstyles = StyleSheet.create({
-    container: {
+      container: {
         flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
       },
       image: {
         flex: 1,
@@ -55,7 +57,22 @@ const previewstyles = StyleSheet.create({
         color: 'black', 
         fontWeight: 'bold',
         fontSize: 10
-      }
+      },
+      toleranceContainer: {
+        position: 'absolute', 
+        top: 0, 
+        left: 0, 
+        zIndex: 1,
+        flexDirection: 'row', // içerikleri yan yana sıralar
+        justifyContent: 'center', // içerikleri yatay eksende merkeze hizalar
+        alignItems: 'center', // içerikleri dikey eksende merkeze hizalar
+      },
+      toleranceText: {
+        fontSize: 16,
+        color: 'gray', 
+        marginHorizontal: 10, // Metinler arasında boşluk sağlar
+        // ...diğer metin stilleri...
+      },
   });
   
 

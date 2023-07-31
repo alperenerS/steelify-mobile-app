@@ -134,6 +134,8 @@ const WorkOrderScreen = ({route}: {route: WorkOrderScreenRouteProp}) => {
                                 quality_control_id: item.id, 
                                 productId: productId,
                                 technical_drawing_numbering: item.technical_drawing_numbering,
+                                lower_tolerance: item.lower_tolerance,
+                                upper_tolerance: item.upper_tolerance,
                                 step_name: item.step_name,
                                 order_number: work[0].order_number,
                                 product_name: productInfo ? productInfo.name : null,
