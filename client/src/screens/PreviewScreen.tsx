@@ -129,13 +129,19 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({ route, navigation }) => {
             console.error('Error caching image: ', error);
         }
     } else {
-        try {
-            const response = await uploadImage(pictureUri, workId.toString(), quality_control_id.toString(), 'pending', folderPath, technical_drawing_numbering, step_name, imageName);
+      try {
+        // Remove 'await' here
+        uploadImage(pictureUri, workId.toString(), quality_control_id.toString(), 'pending', folderPath, technical_drawing_numbering, step_name, imageName)
+          .then(response => {
             console.log('Image uploaded successfully: ', response);
-        } catch (error) {
+          })
+          .catch(error => {
             console.error('Error uploading image: ', error);
-        }
+          });
+    } catch (error) {
+        console.error('Error uploading image: ', error);
     }
+}
     navigation.navigate('WorkOrderScreen', {workId, productId});
 
     setTimeout(() => setIsButtonDisabled(false), 2000);
