@@ -1,5 +1,5 @@
 import React, {useRef, useState} from 'react';
-import {View, Image, TouchableOpacity, Text} from 'react-native'; // Added Text import
+import {View, Image, TouchableOpacity, Text} from 'react-native';
 import {RNCamera} from 'react-native-camera';
 import {RouteProp} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
@@ -8,6 +8,7 @@ import camerastyles from '../components/Camera';
 import captureIcon from '../assets/camera_capture.png';
 import ImageViewerModal from '../components/ImageViewerModal';
 import CameraAccessModal from '../components/CameraAccessModal';
+import ReportViewerModal from '../components/ReportViewerModal'; // New Import
 
 type CameraScreenRouteProp = RouteProp<RootStackParamList, 'Kamera'>;
 type CameraScreenNavigationProp = StackNavigationProp<
@@ -26,12 +27,20 @@ const CameraScreen: React.FC<CameraScreenProps> = ({route, navigation}) => {
     route.params;
   const [modalVisible, setModalVisible] = useState(false);
   const [accessModalVisible, setAccessModalVisible] = useState(true);
+  const [reportModalVisible, setReportModalVisible] = useState(false); // New State
 
   React.useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <View style={{ paddingRight: 10 }}>
-          <Text  style={{ color: 'black'}}>Teknik Çizim No: {String(technical_drawing_numbering)}</Text>
+        <View style={{flexDirection: 'row'}}>
+          {/* <TouchableOpacity   style={camerastyles.reportButton}
+ onPress={() => setReportModalVisible(true)}>
+            <Image
+              source={require('../assets/report_icon.png')}
+              style={camerastyles.reportIcon}
+            />
+          </TouchableOpacity> */}
+          <Text style={{ color: 'black', paddingRight: 10 }}>Teknik Çizim No: {String(technical_drawing_numbering)}</Text>
         </View>
       ),
     });
@@ -68,13 +77,18 @@ const CameraScreen: React.FC<CameraScreenProps> = ({route, navigation}) => {
       <ImageViewerModal
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
-        imageUri ={example_visual_url}
+        imageUri={example_visual_url}
       />
 
-      <CameraAccessModal // New Modal
+      <CameraAccessModal
         visible={accessModalVisible}
         onConfirm={() => setAccessModalVisible(false)}
       />
+
+      {/* <ReportViewerModal // New Modal
+        visible={reportModalVisible}
+        onClose={() => setReportModalVisible(false)}
+      /> */}
 
       <View style={camerastyles.bottomBar}>
         <TouchableOpacity
