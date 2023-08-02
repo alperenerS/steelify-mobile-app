@@ -42,6 +42,7 @@ const WorkOrderScreen = ({route}: {route: WorkOrderScreenRouteProp}) => {
   const [qualityControlData, setQualityControlData] =
     useState<QualityControl[]>();
   const [productInfo, setProductInfo] = useState<ProductInfo | null>(null);
+  const [existingPictures, setExistingPictures] = useState<string[]>([]);
 
   const navigation = useNavigation<navigationProp>();
   const isFocused = useIsFocused();
@@ -143,7 +144,7 @@ const WorkOrderScreen = ({route}: {route: WorkOrderScreenRouteProp}) => {
                       navigation.navigate('PdfViewerScreen', {
                         pdfUrl: productInfo.technicaldrawingurl,
                         workId: workId,
-                        productId: productId, // Diğer gerekli bilgiler burada
+                        productId: productId,
                       });
                     }
                   }}
@@ -193,6 +194,7 @@ const WorkOrderScreen = ({route}: {route: WorkOrderScreenRouteProp}) => {
                           <TouchableOpacity
                             onPress={() =>
                               navigation.navigate('Kamera', {
+                                existingPictures,
                                 example_visual_url:
                                   item.example_visual_url || null,
                                 workId: item.work_id,

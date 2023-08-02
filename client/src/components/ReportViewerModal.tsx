@@ -10,11 +10,13 @@ import {
 interface ReportViewerModalProps {
   visible: boolean;
   onClose: () => void;
+  onOptionSelect: (option: string) => void;
 }
 
 const ReportViewerModal: React.FC<ReportViewerModalProps> = ({
   visible,
   onClose,
+  onOptionSelect, 
 }) => {
   return (
     <Modal
@@ -27,11 +29,12 @@ const ReportViewerModal: React.FC<ReportViewerModalProps> = ({
         onPress={onClose}
         activeOpacity={1}>
         <View style={styles.modalContentTouchable}>
-          <Text style={styles.modalText}>Lütfen bir hata türü seçin:</Text>
+          <Text style={styles.modalText}>Sağ üstte yazılı olan teknik çizim numarasındaki hatayı aşağıdan seçiniz</Text>
           <TouchableOpacity
             style={styles.optionButton}
             onPress={() => {
               // Perform Major Error action
+              onOptionSelect("Major Hata"); // Add this line
             }}>
             <Text style={styles.optionText}>Major Hata</Text>
             <Text style={styles.optionDescription}>Önemli bir hatayı rapor et</Text>
@@ -41,6 +44,7 @@ const ReportViewerModal: React.FC<ReportViewerModalProps> = ({
             style={styles.optionButton}
             onPress={() => {
               // Perform Unmeasurable action
+              onOptionSelect("Bu Ölçü Ölçülemiyor"); // Add this line
             }}>
             <Text style={styles.optionText}>Bu Ölçü Ölçülemiyor</Text>
             <Text style={styles.optionDescription}>Ölçümün yapılmasının mümkün olmadığını rapor et</Text>
@@ -50,6 +54,7 @@ const ReportViewerModal: React.FC<ReportViewerModalProps> = ({
             style={styles.optionButton}
             onPress={() => {
               // Perform Unnecessary action
+              onOptionSelect("Gereksiz Ölçü"); // Add this line
             }}>
             <Text style={styles.optionText}>Gereksiz Ölçü</Text>
             <Text style={styles.optionDescription}>Bu ölçümün gereksiz olduğunu rapor et</Text>

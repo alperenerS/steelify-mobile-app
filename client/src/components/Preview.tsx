@@ -5,6 +5,7 @@ const previewstyles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor: 'black',
       },
       image: {
         flex: 1,
@@ -13,7 +14,7 @@ const previewstyles = StyleSheet.create({
       },
       button: {
         position: 'absolute', 
-        bottom: '5%', 
+        bottom: '3%', 
         right: '15%',
         backgroundColor: '#008CBA',
         borderRadius: 12,
@@ -25,13 +26,13 @@ const previewstyles = StyleSheet.create({
         alignItems: 'center', 
       },
       buttonText: {
-        color: 'black',
+        color: 'white',
         fontWeight: 'bold',
         textAlign: 'center',
       },
       centerButton: {
         position: 'absolute',
-        bottom: '5%',
+        bottom: '3%',
         left: '15%',
         backgroundColor: '#008CBA',
         borderRadius: 12,
@@ -64,15 +65,40 @@ const previewstyles = StyleSheet.create({
         left: 0, 
         zIndex: 1,
         flexDirection: 'row', // içerikleri yan yana sıralar
-        justifyContent: 'center', // içerikleri yatay eksende merkeze hizalar
         alignItems: 'center', // içerikleri dikey eksende merkeze hizalar
       },
       toleranceText: {
         fontSize: 16,
-        color: 'gray', 
+        color: 'white', 
         marginHorizontal: 10, // Metinler arasında boşluk sağlar
         // ...diğer metin stilleri...
       },
+      smallThumbnail: {
+        width: 75,
+        height: 75,
+        margin: 5,
+      },
+      thumbnailsContainer: {
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        // Diğer stil özelliklerini burada belirleyebilirsiniz.
+      },
+      selectedThumbnail: {
+        borderWidth: 2,
+        borderColor: 'red', // veya seçiminizi vurgulamak için başka bir renk
+      },
+      deleteButton: {
+        position: 'absolute', 
+        right: 0, 
+        top: 0, 
+        backgroundColor: 'red', 
+        padding: 5
+      },
+      deleteButtonText: {
+        color: 'white', 
+        fontWeight: 'bold'
+      }
   });
   
 
