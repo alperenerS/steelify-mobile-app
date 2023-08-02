@@ -1,4 +1,4 @@
-const workProductsController = require('../controllers/workProducts');
+const workProductsController = require("../controllers/workProducts");
 
 const routes = [
   {
