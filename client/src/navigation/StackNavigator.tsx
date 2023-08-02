@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import React, {useEffect, useState} from 'react';
+import {createStackNavigator} from '@react-navigation/stack';
 
 import TabNavigator from './TabNavigator';
 import LoginScreen from '../screens/LoginScreen';
 import WorkOrderScreen from '../screens/WorkOrderScreen';
-import PdfViewerScreen from '../screens/PdfViewerScreen'; 
-import CameraScreen from '../screens/CameraScreen'; 
-import PreviewScreen from '../screens/PreviewScreen'; 
-import { getData } from '../utils/storage';
+import PdfViewerScreen from '../screens/PdfViewerScreen';
+import CameraScreen from '../screens/CameraScreen';
+import PreviewScreen from '../screens/PreviewScreen';
+import {getData} from '../utils/storage';
 
 export type RootStackParamList = {
   Login: undefined;
@@ -43,15 +43,23 @@ const StackNavigator = () => {
   }
 
   return (
-    <Stack.Navigator initialRouteName={userToken ? "Main" : "Login"}>
-      <Stack.Screen name="Login" component={LoginScreen} options={{headerShown: false}}/>
-      <Stack.Screen name="Main" component={TabNavigator} options={{headerShown: false}}/>
-      <Stack.Screen name="WorkOrderScreen" component={WorkOrderScreen}/>
-      <Stack.Screen name="PdfViewerScreen" component={PdfViewerScreen}/>
-      <Stack.Screen name="Kamera" component={CameraScreen}/>
-      <Stack.Screen name="Önizleme" component={PreviewScreen}/> 
+    <Stack.Navigator initialRouteName={userToken ? 'Main' : 'Login'}>
+      <Stack.Screen
+        name="Login"
+        component={LoginScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Main"
+        component={TabNavigator}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen name="WorkOrderScreen" component={WorkOrderScreen} />
+      <Stack.Screen name="PdfViewerScreen" component={PdfViewerScreen} />
+      <Stack.Screen name="Kamera" component={CameraScreen} />
+      <Stack.Screen name="Önizleme" component={PreviewScreen} />
     </Stack.Navigator>
   );
-}
+};
 
 export default StackNavigator;
