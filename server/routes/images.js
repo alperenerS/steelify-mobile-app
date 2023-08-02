@@ -19,7 +19,9 @@ const routes = (fastify, options, done) => {
           }
         });
         // Add the images to the request object
+        const issue_text = request.body.issue_text; // Add this line
         request.body.images = images;  
+        request.body.issue_text = issue_text; // And this line
         const result = await imagesControllers.createImages(request);
         reply.code(201).send(result);
       } catch (err) {
