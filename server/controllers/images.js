@@ -23,9 +23,17 @@ exports.createImages = async (request) => {
     const issues = request.body.images[0].issues;
     console.log(issues);
     if (issues) {
-      await updateQualityIssue(true, issues);
+      await updateQualityIssue(
+        true,
+        issues,
+        request.body.images[0].quality_control_id
+      );
     } else {
-      await updateQualityIssue(false, null);
+      await updateQualityIssue(
+        false,
+        null,
+        request.body.images[0].quality_control_id
+      );
     }
 
     const result = await Images.insert(await Promise.all(images));

@@ -8,10 +8,10 @@ const QualityControl = {
     );
   },
 
-  updateQualityIssue: async (issue, issue_text) => {
-    return await db.any(
-      "INSERT INTO quality_control(issue,issue_text) VALUES ($1,$2) RETURNING *",
-      [issue, issue_text]
+  updateQualityIssue: async (issue, issue_text, id) => {
+    return await db.oneOrNone(
+      "UPDATE quality_control SET issue = $1, issue_text = $2 WHERE id = $3 RETURNING *",
+      [issue, issue_text, id]
     );
   },
 };
