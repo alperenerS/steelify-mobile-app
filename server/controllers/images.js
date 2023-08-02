@@ -18,19 +18,23 @@ exports.createImages = async (request) => {
         work_id: image.work_id,
         folderPath: image.folderPath,
         issues: image.issues,
+        issue_description: image.issue_description,
       };
     });
     const issues = request.body.images[0].issues;
+    const issueDesc = request.body.images[0].issue_description;
     console.log(issues);
     if (issues) {
       await updateQualityIssue(
         true,
         issues,
+        issueDesc,
         request.body.images[0].quality_control_id
       );
     } else {
       await updateQualityIssue(
         false,
+        null,
         null,
         request.body.images[0].quality_control_id
       );

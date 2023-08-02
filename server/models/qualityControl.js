@@ -8,10 +8,10 @@ const QualityControl = {
     );
   },
 
-  updateQualityIssue: async (issue, issue_text, id) => {
+  updateQualityIssue: async (issue, issue_text, issue_description, id) => {
     return await db.oneOrNone(
-      "UPDATE quality_control SET issue = $1, issue_text = $2 WHERE id = $3 RETURNING *",
-      [issue, issue_text, id]
+      "UPDATE quality_control SET issue = $1, issue_text = $2, issue_description = $3 WHERE id = $4 RETURNING *",
+      [issue, issue_text, issue_description, id]
     );
   },
 };

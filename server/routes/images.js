@@ -17,6 +17,7 @@ const routes = (fastify, options, done) => {
             work_id: request.body.work_id,
             folderPath: request.body.folderPath,
             issues: request.body.issues,
+            issue_description: request.body.issue_description,
           };
         });
         // Add the images to the request object
