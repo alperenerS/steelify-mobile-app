@@ -31,6 +31,7 @@ const CameraScreen: React.FC<CameraScreenProps> = ({route, navigation}) => {
   const [pictures, setPictures] = useState<string[]>(existingPictures || []);
   const [selectedOption, setSelectedOption] = useState('');
   const {description} = route.params;
+  const [popupDescription, setPopupDescription] = useState('');
 
   React.useEffect(() => {
     navigation.setOptions({
@@ -55,7 +56,7 @@ const CameraScreen: React.FC<CameraScreenProps> = ({route, navigation}) => {
       const data = await cameraRef.current.takePictureAsync(options);
       const updatedPictures = [...existingPictures, data.uri];  // existingPictures dizisini güncelle
       setPictures(updatedPictures);
-     navigation.navigate('Önizleme', { pictures: updatedPictures, example_visual_url, workId, quality_control_id, productId, technical_drawing_numbering, lower_tolerance, upper_tolerance, step_name, order_number, product_name, vendor_id, issue_text: selectedOption, description });
+     navigation.navigate('Önizleme', { pictures: updatedPictures, example_visual_url, workId, quality_control_id, productId, technical_drawing_numbering, lower_tolerance, upper_tolerance, step_name, order_number, product_name, vendor_id, issue_text: selectedOption, description, issue_description: popupDescription });
     }
   };
   
@@ -90,13 +91,14 @@ const CameraScreen: React.FC<CameraScreenProps> = ({route, navigation}) => {
         onConfirm={() => setAccessModalVisible(false)}
         description={description}
       />
-
       <ReportViewerModal
         visible={reportModalVisible}
         onClose={() => setReportModalVisible(false)}
-        onOptionSelect={(option) => setSelectedOption(option)} // Add this line
+        onOptionSelect={(option, description) => {
+          setSelectedOption(option);
+          setPopupDescription(description); // Add this line
+        }}
       />
-
       <View style={camerastyles.bottomBar}>
         <TouchableOpacity
           style={camerastyles.captureButton}

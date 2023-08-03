@@ -18,7 +18,7 @@ export type RootStackParamList = {
     workId: number;
     productId: number; 
   };  Kamera: { existingPictures: string[], example_visual_url: string | null, workId: number, quality_control_id: number , productId: number, technical_drawing_numbering: string, lower_tolerance: string, upper_tolerance: string, step_name: string, order_number: number, product_name: string | null, vendor_id: number, description: string,};
-  Önizleme: { pictures: string[], example_visual_url: string | null, workId: number, quality_control_id: number, productId: number, technical_drawing_numbering: string, lower_tolerance: string, upper_tolerance: string, step_name: string, order_number: number, product_name: string | null, vendor_id: number, issue_text: string | null , description: string, };
+  Önizleme: { pictures: string[], example_visual_url: string | null, workId: number, quality_control_id: number, productId: number, technical_drawing_numbering: string, lower_tolerance: string, upper_tolerance: string, step_name: string, order_number: number, product_name: string | null, vendor_id: number, issue_text: string | null , description: string, issue_description: string| null };
 };
 
 const Stack = createStackNavigator<RootStackParamList>();

@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const BASE_URL = process.env.REACT_APP_API_URL;
 
-export const uploadImage = async (imageUri: string, workId: string, quality_control_id: string, status: string, folderPath: string, technical_drawing_numbering: string, step_name: string, imageName: string, issue_text: string | null) => {
+export const uploadImage = async (imageUri: string, workId: string, quality_control_id: string, status: string, folderPath: string, technical_drawing_numbering: string, step_name: string, imageName: string, issue_text: string | null, issue_description: string | null) => {
   const url = `${BASE_URL}/images`;
 
   // Create a new FormData object
@@ -25,6 +25,7 @@ export const uploadImage = async (imageUri: string, workId: string, quality_cont
   formData.append('status', status);
   formData.append('folderPath', folderPath);
   formData.append('issues', issue_text);
+  formData.append('issue_description', issue_description);
   // Send the request
   const config = {
     headers: {

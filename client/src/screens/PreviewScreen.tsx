@@ -24,7 +24,7 @@ interface PreviewScreenProps {
 }
 
 const PreviewScreen: React.FC<PreviewScreenProps> = ({ route, navigation }) => {
-  const { pictures, example_visual_url, workId, quality_control_id, productId, technical_drawing_numbering, lower_tolerance, upper_tolerance, step_name, order_number, product_name, vendor_id, issue_text } = route.params;
+  const { pictures, example_visual_url, workId, quality_control_id, productId, technical_drawing_numbering, lower_tolerance, upper_tolerance, step_name, order_number, product_name, vendor_id, issue_text, description, issue_description } = route.params;
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [workInfo, setWorkInfo] = useState<WorkInfo[] | null>(null);
   const [vendorInfo, setVendorInfo] = useState<any | null>(null);
@@ -108,7 +108,7 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({ route, navigation }) => {
     
             for (const pictureUri of uri) {
               const imageName= `${projectNumberString}_${product_name}_${step_name}_${technical_drawing_numbering}`;
-              const response = await uploadImage(pictureUri, workId.toString(), quality_control_id.toString(), 'pending', folderPath, technical_drawing_numbering, step_name, imageName, issue_text);
+              const response = await uploadImage(pictureUri, workId.toString(), quality_control_id.toString(), 'pending', folderPath, technical_drawing_numbering, step_name, imageName, issue_text, issue_description);
               console.log('Image uploaded successfully: ', response);
             }
     
@@ -159,7 +159,7 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({ route, navigation }) => {
         }
       } else {
         try {
-          uploadImage(pictureUri, workId.toString(), quality_control_id.toString(), 'pending', folderPath, technical_drawing_numbering, step_name, imageName, issue_text)
+          uploadImage(pictureUri, workId.toString(), quality_control_id.toString(), 'pending', folderPath, technical_drawing_numbering, step_name, imageName, issue_text, issue_description)
             .then(response => {
               console.log('Image uploaded successfully: ', response);
             })
@@ -178,7 +178,7 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({ route, navigation }) => {
   };
   
   const addPhoto = () => {
-    navigation.navigate('Kamera', {existingPictures, example_visual_url, workId, quality_control_id , productId, technical_drawing_numbering, lower_tolerance, upper_tolerance, step_name, order_number, product_name, vendor_id });
+    navigation.navigate('Kamera', {existingPictures, example_visual_url, workId, quality_control_id , productId, technical_drawing_numbering, lower_tolerance, upper_tolerance, step_name, order_number, product_name, vendor_id, description });
   };
   
   const handleSelect = (index: number) => {
