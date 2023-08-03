@@ -65,9 +65,9 @@ const TasksScreen = () => {
     });
   };
 
-  const handlePDFPress = (pdfUrl: string | null | undefined) => {
+  const handlePDFPress = (pdfUrl: string | null | undefined, workId: number , productId: number) => {
     if (pdfUrl) {
-      navigation.navigate('PdfViewerScreen', {pdfUrl: pdfUrl});
+      navigation.navigate('PdfViewerScreen', {pdfUrl: pdfUrl, workId, productId});
     }
   };
 
@@ -99,7 +99,7 @@ const TasksScreen = () => {
                 style={{ flex: 0.2, flexDirection: 'row', justifyContent: 'center' }}
                 onPress={() =>
                   item.productInfo?.technicaldrawingurl
-                    ? handlePDFPress(item.productInfo?.technicaldrawingurl)
+                    ? handlePDFPress(item.productInfo?.technicaldrawingurl,item.work_id,item.product_id)
                     : null
                 }
               >

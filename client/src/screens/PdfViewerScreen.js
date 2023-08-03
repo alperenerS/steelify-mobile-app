@@ -1,24 +1,45 @@
 import React from 'react';
-import { View } from 'react-native';
+import { View, TouchableOpacity, Text } from 'react-native';
 import Pdf from 'react-native-pdf';
+import { useNavigation } from '@react-navigation/native';
 
-const PdfViewerScreen = ({route}) => {
-    const { pdfUrl } = route.params; // PDF URL'nin dinamik olarak alındığı yer
+const PdfViewerScreen = ({ route }) => {
+  const { pdfUrl, workId, productId } = route.params;
+  const navigation = useNavigation();
 
-    const source = {uri: pdfUrl, cache: true};
+  const source = { uri: pdfUrl, cache: true };
 
-    return (
-        <View style={{flex: 1}}>
-            <Pdf
-                trustAllCerts={false} // Sertifika ayarı canlıya çıkarken silincek.
-                source={source}
-                onError={(error)=>{
-                    console.log(error);
-                }}
-                style={{flex: 1}}
-            />
-        </View>
-    );
+  return (
+    <View style={{ flex: 1 }}>
+      <Pdf
+        trustAllCerts={false}
+        source={source}
+        onError={(error) => {
+          console.log(error);
+        }}
+        style={{ flex: 1 }}
+      />
+      <View
+        style={{
+          position: 'absolute',
+          left: 10,
+          bottom: 30,
+          backgroundColor: 'turquoise',
+          padding: 15,
+          borderRadius: 10,
+        }}>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate('WorkOrderScreen', {
+              workId: workId,
+              productId: productId,
+            })
+          }>
+          <Text style={{ color: 'white', fontSize: 16 }}>İşe Git</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
 };
 
 export default PdfViewerScreen;
