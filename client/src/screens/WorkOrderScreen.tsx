@@ -194,6 +194,7 @@ const WorkOrderScreen = ({route}: {route: WorkOrderScreenRouteProp}) => {
                           <TouchableOpacity
                             onPress={() =>
                               navigation.navigate('Kamera', {
+                                description: item.description,
                                 existingPictures,
                                 example_visual_url:
                                   item.example_visual_url || null,

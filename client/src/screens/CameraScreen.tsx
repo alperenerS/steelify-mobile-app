@@ -30,6 +30,7 @@ const CameraScreen: React.FC<CameraScreenProps> = ({route, navigation}) => {
   const [reportModalVisible, setReportModalVisible] = useState(false); // New State
   const [pictures, setPictures] = useState<string[]>(existingPictures || []);
   const [selectedOption, setSelectedOption] = useState('');
+  const {description} = route.params;
 
   React.useEffect(() => {
     navigation.setOptions({
@@ -54,7 +55,7 @@ const CameraScreen: React.FC<CameraScreenProps> = ({route, navigation}) => {
       const data = await cameraRef.current.takePictureAsync(options);
       const updatedPictures = [...existingPictures, data.uri];  // existingPictures dizisini güncelle
       setPictures(updatedPictures);
-     navigation.navigate('Önizleme', { pictures: updatedPictures, example_visual_url, workId, quality_control_id, productId, technical_drawing_numbering, lower_tolerance, upper_tolerance, step_name, order_number, product_name, vendor_id, issue_text: selectedOption });
+     navigation.navigate('Önizleme', { pictures: updatedPictures, example_visual_url, workId, quality_control_id, productId, technical_drawing_numbering, lower_tolerance, upper_tolerance, step_name, order_number, product_name, vendor_id, issue_text: selectedOption, description });
     }
   };
   
@@ -87,6 +88,7 @@ const CameraScreen: React.FC<CameraScreenProps> = ({route, navigation}) => {
       <CameraAccessModal
         visible={accessModalVisible}
         onConfirm={() => setAccessModalVisible(false)}
+        description={description}
       />
 
       <ReportViewerModal

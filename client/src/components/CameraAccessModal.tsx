@@ -5,9 +5,12 @@ import { View, Text, Modal, TouchableOpacity, StyleSheet } from 'react-native';
 interface CameraAccessModalProps {
   visible: boolean;
   onConfirm: () => void;
+  description?: string;
 }
 
-const CameraAccessModal: React.FC<CameraAccessModalProps> = ({visible, onConfirm}) => {
+const CameraAccessModal: React.FC<CameraAccessModalProps> = ({visible, onConfirm, description}) => {
+  if (!description) return null;
+
   return (
     <Modal
       animationType="slide"
@@ -16,7 +19,9 @@ const CameraAccessModal: React.FC<CameraAccessModalProps> = ({visible, onConfirm
       onRequestClose={onConfirm}>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalText}>Kamera erişimine izin vermek üzeresiniz. Devam etmek için 'Tamam'ı tıklayın.</Text>
+            <Text style={styles.modalText}>
+              {description} 
+            </Text> 
             <TouchableOpacity style={styles.confirmButton} onPress={onConfirm}>
               <Text style={styles.confirmButtonText}>Tamam</Text>
             </TouchableOpacity>
@@ -25,6 +30,8 @@ const CameraAccessModal: React.FC<CameraAccessModalProps> = ({visible, onConfirm
     </Modal>
   );
 };
+
+
 
 const styles = StyleSheet.create({
   modalContainer: {
@@ -41,6 +48,7 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 20,
     textAlign: 'center',
+    color: 'black',
   },
   confirmButton: {
     backgroundColor: '#007BFF',
