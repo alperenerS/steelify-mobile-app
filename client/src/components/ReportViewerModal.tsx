@@ -45,25 +45,22 @@ const ReportViewerModal: React.FC<ReportViewerModalProps> = ({
         style={styles.modalContainer}
         onPress={onClose}
         activeOpacity={1}>
-          
         <View style={styles.modalContentTouchable}>
-        {!selectedOption && (
+          {!selectedOption && (
             <>
-          <Text style={styles.modalText}>Sağ üstte yazılı olan teknik çizim numarasındaki hatayı aşağıdan seçiniz</Text>
+              <Text style={styles.modalText}>Sağ üstte yazılı olan teknik çizim numarasındaki hatayı aşağıdan seçiniz</Text>
               <TouchableOpacity
                 style={styles.optionButton}
                 onPress={() => handleOptionSelect("Major Hata")}>
                 <Text style={styles.optionText}>Major Hata</Text>
                 <Text style={styles.optionDescription}>Önemli bir hatayı rapor et</Text>
               </TouchableOpacity>
-
               <TouchableOpacity
                 style={styles.optionButton}
                 onPress={() => handleOptionSelect("Bu Ölçü Ölçülemiyor")}>
                 <Text style={styles.optionText}>Bu Ölçü Ölçülemiyor</Text>
                 <Text style={styles.optionDescription}>Ölçümün yapılmasının mümkün olmadığını rapor et</Text>
               </TouchableOpacity>
-
               <TouchableOpacity
                 style={styles.optionButton}
                 onPress={() => handleOptionSelect("Gereksiz Ölçü")}>
@@ -72,17 +69,16 @@ const ReportViewerModal: React.FC<ReportViewerModalProps> = ({
               </TouchableOpacity>
             </>
           )}
-
           {selectedOption && (
             <View>
               <Text style={styles.selectedOption}>{selectedOption}</Text>
-              <Text style={styles.inputLabel}>Açıklama:</Text>
               <TextInput
                 style={styles.input}
                 onChangeText={setDescription}
                 value={description}
-                placeholder="Açıklama girin..."
+                placeholder="Hata ile ilgili açıklamanızı girin."
                 multiline
+                maxLength={150}
               />
               <TouchableOpacity
                 style={styles.confirmButton}
@@ -118,6 +114,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   optionButton: {
+    alignSelf: 'center', // Bu satır düğmeyi ortalar
     width: '100%',
     padding: 10,
     marginVertical: 10,
@@ -129,16 +126,18 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: 'black',
+
   },
   optionDescription: {
     fontSize: 14,
     color: 'gray',
   },
   input: {
-    height: 40,
+    textAlignVertical: 'top', // Bu satır metni kutunun üstüne hizalar
+    height: 100,
+    maxWidth: 250,
     borderColor: 'gray',
     borderWidth: 1,
-    marginTop: 10,
     marginBottom: 20,
     width: '100%',
   },
@@ -147,9 +146,11 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   confirmButton: {
+    alignSelf: 'center', // Bu satır düğmeyi ortalar
     backgroundColor: 'blue',
     padding: 10,
     borderRadius: 5,
+    width: '50%', // Bu satır düğmenin genişliğini yarıya indirir
   },
   confirmButtonText: {
     color: 'white',
@@ -159,6 +160,8 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 10,
+    textAlign: 'center',
+
   },
 });
 
