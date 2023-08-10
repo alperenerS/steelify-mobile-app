@@ -9,6 +9,7 @@ import captureIcon from '../assets/camera_capture.png';
 import ImageViewerModal from '../components/ImageViewerModal';
 import CameraAccessModal from '../components/CameraAccessModal';
 import ReportViewerModal from '../components/ReportViewerModal'; // New Import
+import { useFocusEffect } from '@react-navigation/core';
 
 
 type CameraScreenRouteProp = RouteProp<RootStackParamList, 'Kamera'>;
@@ -33,9 +34,9 @@ const CameraScreen: React.FC<CameraScreenProps> = ({route, navigation}) => {
   const [selectedOption, setSelectedOption] = useState('');
   const {description} = route.params;
   const [popupDescription, setPopupDescription] = useState('');
-  const devices= useCameraDevices('telephoto-camera');
-  const device=devices.back;
-  
+  const devices= useCameraDevices();
+  const device = devices.back;
+  const [isActive, setIsActive] = useState(false);
 
   React.useEffect(() => {
     navigation.setOptions({
@@ -52,35 +53,34 @@ const CameraScreen: React.FC<CameraScreenProps> = ({route, navigation}) => {
         </View>
       ),
     });
-    
+  
   }, [navigation, technical_drawing_numbering]);
+  useFocusEffect(
+    React.useCallback(() => {
+      // Ekrana dönüldüğünde kamerayı aktif hale getir
+      setIsActive(true);
+
+      return () => {
+        // Ekrandan çıkıldığında kamerayı pasif hale getir
+        setIsActive(false);
+      };
+    }, [])
+  );
 
   const takePicture = async () => {
-    console.log("take picture func is working well",cameraRef.current)
-    try{
+    
       if (cameraRef.current) {
-        
-
-        const data = await cameraRef.current.takePhoto({ qualityPrioritization: 'balanced', flash: 'auto', enableAutoStabilization: true });
+        const data = await cameraRef.current.takePhoto({ qualityPrioritization: 'quality', flash: 'auto', enableAutoStabilization: true });
         const imagePath = `file://${data.path}`;
-
-        console.log(data);
-      const updatedPictures = [...existingPictures, imagePath]; // existingPictures dizisini güncelle
-      setPictures(updatedPictures);
+        const updatedPictures = [...existingPictures, imagePath]; // existingPictures dizisini güncelle
+        setPictures(updatedPictures);
        navigation.navigate('Önizleme', { pictures: updatedPictures, example_visual_url, workId, quality_control_id, productId, technical_drawing_numbering, lower_tolerance, upper_tolerance, step_name, order_number, product_name, vendor_id, issue_text: selectedOption, description, issue_description: popupDescription });
       }
-     
-    } catch(error){
-        console.log("error at take pic button", error)
-      }
-    
   };
-  if (device==null) {
 
-      console.log("error at take pic button")
+  if (device==null) {
     return null;
   }
-  
   
   return (
     <View style={{flex: 1}}>
@@ -89,9 +89,10 @@ const CameraScreen: React.FC<CameraScreenProps> = ({route, navigation}) => {
       style={StyleSheet.absoluteFill}
       device={device}
       photo={true}
-      isActive={true}>
+      enableZoomGesture={true}
+      isActive={isActive}> 
   </Camera>
-    <TouchableOpacity
+  <TouchableOpacity
         style={camerastyles.topLeftCorner}
         onPress={() => setModalVisible(true)}
       >
@@ -101,6 +102,7 @@ const CameraScreen: React.FC<CameraScreenProps> = ({route, navigation}) => {
           style={camerastyles.smallThumbnail}
         />
       </TouchableOpacity>
+    
       <ImageViewerModal
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
