@@ -11,3 +11,13 @@ exports.getProductIdsByWorkIds = async (request, reply) => {
     return reply.status(500).send({ error: 'An error occurred while fetching work products info' });
   }
 };
+
+exports.updateWorkProductStatus = async (request, reply) => {
+  try {
+    const { work_id, product_id, status } = request.body;
+    await WorkProducts.updateStatus(work_id, product_id, status);
+    return reply.send({ success: true, message: 'Status updated successfully' });
+  } catch (err) {
+    return reply.status(500).send({ error: 'An error occurred while updating status' });
+  }
+}

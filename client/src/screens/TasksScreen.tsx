@@ -54,6 +54,7 @@ const TasksScreen = () => {
   }, [isFocused]);
 
   const filteredWorkProducts = workProducts.filter(workProduct =>
+    workProduct.status !== "Closed" &&
     (`${workProduct.work_id}-${workProduct.productInfo?.name}-${workProduct.order_number}`.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
@@ -77,6 +78,7 @@ const TasksScreen = () => {
         onSearchQueryChange={(newSearchQuery) => setSearchQuery(newSearchQuery)}
       />
       <FlatList
+        contentContainerStyle={{ paddingBottom: 80 }}
         data={filteredWorkProducts }
         keyExtractor={item => `${item.work_id}-${item.product_id}`}
         renderItem={({item}) => (

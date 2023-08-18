@@ -152,3 +152,18 @@ export const postQualityControl = async (formId: number, workId: number): Promis
     };
   }
 };
+
+export const updateWorkProductStatus = async (work_id: number, product_id: number, status: string) => {
+  try {
+    const response = await axios.put(`${BASE_URL}/workproducts/updatestatus`, {
+      work_id,
+      product_id,
+      status
+    });
+    console.log(response.data)
+    return response.data;
+  } catch (error) {
+    console.log("Error updating work product status:", error);
+    throw error;
+  }
+};

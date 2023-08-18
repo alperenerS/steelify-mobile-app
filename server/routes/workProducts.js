@@ -6,6 +6,11 @@ const routes = [
     path: "/mobilapi/workproducts",
     handler: workProductsController.getProductIdsByWorkIds,
   },
+  {
+    method: "PUT", 
+    path: "/mobilapi/workproducts/updatestatus",
+    handler: workProductsController.updateWorkProductStatus,
+  },
 ];
 
 module.exports = routes;
