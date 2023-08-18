@@ -10,25 +10,15 @@ export const getProductInfo = async (productId: number): Promise<{ productInfo: 
 
   if (netInfo.isConnected && netInfo.isInternetReachable) {
     try {
-      const response = await axios.post(`${BASE_URL}/productinfo`, {
-        product_id: productId,
-      });
-
+      const response = await axios.post(`${BASE_URL}/productinfo`, { product_id: productId });
       const productInfo: ProductInfo[] = response.data;
-
-      // Save product info to cache
       await storeData('productInfo', JSON.stringify(productInfo));
-
       return { productInfo };
     } catch (error) {
-      // If an error occurred while fetching, get data from cache
-      const cachedProductInfo = await getData('productInfo');
-      return {
-        productInfo: cachedProductInfo ? JSON.parse(cachedProductInfo) : [],
-      }
+      console.log(error);
+      throw error;  // Hata oluştuğunda hatayı doğrudan fırlatıyoruz.
     }
   } else {
-    // If there's no internet connection, get data from cache
     const cachedProductInfo = await getData('productInfo');
     return {
       productInfo: cachedProductInfo ? JSON.parse(cachedProductInfo) : [],

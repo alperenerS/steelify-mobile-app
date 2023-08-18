@@ -8,7 +8,6 @@ import axios from 'axios';
 import { getData, storeData } from '../utils/storage';
 import NetInfo from '@react-native-community/netinfo';
 
-
 const BASE_URL = process.env.REACT_APP_API_URL;
 
 export const getWorks = async (token: string): Promise<{ works: Work[], workSteps: WorkSteps[], workProducts: WorkProducts[] }> => {
@@ -26,55 +25,33 @@ export const getWorks = async (token: string): Promise<{ works: Work[], workStep
         },
       });
 
-      if (response.status === 200) {
-        const works = response.data;
+      if (response.status !== 200) throw new Error('Works request failed!');
+      
+      const works = response.data;
+      const ids = works.map((work: Work) => work.id);
 
-        // Get work_ids from works
-        const ids = works.map((work: Work) => work.id);
+      const workStepsResponse = await axios.post(`${BASE_URL}/worksteps`, { ids });
+      if (workStepsResponse.status !== 200) throw new Error('WorkSteps request failed!');
+      
+      const workSteps = workStepsResponse.data;
+      const workIds = workSteps.map((workStep: { work_id: number }) => workStep.work_id);
 
-        // Make request to worksteps with work_ids
-        const workStepsResponse = await axios.post(`${BASE_URL}/worksteps`, { ids });
+      const workProductsResponse = await axios.post(`${BASE_URL}/workproducts`, { ids: workIds });
+      if (workProductsResponse.status !== 200) throw new Error('WorkProducts request failed!');
 
-        if (workStepsResponse.status === 200) {
-          const workSteps = workStepsResponse.data;
-          const workIds = workSteps.map((workStep: { work_id: number }) => workStep.work_id);
+      const workProducts = workProductsResponse.data;
 
-          // Make request to workproducts with work_ids
-          const workProductsResponse = await axios.post(`${BASE_URL}/workproducts`, { ids: workIds });
-
-          if (workProductsResponse.status === 200) {
-            const workProducts = workProductsResponse.data;
-
-            // When both requests are successful, update the cached data
-            await storeData(worksKey, JSON.stringify(works));
-            await storeData(workStepsKey, JSON.stringify(workSteps));
-            await storeData(workProductsKey, JSON.stringify(workProducts)); 
-
-            return { works, workSteps, workProducts };
-          } else {
-            throw new Error('WorkProducts request failed!');
-          }
-        } else {
-          throw new Error('WorkSteps request failed!');
-        }
-      } else {
-        throw new Error('Works request failed!');
-      }
+      await storeData(worksKey, JSON.stringify(works));
+      await storeData(workStepsKey, JSON.stringify(workSteps));
+      await storeData(workProductsKey, JSON.stringify(workProducts)); 
+      return { works, workSteps, workProducts };
+      
     } catch (error) {
       console.log(error);
-      // If an error occurred while fetching, get data from cache
-      const cachedWorks = await getData(worksKey);
-      const cachedWorkSteps = await getData(workStepsKey);
-      const cachedWorkProducts = await getData(workProductsKey);
-      
-      return { 
-        works: cachedWorks ? JSON.parse(cachedWorks) : [], 
-        workSteps: cachedWorkSteps ? JSON.parse(cachedWorkSteps) : [],
-        workProducts: cachedWorkProducts ? JSON.parse(cachedWorkProducts) : [], 
-      };
+      throw error;  // Hata oluştuğunda hatayı doğrudan fırlatıyoruz.
     }
   } else {
-    // If there's no internet connection, get data from cache
+    // İnternet bağlantısı yoksa verileri cache'den alıyoruz.
     const cachedWorks = await getData(worksKey);
     const cachedWorkSteps = await getData(workStepsKey);
     const cachedWorkProducts = await getData(workProductsKey);
@@ -87,7 +64,6 @@ export const getWorks = async (token: string): Promise<{ works: Work[], workStep
   }
 };
 
-
 export const getWorkById = async (workId: number): Promise<{ workInfo: WorkInfo[] }> => {
   const netInfo = await NetInfo.fetch();
 
@@ -96,19 +72,19 @@ export const getWorkById = async (workId: number): Promise<{ workInfo: WorkInfo[
   if (netInfo.isConnected && netInfo.isInternetReachable) {
     try {
       const response = await axios.get(`${BASE_URL}/work/${workId}`);
+      
+      if (response.status !== 200) throw new Error('Failed to fetch work by ID!');
+
       const workInfo: WorkInfo[] = response.data;
       // Save work to cache
       await storeData(workInfoKey, JSON.stringify(workInfo));
       return { workInfo };
     } catch (error) {
-      // If an error occurred while fetching, get data from cache
-      const cachedWork = await getData(workInfoKey);
-      return {
-        workInfo: cachedWork ? JSON.parse(cachedWork) : [],    
-      }
+      console.log(error);
+      throw error;  // Hata oluştuğunda hatayı doğrudan fırlatıyoruz.
     }
   } else {
-    // If there's no internet connection, get data from cache
+    // İnternet bağlantısı yoksa verileri cache'den alıyoruz.
     const cachedWork = await getData(workInfoKey);
     return {
       workInfo: cachedWork ? JSON.parse(cachedWork) : [],
@@ -126,21 +102,19 @@ export const getForm = async (productId: number, vendorId: number): Promise<{ fo
         product_id: productId,
         vendor_id: vendorId
       });
-      const form: Form[] = response.data;
 
+      if (response.status !== 200) throw new Error('Failed to fetch form data!');
+
+      const form: Form[] = response.data;
       // Save post data to cache
       await storeData(cacheKey, JSON.stringify(form));
-
       return { form };
     } catch (error) {
-      // If an error occurred while fetching, get data from cache
-      const cachedForm = await getData(cacheKey);
-      return {
-        form: cachedForm ? JSON.parse(cachedForm) : [],
-      };
+      console.log(error);
+      throw error;  // Hata oluştuğunda hatayı doğrudan fırlatıyoruz.
     }
   } else {
-    // If there's no internet connection, get data from cache
+    // İnternet bağlantısı yoksa verileri cache'den alıyoruz.
     const cachedForm = await getData(cacheKey);
     return {
       form: cachedForm ? JSON.parse(cachedForm) : [],
@@ -148,10 +122,8 @@ export const getForm = async (productId: number, vendorId: number): Promise<{ fo
   }
 };
 
-
 export const postQualityControl = async (formId: number, workId: number): Promise<{ qualitycontrol: QualityControl[] }> => {
   const netInfo = await NetInfo.fetch();
-
   const cacheKey = `qualityControl-${formId}-${workId}`;
 
   if (netInfo.isConnected && netInfo.isInternetReachable) {
@@ -160,25 +132,23 @@ export const postQualityControl = async (formId: number, workId: number): Promis
         form_id: formId,
         work_id: workId
       });
-      const qualitycontrol: QualityControl[] = response.data;
 
+      if (response.status !== 200) throw new Error('Failed to fetch quality control data!');
+
+      const qualitycontrol: QualityControl[] = response.data;
       // Save post data to cache
       await storeData(cacheKey, JSON.stringify(qualitycontrol));
 
       return { qualitycontrol };
     } catch (error) {
-      // If an error occurred while fetching, get data from cache
-      const cachedQualityControl = await getData(cacheKey);
-      return {
-        qualitycontrol: cachedQualityControl ? JSON.parse(cachedQualityControl) : [],
-    }
+      console.log(error);
+      throw error;  // Hata oluştuğunda hatayı doğrudan fırlatıyoruz.
     }
   } else {
-    // If there's no internet connection, get data from cache
+    // İnternet bağlantısı yoksa verileri cache'den alıyoruz.
     const cachedQualityControl = await getData(cacheKey);
     return {
       qualitycontrol: cachedQualityControl ? JSON.parse(cachedQualityControl) : [],
-    }
+    };
   }
 };
-

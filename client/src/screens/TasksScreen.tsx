@@ -31,9 +31,8 @@ const TasksScreen = () => {
         // For each workProduct, get the product info and attach it to the workProduct
         const workProducts = await Promise.all(
           workProductsData.workProducts.map(async workProduct => {
-            const productInfoData = await getProductInfo(
-              workProduct.product_id,
-            );
+            const productInfoData = await getProductInfo(workProduct.product_id);
+            
             const workInfoData = await getWorkById(workProduct.work_id);
             return {
               ...workProduct,
