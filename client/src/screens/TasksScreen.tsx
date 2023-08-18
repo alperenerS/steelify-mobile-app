@@ -31,9 +31,8 @@ const TasksScreen = () => {
         // For each workProduct, get the product info and attach it to the workProduct
         const workProducts = await Promise.all(
           workProductsData.workProducts.map(async workProduct => {
-            const productInfoData = await getProductInfo(
-              workProduct.product_id,
-            );
+            const productInfoData = await getProductInfo(workProduct.product_id);
+            
             const workInfoData = await getWorkById(workProduct.work_id);
             return {
               ...workProduct,
@@ -55,6 +54,7 @@ const TasksScreen = () => {
   }, [isFocused]);
 
   const filteredWorkProducts = workProducts.filter(workProduct =>
+    workProduct.status !== "Closed" &&
     (`${workProduct.work_id}-${workProduct.productInfo?.name}-${workProduct.order_number}`.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
@@ -78,6 +78,7 @@ const TasksScreen = () => {
         onSearchQueryChange={(newSearchQuery) => setSearchQuery(newSearchQuery)}
       />
       <FlatList
+        contentContainerStyle={{ paddingBottom: 80 }}
         data={filteredWorkProducts }
         keyExtractor={item => `${item.work_id}-${item.product_id}`}
         renderItem={({item}) => (

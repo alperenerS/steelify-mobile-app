@@ -20,18 +20,15 @@ export const getImageCounts = async (qualityControlIds: number[], workId: number
         work_id: workId,
         quality_control_ids: qualityControlIds
       });
-      
       const imageCounts: ImageCount[] = response.data;
-      // Save image count data to cache
       await storeData(cacheKey, JSON.stringify(imageCounts));
-
       return imageCounts;
     } catch (error) {
-      // If an error occurred while fetching, get data from cache
-      return await getDataFromCache(cacheKey);
+      console.log(error);
+      throw error;  // Hata oluştuğunda hatayı doğrudan fırlatıyoruz.
     }
   } else {
-    // If there's no internet connection, get data from cache
-    return await getDataFromCache(cacheKey);
+    const cachedImageCounts = await getData(cacheKey);
+    return cachedImageCounts ? JSON.parse(cachedImageCounts) : [];
   }
 };

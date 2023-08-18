@@ -178,7 +178,7 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({ route, navigation }) => {
   };
   
   const addPhoto = () => {
-    navigation.navigate('Kamera', {existingPictures, example_visual_url, workId, quality_control_id , productId, technical_drawing_numbering, lower_tolerance, upper_tolerance, step_name, order_number, product_name, vendor_id, description });
+    navigation.navigate('Kamera', {existingPictures: existingPictures, example_visual_url, workId, quality_control_id , productId, technical_drawing_numbering, lower_tolerance, upper_tolerance, step_name, order_number, product_name, vendor_id, description });
   };
   
   const handleSelect = (index: number) => {
