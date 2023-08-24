@@ -1,5 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, TouchableOpacity, FlatList, Image} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  FlatList,
+  Image,
+  Button,
+} from 'react-native';
 import {WorkProducts} from '../models/WorkProducts';
 import {getWorks, getWorkById} from '../services/workService';
 import {getData} from '../utils/storage';
@@ -8,8 +15,12 @@ import taskstyles from '../components/Task';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParamList} from '../navigation/StackNavigator';
 import {getProductInfo} from '../services/productService';
-import pdfIcon from '../assets/pdfIcon.png'
+import pdfIcon from '../assets/pdfIcon.png';
 import SearchBar from '../components/SearchBar';
+import {
+  uploadOfflineImageToDB,
+  uploadCachedImages,
+} from '../services/PreviewService';
 
 type navigationProp = StackNavigationProp<
   RootStackParamList,
@@ -30,16 +41,20 @@ const TasksScreen = () => {
 
         // For each workProduct, get the product info and attach it to the workProduct
         const workProducts = await Promise.all(
-          workProductsData.workProducts.map(async workProduct => {
-            const productInfoData = await getProductInfo(workProduct.product_id);
-            
-            const workInfoData = await getWorkById(workProduct.work_id);
-            return {
-              ...workProduct,
-              productInfo: productInfoData.productInfo[0],
-              order_number: workInfoData.workInfo[0].order_number, 
-            };
-          }),
+          workProductsData.workProducts.map(
+            async (workProduct: {product_id: number; work_id: number}) => {
+              const productInfoData = await getProductInfo(
+                workProduct.product_id,
+              );
+
+              const workInfoData = await getWorkById(workProduct.work_id);
+              return {
+                ...workProduct,
+                productInfo: productInfoData.productInfo[0],
+                order_number: workInfoData.workInfo[0].order_number,
+              };
+            },
+          ),
         );
 
         setWorkProducts(workProducts);
@@ -53,9 +68,12 @@ const TasksScreen = () => {
     }
   }, [isFocused]);
 
-  const filteredWorkProducts = workProducts.filter(workProduct =>
-    workProduct.status !== "Closed" &&
-    (`${workProduct.work_id}-${workProduct.productInfo?.name}-${workProduct.order_number}`.toLowerCase().includes(searchQuery.toLowerCase()))
+  const filteredWorkProducts = workProducts.filter(
+    workProduct =>
+      workProduct.status !== 'Closed' &&
+      `${workProduct.work_id}-${workProduct.productInfo?.name}-${workProduct.order_number}`
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase()),
   );
 
   const handlePress = (workId: number, productId: number) => {
@@ -65,27 +83,42 @@ const TasksScreen = () => {
     });
   };
 
-  const handlePDFPress = (pdfUrl: string | null | undefined, workId: number , productId: number) => {
+  const handlePDFPress = (
+    pdfUrl: string | null | undefined,
+    workId: number,
+    productId: number,
+  ) => {
     if (pdfUrl) {
-      navigation.navigate('PdfViewerScreen', {pdfUrl: pdfUrl, workId, productId});
+      navigation.navigate('PdfViewerScreen', {
+        pdfUrl: pdfUrl,
+        workId,
+        productId,
+      });
     }
   };
 
   return (
     <View>
-       <SearchBar
+      <Button
+        title="Tıkla"
+        onPress={() => {
+          uploadCachedImages();
+        }}
+      />
+      <SearchBar
         searchQuery={searchQuery}
-        onSearchQueryChange={(newSearchQuery) => setSearchQuery(newSearchQuery)}
+        onSearchQueryChange={newSearchQuery => setSearchQuery(newSearchQuery)}
       />
       <FlatList
-        contentContainerStyle={{ paddingBottom: 80 }}
-        data={filteredWorkProducts }
+        contentContainerStyle={{paddingBottom: 80}}
+        data={filteredWorkProducts}
         keyExtractor={item => `${item.work_id}-${item.product_id}`}
         renderItem={({item}) => (
           <View style={taskstyles.card}>
-            <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+            <View
+              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <TouchableOpacity
-                style={{ flex: 0.8 }}
+                style={{flex: 0.8}}
                 onPress={() => handlePress(item.work_id, item.product_id)}>
                 <Text style={taskstyles.text}>
                   Product Name: {item.productInfo?.name}
@@ -96,16 +129,23 @@ const TasksScreen = () => {
                 </Text>
               </TouchableOpacity>
               {item.productInfo?.technicaldrawingurl && (
-              <TouchableOpacity
-                style={{ flex: 0.2, flexDirection: 'row', justifyContent: 'center' }}
-                onPress={() =>
-                  item.productInfo?.technicaldrawingurl
-                    ? handlePDFPress(item.productInfo?.technicaldrawingurl,item.work_id,item.product_id)
-                    : null
-                }
-              >
-                <Image source={pdfIcon} style={{ width: 40, height: 40 }} />
-              </TouchableOpacity>
+                <TouchableOpacity
+                  style={{
+                    flex: 0.2,
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                  }}
+                  onPress={() =>
+                    item.productInfo?.technicaldrawingurl
+                      ? handlePDFPress(
+                          item.productInfo?.technicaldrawingurl,
+                          item.work_id,
+                          item.product_id,
+                        )
+                      : null
+                  }>
+                  <Image source={pdfIcon} style={{width: 40, height: 40}} />
+                </TouchableOpacity>
               )}
             </View>
           </View>
