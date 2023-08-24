@@ -1,9 +1,9 @@
 import axios from 'axios';
 
-const BASE_URL = 'https://portal-test.yenaengineering.nl';
+const BASE_URL = process.env.REACT_APP_API_URL;
 
-export const uploadImage = async (imageUri: string, workId: string, quality_control_id: string, status: string, folderPath: string, technical_drawing_numbering: string, step_name: string) => {
-  const url = `${BASE_URL}/mobilapi/images`;
+export const uploadImage = async (imageUri: string, workId: string, quality_control_id: string, status: string, folderPath: string, technical_drawing_numbering: string, step_name: string, imageName: string, issue_text: string | null, issue_description: string | null) => {
+  const url = `${BASE_URL}/images`;
 
   // Create a new FormData object
   let formData = new FormData();
@@ -16,7 +16,7 @@ export const uploadImage = async (imageUri: string, workId: string, quality_cont
   let image = {
     uri: imageUri,
     type: 'image/jpeg',
-    name: `${step_name}_${technical_drawing_numbering}_${timestamp}.jpg`,
+    name: `${imageName}_${timestamp}.jpg`,
   };
   folderPath = folderPath.replace(/\s+/g, "_");
   formData.append('images', image);
@@ -24,6 +24,8 @@ export const uploadImage = async (imageUri: string, workId: string, quality_cont
   formData.append('quality_control_id', quality_control_id);
   formData.append('status', status);
   formData.append('folderPath', folderPath);
+  formData.append('issues', issue_text);
+  formData.append('issue_description', issue_description);
   // Send the request
   const config = {
     headers: {
@@ -33,6 +35,7 @@ export const uploadImage = async (imageUri: string, workId: string, quality_cont
   
   try {
     const response = await axios.post(url, formData, config);
+
     return response.data;
   } catch (error) {
     console.error('Error uploading image: ', error);
