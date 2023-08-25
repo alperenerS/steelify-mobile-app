@@ -2000,10 +2000,10 @@
   "resolved" "https://registry.npmjs.org/@opentelemetry/api/-/api-1.4.1.tgz"
   "version" "1.4.1"
 
-"@react-native-async-storage/async-storage@^1.19.1":
-  "integrity" "sha512-5QXuGCtB+HL3VtKL2JN3+6t4qh8VXizK+aGDAv6Dqiq3MLrzgZHb4tjVgtEWMd8CcDtD/JqaAI1b6/EaYGtFIA=="
-  "resolved" "https://registry.npmjs.org/@react-native-async-storage/async-storage/-/async-storage-1.19.1.tgz"
-  "version" "1.19.1"
+"@react-native-async-storage/async-storage@^1.19.3":
+  "integrity" "sha512-CwGfoHCWdPOTPS+2fW6YRE1fFBpT9++ahLEroX5hkgwyoQ+TkmjOaUxixdEIoVua9Pz5EF2pGOIJzqOTMWfBlA=="
+  "resolved" "https://registry.npmjs.org/@react-native-async-storage/async-storage/-/async-storage-1.19.3.tgz"
+  "version" "1.19.3"
   dependencies:
     "merge-options" "^3.0.4"
 

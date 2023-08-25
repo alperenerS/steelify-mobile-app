@@ -61,10 +61,12 @@ export const uploadImage = async (
     };
 
     try {
+      console.log(url);
       const response = await axios.post(url, formData, config);
-
+      console.log(response);
       return response.data;
     } catch (error) {
+      console.log(url);
       console.error('Error uploading image: ', error);
       throw error;
     }
@@ -95,28 +97,27 @@ export const uploadImage = async (
 };
 
 export const uploadCachedImages = async () => {
-  const offlineImages = await AsyncStorage.getItem('offlineImages');
-  const netInfo = await NetInfo.fetch();
-
-  if (offlineImages && netInfo.isConnected && netInfo.isInternetReachable) {
-    const imagePaths = JSON.parse(offlineImages);
-
-    for (const imagePath of imagePaths) {
-      const imageBase64 = await RNFS.readFile(imagePath, 'base64');
-      await uploadImage(
-        imageBase64,
-        '55',
-        'deneme',
-        'deneme',
-        'deneme',
+  const netinfo = await NetInfo.fetch();
+  if (netinfo.isConnected && netinfo.isInternetReachable) {
+    const deneme: any = await AsyncStorage.getItem('cachedPhoto');
+    const offlineImage = JSON.parse(deneme);
+    if (offlineImage && offlineImage.uri) {
+      const response = await uploadImage(
+        offlineImage.uri,
+        offlineImage.workId.toString(),
+        offlineImage.quality_control_id.toString(),
+        offlineImage.status,
+        offlineImage.folderPath,
         'deneme',
         'deneme',
         'deneme',
         null,
         null,
       );
+      console.log(response);
+      console.log('asdasd');
     }
-    await AsyncStorage.removeItem('offlineImages');
+    console.log(offlineImage);
   }
 };
 
