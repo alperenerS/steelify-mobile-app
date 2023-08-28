@@ -44,7 +44,6 @@ export const uploadImage = async (
 
   //INTERNET CONNECTION CHECK
   if (netInfo.isConnected && netInfo.isInternetReachable) {
-    console.log('internet var');
     folderPath = folderPath.replace(/\s+/g, '_');
     formData.append('images', image);
     formData.append('work_id', workId);
@@ -61,37 +60,11 @@ export const uploadImage = async (
     };
 
     try {
-      console.log(url);
       const response = await axios.post(url, formData, config);
-      console.log(response);
       return response.data;
     } catch (error) {
-      console.log(url);
       console.error('Error uploading image: ', error);
       throw error;
-    }
-  } else {
-    //INTERNET YOKSA
-    console.log('internet yok');
-    // const base64Image = await uploadOfflineImage(image.uri);
-    // console.log(base64Image);
-
-    const imageName = Math.random().toString(36).substring(7) + '.jpg';
-    const imagePath = `${RNFS.DocumentDirectoryPath}/${imageName}`;
-
-    await RNFS.copyFile(imageUri, imagePath);
-
-    const offlineImages = await AsyncStorage.getItem('offlineImages');
-    const updatedImages = offlineImages ? JSON.parse(offlineImages) : [];
-    updatedImages.push(imagePath);
-
-    try {
-      await AsyncStorage.setItem(
-        'offlineImages',
-        JSON.stringify(updatedImages),
-      );
-    } catch (error) {
-      console.error(error);
     }
   }
 };
@@ -99,8 +72,8 @@ export const uploadImage = async (
 export const uploadCachedImages = async () => {
   const netinfo = await NetInfo.fetch();
   if (netinfo.isConnected && netinfo.isInternetReachable) {
-    const deneme: any = await AsyncStorage.getItem('cachedPhoto');
-    const offlineImage = JSON.parse(deneme);
+    const cachedImage: any = await AsyncStorage.getItem('cachedPhoto');
+    const offlineImage = JSON.parse(cachedImage);
     if (offlineImage && offlineImage.uri) {
       const response = await uploadImage(
         offlineImage.uri,
@@ -108,51 +81,18 @@ export const uploadCachedImages = async () => {
         offlineImage.quality_control_id.toString(),
         offlineImage.status,
         offlineImage.folderPath,
-        'deneme',
-        'deneme',
-        'deneme',
-        null,
-        null,
+        offlineImage.technical_drawing_numbering,
+        offlineImage.step_name,
+        offlineImage.imageName,
+        offlineImage.issue_text,
+        offlineImage.issue_description,
       );
       console.log(response);
       console.log('asdasd');
+      if (response) {
+        return await AsyncStorage.removeItem('cachedPhoto');
+      }
     }
     console.log(offlineImage);
-  }
-};
-
-export const uploadOfflineImage = async (imageUri: string): Promise<string> => {
-  console.log(imageUri);
-  const image = await RNFS.readFile(imageUri, 'base64');
-  return image;
-};
-
-export const uploadOfflineImageToDB = async () => {
-  const offlineImage = await AsyncStorage.getItem('offlineImage');
-  const netInfo = await NetInfo.fetch();
-
-  try {
-    if (netInfo.isConnected && netInfo.isInternetReachable) {
-      // const response = await uploadImage(
-      //   offlineImage,
-      //   '55',
-      //   'deneme',
-      //   'deneme',
-      //   'deneme',
-      //   'deneme',
-      //   'deneme',
-      //   'deneme',
-      //   null,
-      //   null,
-      // );
-      // console.log(response);
-
-      // await AsyncStorage.removeItem('offlineImage');
-      // return response;
-      console.log('denememmememeemme');
-    }
-  } catch (error) {
-    console.log(error);
-    throw error;
   }
 };

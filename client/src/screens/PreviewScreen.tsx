@@ -177,11 +177,14 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({route, navigation}) => {
     const project_number = workInfo && workInfo[0].project_number;
 
     let projectNumberString: string;
+    let issue_text: string;
+    let issue_description: string;
     if (project_number === null) {
       projectNumberString = 'unknown';
     } else {
       projectNumberString = project_number.toString();
     }
+
     const folderPath = `${projectNumberString}/${order_number}_${vendorInfo.name}/${product_name}/`;
 
     existingPictures.forEach(async (pictureUri, index) => {
@@ -196,6 +199,11 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({route, navigation}) => {
               quality_control_id,
               status: 'status',
               folderPath: folderPath,
+              technical_drawing_numbering: technical_drawing_numbering,
+              step_name: step_name,
+              imageName: imageName,
+              issue_text: issue_text,
+              issue_description: issue_description,
             }),
           );
           console.log('Image cached successfully');

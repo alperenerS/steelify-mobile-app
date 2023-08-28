@@ -17,10 +17,8 @@ import {RootStackParamList} from '../navigation/StackNavigator';
 import {getProductInfo} from '../services/productService';
 import pdfIcon from '../assets/pdfIcon.png';
 import SearchBar from '../components/SearchBar';
-import {
-  uploadOfflineImageToDB,
-  uploadCachedImages,
-} from '../services/PreviewService';
+import {uploadCachedImages} from '../services/PreviewService';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type navigationProp = StackNavigationProp<
   RootStackParamList,
@@ -32,7 +30,7 @@ const TasksScreen = () => {
   const [workProducts, setWorkProducts] = useState<WorkProducts[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const isFocused = useIsFocused();
-
+  const [isCached, setIsCached] = useState<boolean | null>(false);
   useEffect(() => {
     const fetchData = async () => {
       const token = await getData('userToken');
@@ -68,6 +66,21 @@ const TasksScreen = () => {
     }
   }, [isFocused]);
 
+  useEffect(() => {
+    async function isCachedImage() {
+      const cachedImage: any = await AsyncStorage.getItem('cachedPhoto');
+      const isCachedImage = JSON.parse(cachedImage);
+      if (isCachedImage !== null) {
+        return setIsCached(true);
+      } else {
+        return setIsCached(false);
+      }
+    }
+    if (isFocused) {
+      isCachedImage();
+    }
+  }, [isFocused]);
+
   const filteredWorkProducts = workProducts.filter(
     workProduct =>
       workProduct.status !== 'Closed' &&
@@ -99,12 +112,14 @@ const TasksScreen = () => {
 
   return (
     <View>
-      <Button
-        title="Tıkla"
-        onPress={() => {
-          uploadCachedImages();
-        }}
-      />
+      {isCached ? (
+        <Button
+          title="Upload Cached Images with Internet Connection"
+          onPress={() => {
+            uploadCachedImages();
+          }}
+        />
+      ) : null}
       <SearchBar
         searchQuery={searchQuery}
         onSearchQueryChange={newSearchQuery => setSearchQuery(newSearchQuery)}
