@@ -7,6 +7,7 @@ import {
   Button,
   Image,
   SafeAreaView,
+  Alert,
 } from 'react-native';
 import {
   getWorkById,
@@ -27,6 +28,7 @@ import {useNavigation, useIsFocused} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import cameraIcon from '../assets/camera_icon.png';
 import {ImageCount} from '../models/ImageCount';
+import { PermissionsAndroid } from 'react-native';
 
 type WorkOrderScreenRouteProp = RouteProp<
   RootStackParamList,
@@ -47,6 +49,25 @@ const WorkOrderScreen = ({route}: {route: WorkOrderScreenRouteProp}) => {
   const navigation = useNavigation<navigationProp>();
   const navigation2 = useNavigation<StackNavigationProp<RootStackParamList>>();
   const isFocused = useIsFocused();
+
+  const checkCameraPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+        {
+          title: "Kamera İzni",
+          message: "Uygulama kamerayı kullanmak için izin istiyor",
+          buttonNeutral: "Daha Sonra Sor",
+          buttonNegative: "İptal",
+          buttonPositive: "Tamam"
+        }
+      );
+      return granted === PermissionsAndroid.RESULTS.GRANTED;
+    } catch (err) {
+      console.warn(err);
+      return false;
+    }
+  };
 
   useEffect(() => {
     if (isFocused) {
@@ -222,26 +243,39 @@ const WorkOrderScreen = ({route}: {route: WorkOrderScreenRouteProp}) => {
                             alignItems: 'center',
                           }}>
                           <TouchableOpacity
-                            onPress={() =>
-                              navigation.navigate('Kamera', {
-                                description: item.description,
-                                existingPictures,
-                                example_visual_url:
-                                  item.example_visual_url || null,
-                                workId: item.work_id,
-                                quality_control_id: item.id,
-                                productId: productId,
-                                technical_drawing_numbering:
-                                  item.technical_drawing_numbering,
-                                lower_tolerance: item.lower_tolerance,
-                                upper_tolerance: item.upper_tolerance,
-                                step_name: item.step_name,
-                                order_number: work[0].order_number,
-                                product_name: productInfo
-                                  ? productInfo.name
-                                  : null,
-                                vendor_id: work[0].vendor_id,
-                              })
+                            onPress={async () =>{
+                              const hasCameraPermission=await checkCameraPermission();
+                              if(hasCameraPermission){
+                                navigation.navigate('Kamera', {
+                                  description: item.description,
+                                  existingPictures,
+                                  example_visual_url:
+                                    item.example_visual_url || null,
+                                  workId: item.work_id,
+                                  quality_control_id: item.id,
+                                  productId: productId,
+                                  technical_drawing_numbering:
+                                    item.technical_drawing_numbering,
+                                  lower_tolerance: item.lower_tolerance,
+                                  upper_tolerance: item.upper_tolerance,
+                                  step_name: item.step_name,
+                                  order_number: work[0].order_number,
+                                  product_name: productInfo
+                                    ? productInfo.name
+                                    : null,
+                                  vendor_id: work[0].vendor_id,
+                                })
+                              }else {
+                                Alert.alert(
+                                  'İzin Gerekli', 
+                                  'Kamerayı kullanabilmek için izin vermelisiniz.', 
+                                  [
+                                    {text: 'Tamam', onPress: () => console.log('Tamam basıldı')},
+                                  ]
+                                );
+                              }
+                            }
+                             
                             }>
                             <Image
                               source={cameraIcon}
