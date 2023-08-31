@@ -72,27 +72,32 @@ export const uploadImage = async (
 export const uploadCachedImages = async () => {
   const netinfo = await NetInfo.fetch();
   if (netinfo.isConnected && netinfo.isInternetReachable) {
-    const cachedImage: any = await AsyncStorage.getItem('cachedPhoto');
-    const offlineImage = JSON.parse(cachedImage);
-    if (offlineImage && offlineImage.uri) {
-      const response = await uploadImage(
-        offlineImage.uri,
-        offlineImage.workId.toString(),
-        offlineImage.quality_control_id.toString(),
-        offlineImage.status,
-        offlineImage.folderPath,
-        offlineImage.technical_drawing_numbering,
-        offlineImage.step_name,
-        offlineImage.imageName,
-        offlineImage.issue_text,
-        offlineImage.issue_description,
-      );
-      console.log(response);
-      console.log('asdasd');
-      if (response) {
-        return await AsyncStorage.removeItem('cachedPhoto');
+    const keys = await AsyncStorage.getAllKeys();
+    const cachedPhotosKeys = keys.filter(key => key.startsWith("cachedPhoto_"));
+
+    for (const key of cachedPhotosKeys) {
+      const cachedImage: any = await AsyncStorage.getItem(key);
+      const offlineImage = JSON.parse(cachedImage);
+      if (offlineImage && offlineImage.uri) {
+        try {
+          const response = await uploadImage(
+            offlineImage.uri,
+            offlineImage.workId.toString(),
+            offlineImage.quality_control_id.toString(),
+            offlineImage.status,
+            offlineImage.folderPath,
+            offlineImage.technical_drawing_numbering,
+            offlineImage.step_name,
+            offlineImage.imageName,
+            offlineImage.issue_text,
+            offlineImage.issue_description,
+          );
+          console.log('Cached image uploaded successfully:', response);
+          await AsyncStorage.removeItem(key); 
+        } catch (error) {
+          console.error('Error uploading cached image: ', error);
+        }
       }
     }
-    console.log(offlineImage);
   }
 };
