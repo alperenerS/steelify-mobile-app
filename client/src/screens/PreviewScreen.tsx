@@ -119,57 +119,6 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({route, navigation}) => {
     fetchWorkInfo();
   }, [workId]);
 
-  useEffect(() => {
-    const handleConnectivityChange = async (state: NetInfoState) => {
-      if (state.isConnected && state.isInternetReachable) {
-        try {
-          const cachedPhotos = await AsyncStorage.getItem('cachedPhotos');
-          if (cachedPhotos != null) {
-            const project_number = workInfo && workInfo[0].project_number;
-
-            let projectNumberString;
-            if (project_number === null) {
-              projectNumberString = 'unknown';
-            } else {
-              projectNumberString = project_number.toString();
-            }
-            const {uri, workId, quality_control_id, status} =
-              JSON.parse(cachedPhotos);
-            const folderPath = `${projectNumberString}/${order_number}_${vendorInfo.name}/${product_name}/`;
-
-            for (const pictureUri of uri) {
-              const imageName = `${projectNumberString}_${product_name}_${step_name}_${technical_drawing_numbering}`;
-              const response = await uploadImage(
-                pictureUri,
-                workId.toString(),
-                quality_control_id.toString(),
-                'pending',
-                folderPath,
-                technical_drawing_numbering,
-                step_name,
-                imageName,
-                issue_text,
-                issue_description,
-              );
-              console.log('Image uploaded successfully: ', response);
-            }
-
-            await AsyncStorage.removeItem('cachedPhotos'); // Remove the photos from cache after successful upload
-          }
-        } catch (error) {
-          console.error('Error uploading cached image: ', error);
-        }
-      }
-    };
-
-    const unsubscribe = NetInfo.addEventListener(handleConnectivityChange);
-
-    // Clean up function
-    return () => {
-      unsubscribe();
-    };
-  }, []);
-
   const sendPicture = async () => {
     setIsButtonDisabled(true);
 
@@ -188,16 +137,17 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({route, navigation}) => {
     const folderPath = `${projectNumberString}/${order_number}_${vendorInfo.name}/${product_name}/`;
 
     existingPictures.forEach(async (pictureUri, index) => {
+      const imageKey = `cachedPhoto_${Date.now()}_${index}`;
       const imageName = `${projectNumberString}_${product_name}_${step_name}_${technical_drawing_numbering}_i${index}`;
       if (!netInfo.isConnected || !netInfo.isInternetReachable) {
         try {
           await AsyncStorage.setItem(
-            'cachedPhoto',
+            imageKey,
             JSON.stringify({
               uri: pictureUri,
               workId,
               quality_control_id,
-              status: 'status',
+              status: 'pending',
               folderPath: folderPath,
               technical_drawing_numbering: technical_drawing_numbering,
               step_name: step_name,
