@@ -7446,6 +7446,14 @@
   "resolved" "https://registry.npmjs.org/react-native-fast-image/-/react-native-fast-image-8.6.3.tgz"
   "version" "8.6.3"
 
+"react-native-flash-message@^0.4.2":
+  "integrity" "sha512-YvdXRW9AGMTI99S3DJZhLO0mbk/ehKv/UQf4/Df+3dtGi8DlkidRbyqCQZk1WMtZ7rN85PMTGr/xEI9CF9z0YA=="
+  "resolved" "https://registry.npmjs.org/react-native-flash-message/-/react-native-flash-message-0.4.2.tgz"
+  "version" "0.4.2"
+  dependencies:
+    "prop-types" "^15.8.1"
+    "react-native-iphone-screen-helper" "^2.0.2"
+
 "react-native-fs@^2.20.0":
   "integrity" "sha512-VkTBzs7fIDUiy/XajOSNk0XazFE9l+QlMAce7lGuebZcag5CnjszB+u4BdqzwaQOdcYb5wsJIsqq4kxInIRpJQ=="
   "resolved" "https://registry.npmjs.org/react-native-fs/-/react-native-fs-2.20.0.tgz"
@@ -7469,6 +7477,11 @@
   "integrity" "sha512-1dVk9NwhoyKHCSxcrM6vY6cxmojeATsBobDicX0ZKr7DgUF2cBQRTKsimQFvzH8XhOVXyH8p4HyDSZNIFI8OlQ=="
   "resolved" "https://registry.npmjs.org/react-native-gradle-plugin/-/react-native-gradle-plugin-0.71.19.tgz"
   "version" "0.71.19"
+
+"react-native-iphone-screen-helper@^2.0.2":
+  "integrity" "sha512-gbSnV0iYWQ3hne3inYoueatSJL/Un49biIkHLGKsm7J7QjFhL+/WSPB1sZhQ87lNIANwFh33nvxcjixxR4T+NQ=="
+  "resolved" "https://registry.npmjs.org/react-native-iphone-screen-helper/-/react-native-iphone-screen-helper-2.0.3.tgz"
+  "version" "2.0.3"
 
 "react-native-pdf@^6.7.1":
   "integrity" "sha512-zszQygtNBYoUfEtP/fV7zhzGeohDlUksh2p3OzshLrxdY9mw7Tm5VXAxYq4d8HsomRJUbFlJ7rHaTU9AQL800g=="
@@ -7504,7 +7517,7 @@
   "resolved" "https://registry.npmjs.org/react-native-vision-camera/-/react-native-vision-camera-2.15.5.tgz"
   "version" "2.15.5"
 
-"react-native@*", "react-native@^0.0.0-0 || 0.60 - 0.72 || 1000.0.0", "react-native@>=0.54.0", "react-native@>=0.59", "react-native@>=0.60.0", "react-native@0.72.3":
+"react-native@*", "react-native@^0.0.0-0 || 0.60 - 0.72 || 1000.0.0", "react-native@>=0.42.0", "react-native@>=0.54.0", "react-native@>=0.59", "react-native@>=0.60.0", "react-native@0.72.3":
   "integrity" "sha512-QqISi+JVmCssNP2FlQ4MWhlc4O/I00MRE1/GClvyZ8h/6kdsyk/sOirkYdZqX3+DrJfI3q+OnyMnsyaXIQ/5tQ=="
   "resolved" "https://registry.npmjs.org/react-native/-/react-native-0.72.3.tgz"
   "version" "0.72.3"

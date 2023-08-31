@@ -6,9 +6,15 @@ import {
   FlatList,
   Image,
   Button,
+  StatusBar,
 } from 'react-native';
 import {WorkProducts} from '../models/WorkProducts';
-import {getWorks, getWorkById} from '../services/workService';
+import {
+  getWorks,
+  getWorkById,
+  getForm,
+  postQualityControl,
+} from '../services/workService';
 import {getData} from '../utils/storage';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 import taskstyles from '../components/Task';
@@ -19,6 +25,8 @@ import pdfIcon from '../assets/pdfIcon.png';
 import SearchBar from '../components/SearchBar';
 import {uploadCachedImages} from '../services/PreviewService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import FlashMessage, {showMessage} from 'react-native-flash-message';
+import NetInfo from '@react-native-community/netinfo';
 
 type navigationProp = StackNavigationProp<
   RootStackParamList,
@@ -46,6 +54,15 @@ const TasksScreen = () => {
               );
 
               const workInfoData = await getWorkById(workProduct.work_id);
+              const formId = await getForm(
+                workProduct.product_id,
+                workInfoData.workInfo[0].vendor_id,
+              );
+              const formIds = formId.form.map(id => id.id);
+              for (const formId of formIds) {
+                await postQualityControl(formId, workProduct.work_id);
+              }
+
               return {
                 ...workProduct,
                 productInfo: productInfoData.productInfo[0],
@@ -68,18 +85,23 @@ const TasksScreen = () => {
 
   useEffect(() => {
     async function isCachedImage() {
-      const cachedImage: any = await AsyncStorage.getItem('cachedPhoto');
-      const isCachedImage = JSON.parse(cachedImage);
-      if (isCachedImage !== null) {
-        return setIsCached(true);
-      } else {
-        return setIsCached(false);
+      const keys = await AsyncStorage.getAllKeys();
+      const cachedPhotosKeys: any = keys.filter(key =>
+        key.startsWith('cachedPhoto_'),
+      );
+      for (const key of cachedPhotosKeys) {
+        const cachedImage: any = await AsyncStorage.getItem(key);
+        const isCachedImage = JSON.parse(cachedImage);
+        if (isCachedImage !== null) {
+          return setIsCached(true);
+        }
       }
+      console.log(isCached);
     }
     if (isFocused) {
       isCachedImage();
     }
-  }, [isFocused]);
+  }, [isFocused, isCached]);
 
   const filteredWorkProducts = workProducts.filter(
     workProduct =>
@@ -110,16 +132,39 @@ const TasksScreen = () => {
     }
   };
 
+  const handleUploadImageWithError = async () => {
+    const netInfo = await NetInfo.fetch();
+    if (!netInfo.isConnected && !netInfo.isInternetReachable) {
+      if (isCached) {
+        showMessage({
+          message: 'HATA !',
+          type: 'warning',
+          description: 'İnternet bağlantısı ile tekrar deneyin !',
+        });
+      }
+    } else {
+      showMessage({
+        message: 'Başarılı !',
+        type: 'success',
+        description: 'Resimler başarıyla yüklendi !',
+      });
+      uploadCachedImages();
+    }
+  };
+
   return (
     <View>
       {isCached ? (
         <Button
-          title="Upload Cached Images with Internet Connection"
-          onPress={() => {
-            uploadCachedImages();
-          }}
+          title="İnternet kapalı iken çekilen resimleri yükle."
+          onPress={handleUploadImageWithError}
         />
       ) : null}
+      <FlashMessage
+        position="top"
+        hideStatusBar={false}
+        statusBarHeight={StatusBar.currentHeight}
+      />
       <SearchBar
         searchQuery={searchQuery}
         onSearchQueryChange={newSearchQuery => setSearchQuery(newSearchQuery)}

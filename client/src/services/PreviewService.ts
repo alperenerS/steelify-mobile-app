@@ -73,7 +73,7 @@ export const uploadCachedImages = async () => {
   const netinfo = await NetInfo.fetch();
   if (netinfo.isConnected && netinfo.isInternetReachable) {
     const keys = await AsyncStorage.getAllKeys();
-    const cachedPhotosKeys = keys.filter(key => key.startsWith("cachedPhoto_"));
+    const cachedPhotosKeys = keys.filter(key => key.startsWith('cachedPhoto_'));
 
     for (const key of cachedPhotosKeys) {
       const cachedImage: any = await AsyncStorage.getItem(key);
@@ -93,11 +93,12 @@ export const uploadCachedImages = async () => {
             offlineImage.issue_description,
           );
           console.log('Cached image uploaded successfully:', response);
-          await AsyncStorage.removeItem(key); 
         } catch (error) {
           console.error('Error uploading cached image: ', error);
         }
       }
+      await AsyncStorage.removeItem(key);
     }
+    console.log('deneme');
   }
 };

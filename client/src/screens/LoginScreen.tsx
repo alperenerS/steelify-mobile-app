@@ -1,11 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, TextInput, Alert, Image } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { login } from '../services/authService';
-import { storeData, getData } from '../utils/storage';
+import React, {useState, useEffect} from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  TextInput,
+  Alert,
+  Image,
+} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {login} from '../services/authService';
+import {storeData, getData} from '../utils/storage';
 import loginstyles from '../components/Login';
 import yenalogo from '../assets/yena_logo.png';
+import {getUserInfo} from '../services/profileService';
+import {getWorks} from '../services/workService';
 
 type RootStackParamList = {
   Login: undefined;
@@ -38,6 +47,8 @@ const LoginScreen = () => {
       await storeData('userToken', token);
       await storeData('userPhone', phone);
       await storeData('userPassword', password);
+      await getUserInfo(token);
+      await getWorks(token);
       navigation.navigate('Main');
     } catch (error) {
       if (error instanceof Error) {
