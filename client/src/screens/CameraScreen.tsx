@@ -5,11 +5,11 @@ import {RouteProp} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParamList} from '../navigation/StackNavigator';
 import camerastyles from '../components/Camera';
-import captureIcon from '../assets/camera_capture.png';
 import ImageViewerModal from '../components/ImageViewerModal';
 import CameraAccessModal from '../components/CameraAccessModal';
 import ReportViewerModal from '../components/ReportViewerModal'; // New Import
 import { useFocusEffect } from '@react-navigation/core';
+
 
 
 type CameraScreenRouteProp = RouteProp<RootStackParamList, 'Kamera'>;
@@ -35,7 +35,11 @@ const CameraScreen: React.FC<CameraScreenProps> = ({route, navigation}) => {
   const {description} = route.params;
   const [popupDescription, setPopupDescription] = useState('');
   const devices= useCameraDevices();
-  const device = devices.back;
+  const switchCameraIcon = require('../assets/switch_camera.png');
+  const captureIcon = require('../assets/camera_capture.png');
+  
+
+  
   const [isActive, setIsActive] = useState(false);
 
   React.useEffect(() => {
@@ -78,20 +82,41 @@ const CameraScreen: React.FC<CameraScreenProps> = ({route, navigation}) => {
       }
   };
 
+  const [cameraType, setCameraType] = useState("back");
+
+  // Kamera tipini değiştirecek bir fonksiyon ekliyoruz.
+  const switchCameraType = () => {
+    setCameraType(prevType => prevType === "back" ? "front" : "back");
+  }
+
+  // Kullanılacak kamera cihazını belirliyoruz.
+  const device = cameraType === "back" ? devices.back : devices.front;
+
   if (device==null) {
     return null;
   }
   
   return (
     <View style={{flex: 1}}>
-     <Camera
+      <Camera
       ref={cameraRef}
       style={StyleSheet.absoluteFill}
       device={device}
       photo={true}
       enableZoomGesture={true}
-      isActive={isActive}> 
-  </Camera>
+      isActive={isActive}
+    >
+     
+        <TouchableOpacity
+          style={StyleSheet.absoluteFill}
+          onPress={(e) => {
+            const { locationX, locationY } = e.nativeEvent;
+            // Odaklama işlemi için Camera API'sini burada kullanın.
+          }}
+        >
+       
+      </TouchableOpacity>
+    </Camera>
   <TouchableOpacity
         style={camerastyles.topLeftCorner}
         onPress={() => setModalVisible(true)}
@@ -101,6 +126,15 @@ const CameraScreen: React.FC<CameraScreenProps> = ({route, navigation}) => {
           resizeMode='contain' 
           style={camerastyles.smallThumbnail}
         />
+      </TouchableOpacity>
+      <TouchableOpacity
+          style={{ position: 'absolute', right: 20, bottom: 25 }}
+          onPress={switchCameraType}
+      >
+          <Image 
+              source={switchCameraIcon} 
+              style={{ width: 60, height: 60 }} 
+          />
       </TouchableOpacity>
     
       <ImageViewerModal
