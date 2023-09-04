@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   Button,
   Image,
   SafeAreaView,
+  Alert,
 } from 'react-native';
 import {
   getWorkById,
@@ -14,19 +15,20 @@ import {
   postQualityControl,
   updateWorkProductStatus, // Yeni eklenen servis fonksiyonunu import ediyoruz
 } from '../services/workService';
-import { getProductInfo } from '../services/productService';
-import { getImageCounts } from '../services/imageService';
-import { RouteProp } from '@react-navigation/native';
-import { RootStackParamList } from '../navigation/StackNavigator';
+import {getProductInfo} from '../services/productService';
+import {getImageCounts} from '../services/imageService';
+import {RouteProp} from '@react-navigation/native';
+import {RootStackParamList} from '../navigation/StackNavigator';
 import workstyles from '../components/WorkOrder';
 import buttonstyles from '../components/Button';
-import { WorkInfo } from '../models/WorkInfo';
-import { QualityControl } from '../models/QualityControl';
-import { ProductInfo } from '../models/ProductInfo';
-import { useNavigation, useIsFocused } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
+import {WorkInfo} from '../models/WorkInfo';
+import {QualityControl} from '../models/QualityControl';
+import {ProductInfo} from '../models/ProductInfo';
+import {useNavigation, useIsFocused} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
 import cameraIcon from '../assets/camera_icon.png';
-import { ImageCount } from '../models/ImageCount';
+import {ImageCount} from '../models/ImageCount';
+import { PermissionsAndroid } from 'react-native';
 
 type WorkOrderScreenRouteProp = RouteProp<
   RootStackParamList,
@@ -36,16 +38,36 @@ type navigationProp =
   | StackNavigationProp<RootStackParamList, 'PdfViewerScreen'>
   | StackNavigationProp<RootStackParamList, 'Kamera'>;
 
-const WorkOrderScreen = ({ route }: { route: WorkOrderScreenRouteProp }) => {
+const WorkOrderScreen = ({route}: {route: WorkOrderScreenRouteProp}) => {
   const [work, setWork] = useState<WorkInfo[]>([]);
-  const { workId, productId } = route.params;
+  const {workId, productId} = route.params;
   const [formId, setFormId] = useState<number | null>(null);
-  const [qualityControlData, setQualityControlData] = useState<QualityControl[]>();
+  const [qualityControlData, setQualityControlData] =
+    useState<QualityControl[]>();
   const [productInfo, setProductInfo] = useState<ProductInfo | null>(null);
   const [existingPictures, setExistingPictures] = useState<string[]>([]);
   const navigation = useNavigation<navigationProp>();
   const navigation2 = useNavigation<StackNavigationProp<RootStackParamList>>();
   const isFocused = useIsFocused();
+
+  const checkCameraPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+        {
+          title: "Kamera İzni",
+          message: "Uygulama kamerayı kullanmak için izin istiyor",
+          buttonNeutral: "Daha Sonra Sor",
+          buttonNegative: "İptal",
+          buttonPositive: "Tamam"
+        }
+      );
+      return granted === PermissionsAndroid.RESULTS.GRANTED;
+    } catch (err) {
+      console.warn(err);
+      return false;
+    }
+  };
 
   useEffect(() => {
     if (isFocused) {
@@ -60,7 +82,7 @@ const WorkOrderScreen = ({ route }: { route: WorkOrderScreenRouteProp }) => {
 
         setWork(workData.workInfo);
         setProductInfo(productInfoResponse.productInfo[0]);
-        navigation.setOptions({ title: productInfoResponse.productInfo[0].name });
+        navigation.setOptions({title: productInfoResponse.productInfo[0].name});
 
         const formResponsePromise = getForm(
           productId,
@@ -77,19 +99,19 @@ const WorkOrderScreen = ({ route }: { route: WorkOrderScreenRouteProp }) => {
         const qualityControlResponse = await qualityControlResponsePromise;
 
         const qualityControlIds = qualityControlResponse.qualitycontrol.map(
-          (qc) => qc.id,
+          qc => qc.id,
         );
         const imageCountDataPromise = getImageCounts(qualityControlIds, workId);
         const imageCountData = await imageCountDataPromise;
 
         const imageCountRecord: Record<string, number> = {};
 
-        imageCountData.forEach((ic) => {
+        imageCountData.forEach(ic => {
           imageCountRecord[ic.quality_control_id] = ic.count;
         });
 
         const updatedQualityControlData =
-          qualityControlResponse.qualitycontrol.map((qc) => ({
+          qualityControlResponse.qualitycontrol.map(qc => ({
             ...qc,
             imageCount: imageCountRecord[qc.id] || 0,
           }));
@@ -106,30 +128,32 @@ const WorkOrderScreen = ({ route }: { route: WorkOrderScreenRouteProp }) => {
   }, [workId, isFocused]);
 
   useEffect(() => {
-    
-
     // Eğer qualityControlData veya work değişiklik gösterirse bu useEffect tetiklenir.
     const updateStatus = async () => {
-        if (qualityControlData) {
-            qualityControlData.forEach((item) => {
-                const condition = item.imageCount && item.imageCount >= item.sample_quantity;
-            });
-            if (qualityControlData.every(item => item.imageCount && item.imageCount >= item.sample_quantity)) {
-                try {
-                    if (work && work.length > 0 && productId) {
-                        await updateWorkProductStatus(work[0].id, productId, 'Closed'); // Status'ü "Closed" yap
-                        navigation2.navigate("Main");
-                    } else {
-                    }
-                } catch (error) {
-                }
+      if (qualityControlData) {
+        qualityControlData.forEach(item => {
+          const condition =
+            item.imageCount && item.imageCount >= item.sample_quantity;
+        });
+        if (
+          qualityControlData.every(
+            item => item.imageCount && item.imageCount >= item.sample_quantity,
+          )
+        ) {
+          try {
+            if (work && work.length > 0 && productId) {
+              await updateWorkProductStatus(work[0].id, productId, 'Closed'); // Status'ü "Closed" yap
+              navigation2.navigate('Main');
             } else {
             }
+          } catch (error) {}
+        } else {
         }
+      }
     };
 
     updateStatus();
-}, [qualityControlData, work, productId]);
+  }, [qualityControlData, work, productId]);
 
   if (!work) {
     return (
@@ -146,7 +170,8 @@ const WorkOrderScreen = ({ route }: { route: WorkOrderScreenRouteProp }) => {
           <>
             <Text style={{color: 'black'}}>
               Work ID: {work[0].id}, Vendor ID: {work[0].vendor_id}, QR ID:{' '}
-              {work[0].quality_responsible_id}, Form ID: {formId}, product: {productId}
+              {work[0].quality_responsible_id}, Form ID: {formId}, product:{' '}
+              {productId}
             </Text>
             {productInfo ? (
               <View style={buttonstyles.buttonContainer}>
@@ -218,26 +243,39 @@ const WorkOrderScreen = ({ route }: { route: WorkOrderScreenRouteProp }) => {
                             alignItems: 'center',
                           }}>
                           <TouchableOpacity
-                            onPress={() =>
-                              navigation.navigate('Kamera', {
-                                description: item.description,
-                                existingPictures,
-                                example_visual_url:
-                                  item.example_visual_url || null,
-                                workId: item.work_id,
-                                quality_control_id: item.id,
-                                productId: productId,
-                                technical_drawing_numbering:
-                                  item.technical_drawing_numbering,
-                                lower_tolerance: item.lower_tolerance,
-                                upper_tolerance: item.upper_tolerance,
-                                step_name: item.step_name,
-                                order_number: work[0].order_number,
-                                product_name: productInfo
-                                  ? productInfo.name
-                                  : null,
-                                vendor_id: work[0].vendor_id,
-                              })
+                            onPress={async () =>{
+                              const hasCameraPermission=await checkCameraPermission();
+                              if(hasCameraPermission){
+                                navigation.navigate('Kamera', {
+                                  description: item.description,
+                                  existingPictures,
+                                  example_visual_url:
+                                    item.example_visual_url || null,
+                                  workId: item.work_id,
+                                  quality_control_id: item.id,
+                                  productId: productId,
+                                  technical_drawing_numbering:
+                                    item.technical_drawing_numbering,
+                                  lower_tolerance: item.lower_tolerance,
+                                  upper_tolerance: item.upper_tolerance,
+                                  step_name: item.step_name,
+                                  order_number: work[0].order_number,
+                                  product_name: productInfo
+                                    ? productInfo.name
+                                    : null,
+                                  vendor_id: work[0].vendor_id,
+                                })
+                              }else {
+                                Alert.alert(
+                                  'İzin Gerekli', 
+                                  'Kamerayı kullanabilmek için izin vermelisiniz.', 
+                                  [
+                                    {text: 'Tamam', onPress: () => console.log('Tamam basıldı')},
+                                  ]
+                                );
+                              }
+                            }
+                             
                             }>
                             <Image
                               source={cameraIcon}

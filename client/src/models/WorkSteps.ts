@@ -1,5 +1,5 @@
 export interface WorkSteps {
-    id: number;
-    status: string;
-  }
-  
+  id: number;
+  work_id: number;
+  status: string;
+}

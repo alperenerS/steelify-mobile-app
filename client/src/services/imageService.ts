@@ -5,11 +5,6 @@ import NetInfo from "@react-native-community/netinfo";
 
 const BASE_URL = process.env.REACT_APP_API_URL;
 
-const getDataFromCache = async (cacheKey: string): Promise<ImageCount[]> => {
-  const cachedImageCounts = await getData(cacheKey);
-  return cachedImageCounts ? JSON.parse(cachedImageCounts) : [];
-}
-
 export const getImageCounts = async (qualityControlIds: number[], workId: number): Promise<ImageCount[]> => {
   const netInfo = await NetInfo.fetch();
   const cacheKey = `imageCounts-${workId}`;
