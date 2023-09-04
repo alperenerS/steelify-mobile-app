@@ -1,5 +1,5 @@
 import React, {useRef, useState,} from 'react';
-import {View, Image, TouchableOpacity, Text, StyleSheet,} from 'react-native';
+import { View, Image, TouchableOpacity, Text, StyleSheet, GestureResponderEvent } from 'react-native';
 import {Camera, useCameraDevices} from 'react-native-vision-camera';
 import {RouteProp} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
@@ -9,8 +9,6 @@ import ImageViewerModal from '../components/ImageViewerModal';
 import CameraAccessModal from '../components/CameraAccessModal';
 import ReportViewerModal from '../components/ReportViewerModal'; // New Import
 import { useFocusEffect } from '@react-navigation/core';
-
-
 
 type CameraScreenRouteProp = RouteProp<RootStackParamList, 'Kamera'>;
 type CameraScreenNavigationProp = StackNavigationProp<
@@ -37,8 +35,6 @@ const CameraScreen: React.FC<CameraScreenProps> = ({route, navigation}) => {
   const devices= useCameraDevices();
   const switchCameraIcon = require('../assets/switch_camera.png');
   const captureIcon = require('../assets/camera_capture.png');
-  
-
   
   const [isActive, setIsActive] = useState(false);
 
@@ -95,29 +91,30 @@ const CameraScreen: React.FC<CameraScreenProps> = ({route, navigation}) => {
   if (device==null) {
     return null;
   }
+
+  const handleCameraTap = (event: GestureResponderEvent) => {
+    const x = event.nativeEvent.locationX;
+    const y = event.nativeEvent.locationY;
+  
+    if (cameraRef.current) {
+      cameraRef.current.focus({ x, y });
+    }
+  };
+
   
   return (
     <View style={{flex: 1}}>
-      <Camera
-      ref={cameraRef}
-      style={StyleSheet.absoluteFill}
-      device={device}
-      photo={true}
-      enableZoomGesture={true}
-      isActive={isActive}
-    >
-     
-        <TouchableOpacity
-          style={StyleSheet.absoluteFill}
-          onPress={(e) => {
-            const { locationX, locationY } = e.nativeEvent;
-            // Odaklama işlemi için Camera API'sini burada kullanın.
-          }}
-        >
-       
-      </TouchableOpacity>
-    </Camera>
-  <TouchableOpacity
+          <Camera
+              ref={cameraRef}
+              style={StyleSheet.absoluteFill}
+              device={device}
+              photo={true}
+              enableZoomGesture={true}
+              isActive={isActive}
+              onTouchEnd={handleCameraTap}
+          >
+          </Camera>
+      <TouchableOpacity
         style={camerastyles.topLeftCorner}
         onPress={() => setModalVisible(true)}
       >
