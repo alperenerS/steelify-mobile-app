@@ -39,6 +39,8 @@ const TasksScreen = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const isFocused = useIsFocused();
   const [isCached, setIsCached] = useState<boolean | null>(false);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+
   useEffect(() => {
     const fetchData = async () => {
       const token = await getData('userToken');
@@ -96,6 +98,7 @@ const TasksScreen = () => {
           return setIsCached(true);
         }
       }
+      setIsCached(false);
       console.log(isCached);
     }
     if (isFocused) {
@@ -133,6 +136,7 @@ const TasksScreen = () => {
   };
 
   const handleUploadImageWithError = async () => {
+    setIsButtonDisabled(true);
     const netInfo = await NetInfo.fetch();
     if (!netInfo.isConnected && !netInfo.isInternetReachable) {
       if (isCached) {
@@ -150,6 +154,7 @@ const TasksScreen = () => {
       });
       uploadCachedImages();
     }
+    setTimeout(() => setIsButtonDisabled(false), 2000);
   };
 
   return (
@@ -158,6 +163,7 @@ const TasksScreen = () => {
         <Button
           title="İnternet kapalı iken çekilen resimleri yükle."
           onPress={handleUploadImageWithError}
+          disabled={isButtonDisabled}
         />
       ) : null}
       <FlashMessage
