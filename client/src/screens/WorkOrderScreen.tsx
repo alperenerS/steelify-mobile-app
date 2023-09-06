@@ -40,10 +40,9 @@ type navigationProp =
 
 const WorkOrderScreen = ({route}: {route: WorkOrderScreenRouteProp}) => {
   const [work, setWork] = useState<WorkInfo[]>([]);
-  const {workId, productId} = route.params;
+  const {workId, productId, productName} = route.params;
   const [formId, setFormId] = useState<number | null>(null);
-  const [qualityControlData, setQualityControlData] =
-    useState<QualityControl[]>();
+  const [qualityControlData, setQualityControlData] = useState<QualityControl[]>();
   const [productInfo, setProductInfo] = useState<ProductInfo | null>(null);
   const [existingPictures, setExistingPictures] = useState<string[]>([]);
   const navigation = useNavigation<navigationProp>();
@@ -82,7 +81,7 @@ const WorkOrderScreen = ({route}: {route: WorkOrderScreenRouteProp}) => {
 
         setWork(workData.workInfo);
         setProductInfo(productInfoResponse.productInfo[0]);
-        navigation.setOptions({title: productInfoResponse.productInfo[0].name});
+        navigation.setOptions({title: productName});
 
         const formResponsePromise = getForm(
           productId,
@@ -249,20 +248,16 @@ const WorkOrderScreen = ({route}: {route: WorkOrderScreenRouteProp}) => {
                                 navigation.navigate('Kamera', {
                                   description: item.description,
                                   existingPictures,
-                                  example_visual_url:
-                                    item.example_visual_url || null,
+                                  example_visual_url: item.example_visual_url || null,
                                   workId: item.work_id,
                                   quality_control_id: item.id,
                                   productId: productId,
-                                  technical_drawing_numbering:
-                                    item.technical_drawing_numbering,
+                                  technical_drawing_numbering: item.technical_drawing_numbering,
                                   lower_tolerance: item.lower_tolerance,
                                   upper_tolerance: item.upper_tolerance,
                                   step_name: item.step_name,
                                   order_number: work[0].order_number,
-                                  product_name: productInfo
-                                    ? productInfo.name
-                                    : null,
+                                  product_name: productName,
                                   vendor_id: work[0].vendor_id,
                                 })
                               }else {

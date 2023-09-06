@@ -12,7 +12,7 @@ import {getData} from '../utils/storage';
 export type RootStackParamList = {
   Login: undefined;
   Main: undefined;
-  WorkOrderScreen: { workId: number; productId: number};
+  WorkOrderScreen: { workId: number; productId: number, productName: string};
   PdfViewerScreen: {
     pdfUrl: string;
     workId: number;

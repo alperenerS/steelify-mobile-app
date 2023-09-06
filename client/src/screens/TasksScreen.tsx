@@ -114,10 +114,11 @@ const TasksScreen = () => {
         .includes(searchQuery.toLowerCase()),
   );
 
-  const handlePress = (workId: number, productId: number) => {
+  const handlePress = (workId: number, productId: number, productName: string) => {
     navigation.navigate('WorkOrderScreen', {
       workId: workId,
       productId: productId,
+      productName: productName,
     });
   };
 
@@ -185,7 +186,7 @@ const TasksScreen = () => {
               style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <TouchableOpacity
                 style={{flex: 0.8}}
-                onPress={() => handlePress(item.work_id, item.product_id)}>
+                onPress={() => handlePress(item.work_id, item.product_id, item.productInfo?.name || "N/A")}>
                 <Text style={taskstyles.text}>
                   Product Name: {item.productInfo?.name}
                 </Text>
