@@ -5,7 +5,7 @@ import homestyles from '../components/Home';
 const HomeScreen = () => {
   return (
     <View style={homestyles.container}>
-      <Text style={homestyles.text}>Anasayfa</Text>
+      <Text style={homestyles.text}>Homepage</Text>
     </View>
   );
 }

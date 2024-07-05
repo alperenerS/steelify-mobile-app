@@ -10,10 +10,10 @@ import CameraAccessModal from '../components/CameraAccessModal';
 import ReportViewerModal from '../components/ReportViewerModal'; // New Import
 import { useFocusEffect } from '@react-navigation/core';
 
-type CameraScreenRouteProp = RouteProp<RootStackParamList, 'Kamera'>;
+type CameraScreenRouteProp = RouteProp<RootStackParamList, 'Camera'>;
 type CameraScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
-  'Kamera'
+  'Camera'
 >;
 
 interface CameraScreenProps {
@@ -49,7 +49,7 @@ const CameraScreen: React.FC<CameraScreenProps> = ({route, navigation}) => {
               style={camerastyles.reportIcon}
             />
           </TouchableOpacity> 
-          <Text style={{ color: 'black', paddingRight: 10 }}>Teknik Çizim No: {String(technical_drawing_numbering)}</Text>
+          <Text style={{ color: 'black', paddingRight: 10 }}>Technical Drawing No: {String(technical_drawing_numbering)}</Text>
         </View>
       ),
     });

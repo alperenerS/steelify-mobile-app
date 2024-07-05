@@ -192,7 +192,7 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({route, navigation}) => {
   };
 
   const addPhoto = () => {
-    navigation.navigate('Kamera', {
+    navigation.navigate('Camera', {
       existingPictures: existingPictures,
       example_visual_url,
       workId,

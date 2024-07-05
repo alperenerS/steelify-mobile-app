@@ -36,7 +36,7 @@ type WorkOrderScreenRouteProp = RouteProp<
 >;
 type navigationProp =
   | StackNavigationProp<RootStackParamList, 'PdfViewerScreen'>
-  | StackNavigationProp<RootStackParamList, 'Kamera'>;
+  | StackNavigationProp<RootStackParamList, 'Camera'>;
 
 const WorkOrderScreen = ({route}: {route: WorkOrderScreenRouteProp}) => {
   const [work, setWork] = useState<WorkInfo[]>([]);
@@ -167,15 +167,15 @@ const WorkOrderScreen = ({route}: {route: WorkOrderScreenRouteProp}) => {
       <View>
         {work.length > 0 ? (
           <>
-            <Text style={{color: 'black'}}>
+            {/* <Text style={{color: 'black'}}>
               Work ID: {work[0].id}, Vendor ID: {work[0].vendor_id}, QR ID:{' '}
               {work[0].quality_responsible_id}, Form ID: {formId}, product:{' '}
               {productId}
-            </Text>
+            </Text> */}
             {productInfo ? (
               <View style={buttonstyles.buttonContainer}>
                 <Button
-                  title="Teknik Çizim"
+                  title="Technical Drawing"
                   onPress={() => {
                     if (productInfo?.technicaldrawingurl) {
                       navigation.navigate('PdfViewerScreen', {
@@ -188,7 +188,7 @@ const WorkOrderScreen = ({route}: {route: WorkOrderScreenRouteProp}) => {
                 />
 
                 <Button
-                  title="Kılavuz"
+                  title="Guide"
                   onPress={() => {
                     if (productInfo?.technicaldrawingurl) {
                       navigation.navigate('PdfViewerScreen', {
@@ -230,7 +230,7 @@ const WorkOrderScreen = ({route}: {route: WorkOrderScreenRouteProp}) => {
                         <View style={{flex: 0.7}}>
                           <Text style={workstyles.text}>{item.step_name}</Text>
                           <Text style={workstyles.text}>
-                            Teknik Çizim Numarası:{' '}
+                            Technical Drawing No:{' '}
                             {item.technical_drawing_numbering}
                           </Text>
                           <Text style={workstyles.text}>ID: {item.id}</Text>
@@ -245,7 +245,7 @@ const WorkOrderScreen = ({route}: {route: WorkOrderScreenRouteProp}) => {
                             onPress={async () =>{
                               const hasCameraPermission=await checkCameraPermission();
                               if(hasCameraPermission){
-                                navigation.navigate('Kamera', {
+                                navigation.navigate('Camera', {
                                   description: item.description,
                                   existingPictures,
                                   example_visual_url: item.example_visual_url || null,
@@ -277,7 +277,7 @@ const WorkOrderScreen = ({route}: {route: WorkOrderScreenRouteProp}) => {
                               style={{width: 40, height: 40}}
                             />
                           </TouchableOpacity>
-                          <Text style={workstyles.text2}>Fotoğraf Çek</Text>
+                          <Text style={workstyles.text2}>Take a photo</Text>
                         </View>
                       </View>
                     </View>

@@ -35,7 +35,7 @@ const PdfViewerScreen = ({ route }) => {
               productId: productId,
             })
           }>
-          <Text style={{ color: 'white', fontSize: 16 }}>İşe Git</Text>
+          <Text style={{ color: 'white', fontSize: 16 }}>Go to the Work</Text>
         </TouchableOpacity>
       </View>
     </View>
