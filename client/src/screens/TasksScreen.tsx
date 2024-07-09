@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import AccordionView from '../components/ListView';
-import CarouselView from '../components/GalleryView';
+import ListView from '../components/ListView';
+import GalleryView from '../components/GalleryView';
 
 interface TasksScreenProps {
   isCarouselMode: boolean;
@@ -11,7 +11,7 @@ interface TasksScreenProps {
 const TasksScreen: React.FC<TasksScreenProps> = ({ isCarouselMode }) => {
   return (
     <View style={styles.container}>
-      {isCarouselMode ? <CarouselView /> : <AccordionView />}
+      {isCarouselMode ? <GalleryView /> : <ListView />}
     </View>
   );
 };

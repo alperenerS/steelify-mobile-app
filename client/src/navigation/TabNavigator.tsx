@@ -26,7 +26,7 @@ const CustomHeader: React.FC<CustomHeaderProps> = ({ isCarouselMode, setIsCarous
   <Appbar.Header>
     <Appbar.Content title="İşlerim" />
     <View style={styles.switchContainer}>
-      <Text style={styles.switchLabel}>{isCarouselMode ? 'Galeri' : 'Liste'}</Text>
+      <Text style={styles.switchLabel}>{isCarouselMode ? 'Galeri Görünümü' : 'Liste Görünümü'}</Text>
       <Switch
         value={isCarouselMode}
         onValueChange={() => setIsCarouselMode(!isCarouselMode)}

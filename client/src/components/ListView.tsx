@@ -19,7 +19,7 @@ const images = [
   { src: 'https://picsum.photos/200/300?random=10', description: 'Depolama, düzenli ve güvenli depolama', title: 'Depolama' },
 ];
 
-const AccordionView: React.FC = () => {
+const ListView: React.FC = () => {
   const [expanded, setExpanded] = useState<number | null>(0); // İlk adım açık
 
   const handlePress = (index: number) => {
@@ -100,4 +100,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AccordionView;
+export default ListView;

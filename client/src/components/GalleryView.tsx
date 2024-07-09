@@ -123,6 +123,7 @@ const styles = StyleSheet.create({
   button: {
     flex: 1,
     marginHorizontal: 5,
+    backgroundColor: '#FF6F00',
   },
   paginationContainer: {
     flexDirection: 'row',
