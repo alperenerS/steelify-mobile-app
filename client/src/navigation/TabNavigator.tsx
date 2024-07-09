@@ -11,7 +11,7 @@ import profileIcon from '../assets/profile.png';
 
 type TabParamList = {
   Anasayfa: undefined;
-  İşler: undefined;
+  İşlerim: undefined;
   Profilim: undefined;
 };
 
@@ -20,7 +20,7 @@ const Tab = createBottomTabNavigator<TabParamList>();
 const TabNavigator = () => {
   return (
     <Tab.Navigator
-      initialRouteName="İşler"
+      initialRouteName="İşlerim"
       screenOptions={{
         tabBarStyle: { height: 60 },
         tabBarLabelStyle: { fontSize: 16, fontWeight: 'bold' },
@@ -36,7 +36,7 @@ const TabNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="İşler"
+        name="İşlerim"
         component={TasksScreen}
         options={{
           tabBarIcon: ({ color }) => (
