@@ -18,7 +18,7 @@ const images = [
   { src: 'https://picsum.photos/200/300?random=10', description: 'Depolama, düzenli ve güvenli depolama', title: 'Depolama' },
 ];
 
-const CarouselView: React.FC = () => {
+const GalleryView: React.FC = () => {
   const swiperRef = useRef<Swiper>(null);
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -72,7 +72,7 @@ const CarouselView: React.FC = () => {
             <Text style={styles.description}>{image.description}</Text>
             <View style={styles.buttonContainer}>
               <Button mode="contained" onPress={handleNext} style={styles.button}>
-              Tamamla!
+                Tamamlandı!
               </Button>
               <Button mode="contained" onPress={() => {}} style={styles.button}>
                 Fotoğraf Çek
@@ -123,7 +123,6 @@ const styles = StyleSheet.create({
   button: {
     flex: 1,
     marginHorizontal: 5,
-    backgroundColor: '#FF6F00',
   },
   paginationContainer: {
     flexDirection: 'row',
@@ -151,13 +150,13 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   dotStyle: {
-    width: 0,
-    height: 0,
+    width: 0, // Hides the default dot
+    height: 0, // Hides the default dot
   },
   activeDotStyle: {
-    width: 0,
-    height: 0,
+    width: 0, // Hides the default dot
+    height: 0, // Hides the default dot
   },
 });
 
-export default CarouselView;
+export default GalleryView;

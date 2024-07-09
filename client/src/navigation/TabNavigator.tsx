@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Image } from 'react-native';
-
+import { View, Image, StyleSheet } from 'react-native';
+import { Appbar, Switch, Text } from 'react-native-paper';
 import HomeScreen from '../screens/HomeScreen';
 import TasksScreen from '../screens/TasksScreen';
 import ProfileScreen from '../screens/ProfileScreen';
@@ -17,7 +17,27 @@ type TabParamList = {
 
 const Tab = createBottomTabNavigator<TabParamList>();
 
-const TabNavigator = () => {
+interface CustomHeaderProps {
+  isCarouselMode: boolean;
+  setIsCarouselMode: (mode: boolean) => void;
+}
+
+const CustomHeader: React.FC<CustomHeaderProps> = ({ isCarouselMode, setIsCarouselMode }) => (
+  <Appbar.Header>
+    <Appbar.Content title="İşlerim" />
+    <View style={styles.switchContainer}>
+      <Text style={styles.switchLabel}>{isCarouselMode ? 'Galeri' : 'Liste'}</Text>
+      <Switch
+        value={isCarouselMode}
+        onValueChange={() => setIsCarouselMode(!isCarouselMode)}
+      />
+    </View>
+  </Appbar.Header>
+);
+
+const TabNavigator: React.FC = () => {
+  const [isCarouselMode, setIsCarouselMode] = useState(false);
+
   return (
     <Tab.Navigator
       initialRouteName="İşlerim"
@@ -37,11 +57,12 @@ const TabNavigator = () => {
       />
       <Tab.Screen
         name="İşlerim"
-        component={TasksScreen}
+        children={() => <TasksScreen isCarouselMode={isCarouselMode} setIsCarouselMode={setIsCarouselMode} />}
         options={{
           tabBarIcon: ({ color }) => (
             <Image source={tasksIcon} style={{ width: 30, height: 30, tintColor: color }} />
           ),
+          header: () => <CustomHeader isCarouselMode={isCarouselMode} setIsCarouselMode={setIsCarouselMode} />,
         }}
       />
       <Tab.Screen
@@ -56,5 +77,17 @@ const TabNavigator = () => {
     </Tab.Navigator>
   );
 };
+
+const styles = StyleSheet.create({
+  switchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingRight: 16,
+  },
+  switchLabel: {
+    marginRight: 10,
+    fontSize: 16,
+  },
+});
 
 export default TabNavigator;
