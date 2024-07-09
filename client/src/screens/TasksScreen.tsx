@@ -11,8 +11,8 @@ const TasksScreen: React.FC = () => {
     <View style={styles.container}>
       <Appbar.Header>
         <View style={styles.switchContainer}>
-          <Text style={styles.switchLabel}>{isCarouselMode ? 'Carousel Mode' : 'Accordion Mode'}</Text>
-          <Switch
+        <Text style={styles.switchLabel}>{isCarouselMode ? 'Galeri Görünümü' : 'Liste Görünümü'}</Text>
+        <Switch
             value={isCarouselMode}
             onValueChange={() => setIsCarouselMode(!isCarouselMode)}
           />

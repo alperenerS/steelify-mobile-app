@@ -10,9 +10,9 @@ import tasksIcon from '../assets/tasks.png';
 import profileIcon from '../assets/profile.png';
 
 type TabParamList = {
-  Homepage: undefined;
-  Works: undefined;
-  Profile: undefined;
+  Anasayfa: undefined;
+  İşler: undefined;
+  Profilim: undefined;
 };
 
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -20,14 +20,14 @@ const Tab = createBottomTabNavigator<TabParamList>();
 const TabNavigator = () => {
   return (
     <Tab.Navigator
-      initialRouteName="Works"
+      initialRouteName="İşler"
       screenOptions={{
         tabBarStyle: { height: 60 },
         tabBarLabelStyle: { fontSize: 16, fontWeight: 'bold' },
       }}
     >
       <Tab.Screen
-        name="Homepage"
+        name="Anasayfa"
         component={HomeScreen}
         options={{
           tabBarIcon: ({ color }) => (
@@ -36,7 +36,7 @@ const TabNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="Works"
+        name="İşler"
         component={TasksScreen}
         options={{
           tabBarIcon: ({ color }) => (
@@ -45,7 +45,7 @@ const TabNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="Profile"
+        name="Profilim"
         component={ProfileScreen}
         options={{
           tabBarIcon: ({ color }) => (

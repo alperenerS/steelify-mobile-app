@@ -52,7 +52,7 @@ const AccordionView: React.FC = () => {
             <Text style={styles.description}>{image.description}</Text>
             <View style={styles.buttonContainer}>
               <Button mode="contained" onPress={() => handleNext(index)} style={styles.button}>
-                Tamamlandı!
+                Tamamla!
               </Button>
               <Button mode="contained" onPress={() => {}} style={styles.button}>
                 Fotoğraf Çek
