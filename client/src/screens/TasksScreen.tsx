@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
+import { Appbar, Switch, Text } from 'react-native-paper';
 import AccordionView from '../components/AccordionView';
 import CarouselView from '../components/CarouselView';
 
@@ -8,17 +9,15 @@ const TasksScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Works</Text>
-        <TouchableOpacity
-          style={styles.switchButton}
-          onPress={() => setIsCarouselMode(!isCarouselMode)}
-        >
-          <Text style={styles.switchButtonText}>
-            {isCarouselMode ? 'Accordion Mode' : 'Carousel Mode'}
-          </Text>
-        </TouchableOpacity>
-      </View>
+      <Appbar.Header>
+        <View style={styles.switchContainer}>
+          <Text style={styles.switchLabel}>{isCarouselMode ? 'Carousel Mode' : 'Accordion Mode'}</Text>
+          <Switch
+            value={isCarouselMode}
+            onValueChange={() => setIsCarouselMode(!isCarouselMode)}
+          />
+        </View>
+      </Appbar.Header>
       {isCarouselMode ? <CarouselView /> : <AccordionView />}
     </View>
   );
@@ -28,23 +27,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  header: {
+  switchContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 16,
-    backgroundColor: '#f0f0f0',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    flex: 1,
+    paddingRight: 16,
   },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  switchButton: {
-    padding: 10,
-    backgroundColor: 'green',
-    borderRadius: 5,
-  },
-  switchButtonText: {
-    color: 'white',
+  switchLabel: {
+    marginRight: 10,
     fontSize: 16,
   },
 });
