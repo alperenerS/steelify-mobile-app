@@ -1,17 +1,10 @@
-import React, { useState } from 'react';
-import { View, Text, Image, StyleSheet, Dimensions, TouchableOpacity, ScrollView } from 'react-native';
-import Collapsible from 'react-native-collapsible';
-import BackButtonHeader from '../components/BackButtonHeader';
+import React, { useRef } from 'react';
+import { View, Text, Image, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
+import Swiper from 'react-native-swiper';
 
 const { width: viewportWidth } = Dimensions.get('window');
 
-interface ImageData {
-  src: string;
-  description: string;
-  title: string;
-}
-
-const images: ImageData[] = [
+const images = [
   { src: 'https://picsum.photos/200/300?random=1', description: 'Description 1', title: 'Image 1' },
   { src: 'https://picsum.photos/200/300?random=2', description: 'Description 2', title: 'Image 2' },
   { src: 'https://picsum.photos/200/300?random=3', description: 'Description 3', title: 'Image 3' },
@@ -29,37 +22,37 @@ const images: ImageData[] = [
   { src: 'https://picsum.photos/200/300?random=15', description: 'Description 15', title: 'Image 15' },
 ];
 
-const AccordionPage: React.FC = () => {
-  const [activeIndex, setActiveIndex] = useState<number | null>(0);
 
-  const handleNext = (index: number) => {
-    if (index < images.length - 1) {
-      setActiveIndex(index + 1);
-    } else {
-      setActiveIndex(null);
+const CarouselView: React.FC = () => {
+  const swiperRef = useRef<Swiper>(null);
+
+  const handleNext = () => {
+    if (swiperRef.current) {
+      swiperRef.current.scrollBy(1);
     }
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <BackButtonHeader title="Accordion Page" />
-      {images.map((image, index) => (
-        <View key={index} style={styles.accordionContainer}>
-          <TouchableOpacity onPress={() => setActiveIndex(activeIndex === index ? null : index)}>
-            <Text style={styles.title}>{image.title}</Text>
-          </TouchableOpacity>
-          <Collapsible collapsed={activeIndex !== index}>
-            <View style={styles.content}>
-              <Image source={{ uri: image.src }} style={styles.image} />
+    <View style={styles.container}>
+      <Swiper
+        ref={swiperRef}
+        style={styles.wrapper}
+        showsButtons={false}
+        loop={true}
+      >
+        {images.map((image, index) => (
+          <View style={styles.slide} key={index}>
+            <Image source={{ uri: image.src }} style={styles.image} />
+            <View style={styles.descriptionContainer}>
               <Text style={styles.description}>{image.description}</Text>
-              <TouchableOpacity style={styles.button} onPress={() => handleNext(index)}>
+              <TouchableOpacity style={styles.button} onPress={handleNext}>
                 <Text style={styles.buttonText}>Tamamlandı!</Text>
               </TouchableOpacity>
             </View>
-          </Collapsible>
-        </View>
-      ))}
-    </ScrollView>
+          </View>
+        ))}
+      </Swiper>
+    </View>
   );
 };
 
@@ -67,37 +60,33 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  accordionContainer: {
-    marginBottom: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-  },
-  title: {
-    fontSize: 18,
-    padding: 10,
-    backgroundColor: '#f0f0f0',
-  },
-  content: {
-    padding: 10,
+  wrapper: {},
+  slide: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'white',
   },
   image: {
     width: viewportWidth * 0.8,
-    height: 200,
+    height: '40%',
     resizeMode: 'cover',
-    alignSelf: 'center',
+  },
+  descriptionContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10,
   },
   description: {
-    marginTop: 10,
     fontSize: 16,
     color: '#333',
   },
   button: {
-    marginTop: 10,
+    marginLeft: 20,
     paddingVertical: 10,
     paddingHorizontal: 20,
     backgroundColor: 'green',
     borderRadius: 5,
-    alignSelf: 'flex-end',
   },
   buttonText: {
     color: 'white',
@@ -105,4 +94,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AccordionPage;
+export default CarouselView;
