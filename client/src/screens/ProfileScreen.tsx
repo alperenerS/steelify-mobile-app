@@ -1,11 +1,11 @@
-import React, {useState, useEffect} from 'react';
-import {View, Text, TouchableOpacity} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import {StackNavigationProp} from '@react-navigation/stack';
-import {removeData, getData} from '../utils/storage';
-import {getUserInfo} from '../services/profileService';
-import profilestyles from '../components/Profile';
-import {useIsFocused} from '@react-navigation/native';
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, ScrollView } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { removeData, getData } from '../utils/storage';
+import { getUserInfo } from '../services/profileService';
+import { useIsFocused } from '@react-navigation/native';
+import { Avatar, Button, Text, List, Divider, Provider as PaperProvider } from 'react-native-paper';
 
 type RootStackParamList = {
   Login: undefined;
@@ -43,59 +43,100 @@ const ProfileScreen = () => {
     };
 
     if (isFocused) {
-      // if the screen is focused, fetch data
       fetchUserInfo();
     }
   }, [isFocused]);
 
   const handleLogout = async () => {
     await removeData('userToken');
-    setUserInfo(null); // userInfo state'ini sıfırlıyoruz
+    setUserInfo(null);
     navigation.navigate('Login');
   };
 
   return (
-    <View style={profilestyles.container}>
-      {userInfo ? (
-        <>
-          <View style={profilestyles.profileIconContainer}>
-            <TouchableOpacity style={profilestyles.profileIcon}>
-              <Text style={profilestyles.profileIconText}>P</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={profilestyles.infoContainer}>
-            <Text style={profilestyles.label}>ID:</Text>
-            <Text style={profilestyles.value}>{userInfo?.id}</Text>
-          </View>
-          <View style={profilestyles.infoContainer}>
-            <Text style={profilestyles.label}>İsim:</Text>
-            <Text style={profilestyles.value}>{userInfo?.name}</Text>
-          </View>
-          <View style={profilestyles.infoContainer}>
-            <Text style={profilestyles.label}>Telefon:</Text>
-            <Text style={profilestyles.value}>{userInfo?.phone}</Text>
-          </View>
-          <View style={profilestyles.infoContainer}>
-            <Text style={profilestyles.label}>Rol:</Text>
-            <Text style={profilestyles.value}>{userInfo?.role}</Text>
-          </View>
-          <View style={profilestyles.infoContainer}>
-            <Text style={profilestyles.label}>Şirket:</Text>
-            <Text style={profilestyles.value}>{userInfo?.related_company}</Text>
-          </View>
-          <View style={profilestyles.buttonContainer}>
-            <TouchableOpacity
-              onPress={handleLogout}
-              style={profilestyles.button}>
-              <Text style={profilestyles.buttonText}>Çıkış Yap</Text>
-            </TouchableOpacity>
-          </View>
-        </>
-      ) : (
-        <Text style={profilestyles.loadingText}>Loading...</Text>
-      )}
-    </View>
+    <PaperProvider>
+      <ScrollView contentContainerStyle={styles.container}>
+        {userInfo ? (
+          <>
+            <View style={styles.header}>
+              <Avatar.Text size={100} label={userInfo.name.charAt(0)} style={styles.avatar} />
+              <Text style={styles.title}>{userInfo.name}</Text>
+            </View>
+            <Divider style={styles.divider} />
+            <List.Section>
+              {/* <List.Item
+                title="ID"
+                description={userInfo.id.toString()}
+                left={() => <List.Icon icon="account" />}
+              /> */}
+              <Divider />
+              <List.Item
+                title="Telefon"
+                description={userInfo.phone}
+                left={() => <List.Icon icon="microphone" />}
+              />
+              <Divider />
+              <List.Item
+                title="Rol"
+                description={userInfo.role}
+                left={() => <List.Icon icon="shield-account" />}
+              />
+              <Divider />
+              <List.Item
+                title="Şirket"
+                description={userInfo.related_company}
+                left={() => <List.Icon icon="office-building" />}
+              />
+            </List.Section>
+            <Divider style={styles.divider} />
+            <View style={styles.buttonContainer}>
+              <Button mode="contained" onPress={handleLogout} style={styles.button}>
+                Çıkış Yap
+              </Button>
+            </View>
+          </>
+        ) : (
+          <Text style={styles.loadingText}>Yükleniyor...</Text>
+        )}
+      </ScrollView>
+    </PaperProvider>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flexGrow: 1,
+    padding: 16,
+    backgroundColor: '#f6f6f6',
+  },
+  header: {
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  avatar: {
+    backgroundColor: '#57B1DB',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginTop: 8,
+  },
+  divider: {
+    marginVertical: 16,
+  },
+  buttonContainer: {
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  button: {
+    width: '80%',
+    backgroundColor: '#FF6F00',
+  },
+  loadingText: {
+    alignSelf: 'center',
+    fontSize: 18,
+    color: '#333',
+  },
+});
 
 export default ProfileScreen;
