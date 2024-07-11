@@ -4,8 +4,9 @@ import Swiper from 'react-native-swiper';
 import { Button, Text } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import ImageViewerModal from '../components/ImageViewerModal';
 
-const { width: viewportWidth } = Dimensions.get('window');
+const { width: viewportWidth, height: viewportHeight } = Dimensions.get('window');
 
 const images = [
   { src: 'https://picsum.photos/200/300?random=1', description: 'Kesim işlemleri, hassas kesim', title: 'Kesim' },
@@ -44,6 +45,8 @@ const GalleryView: React.FC = () => {
   const swiperRef = useRef<Swiper>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const navigation = useNavigation<GalleryViewNavigationProp>();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const handleNext = () => {
     if (swiperRef.current) {
@@ -66,17 +69,22 @@ const GalleryView: React.FC = () => {
       existingPictures: [],
       example_visual_url: images[activeIndex].src,
       workId: '123',
-      quality_control_id: '456', 
-      productId: '789', 
+      quality_control_id: '456',
+      productId: '789',
       technical_drawing_numbering: 'TD123',
       lower_tolerance: 'LT',
       upper_tolerance: 'UT',
-      step_name: images[activeIndex].title, 
-      order_number: 'ORD123', 
-      product_name: 'Product', 
+      step_name: images[activeIndex].title,
+      order_number: 'ORD123',
+      product_name: 'Product',
       vendor_id: 'Vendor123',
       description: images[activeIndex].description,
     });
+  };
+
+  const handleImagePress = (imageSrc: string) => {
+    setSelectedImage(imageSrc);
+    setModalVisible(true);
   };
 
   return (
@@ -109,11 +117,13 @@ const GalleryView: React.FC = () => {
         {images.map((image, index) => (
           <View style={styles.slide} key={index}>
             <Text style={styles.title}>{image.title}</Text>
-            <Image source={{ uri: image.src }} style={styles.image} />
+            <TouchableOpacity onPress={() => handleImagePress(image.src)}>
+              <Image source={{ uri: image.src }} style={styles.image} />
+            </TouchableOpacity>
             <Text style={styles.description}>{image.description}</Text>
             <View style={styles.buttonContainer}>
               <Button mode="contained" onPress={handleNext} style={styles.button}>
-                Tamamlandı!
+                Tamamla!
               </Button>
               <Button mode="contained" onPress={openCamera} style={styles.button}>
                 Fotoğraf Çek
@@ -122,6 +132,11 @@ const GalleryView: React.FC = () => {
           </View>
         ))}
       </Swiper>
+      <ImageViewerModal
+        visible={modalVisible}
+        imageUri={selectedImage}
+        onClose={() => setModalVisible(false)}
+      />
     </View>
   );
 };
@@ -140,7 +155,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: viewportWidth * 0.8,
-    height: '40%',
+    height: viewportHeight * 0.4,
     resizeMode: 'cover',
     marginBottom: 20,
   },

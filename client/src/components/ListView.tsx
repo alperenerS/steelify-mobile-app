@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { View, Image, StyleSheet, ScrollView, UIManager, LayoutAnimation, Platform } from 'react-native';
+import { View, Image, StyleSheet, ScrollView, UIManager, LayoutAnimation, Platform, TouchableOpacity } from 'react-native';
 import { List, Button, Text } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import ImageViewerModal from '../components/ImageViewerModal';
 
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -44,6 +45,8 @@ type ListViewNavigationProp = StackNavigationProp<RootStackParamList, 'Camera'>;
 const ListView: React.FC = () => {
   const [expanded, setExpanded] = useState<number | null>(0);
   const navigation = useNavigation<ListViewNavigationProp>();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const handlePress = (index: number) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -71,11 +74,16 @@ const ListView: React.FC = () => {
       lower_tolerance: 'LT',
       upper_tolerance: 'UT',
       step_name: images[index].title,
-      order_number: 'ORD123',  
+      order_number: 'ORD123',
       product_name: 'Product',
       vendor_id: 'Vendor123',
-      description: images[index].description, 
+      description: images[index].description,
     });
+  };
+
+  const handleImagePress = (imageSrc: string) => {
+    setSelectedImage(imageSrc);
+    setModalVisible(true);
   };
 
   return (
@@ -89,7 +97,9 @@ const ListView: React.FC = () => {
           titleStyle={expanded === index ? styles.expandedTitle : styles.title}
         >
           <View style={styles.content}>
-            <Image source={{ uri: image.src }} style={styles.image} />
+            <TouchableOpacity onPress={() => handleImagePress(image.src)}>
+              <Image source={{ uri: image.src }} style={styles.image} />
+            </TouchableOpacity>
             <Text style={styles.description}>{image.description}</Text>
             <View style={styles.buttonContainer}>
               <Button mode="contained" onPress={() => handleNext(index)} style={styles.button}>
@@ -102,6 +112,11 @@ const ListView: React.FC = () => {
           </View>
         </List.Accordion>
       ))}
+      <ImageViewerModal
+        visible={modalVisible}
+        imageUri={selectedImage}
+        onClose={() => setModalVisible(false)}
+      />
     </ScrollView>
   );
 };
@@ -114,7 +129,7 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   expandedTitle: {
-    color: '#57B1DB'
+    color: '#57B1DB',
   },
   content: {
     padding: 10,

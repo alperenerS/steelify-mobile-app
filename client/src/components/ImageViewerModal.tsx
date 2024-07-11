@@ -59,7 +59,7 @@ const ImageViewerModal: React.FC<ImageViewerModalProps> = ({
                 style={styles.modalImage}
                 source={
                   imageUri
-                    ? {uri: imageUri}
+                    ? { uri: imageUri }
                     : require('../assets/default_image.png')
                 }
                 resizeMode='contain'
@@ -77,11 +77,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: 'rgba(0,0,0,0.8)',
   },
   modalContentTouchable: {
     width: '80%',
-    aspectRatio: 1,
+    height: '60%',
   },
   modalImage: {
     width: '100%',
