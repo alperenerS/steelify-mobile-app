@@ -4,6 +4,7 @@ import { List, Button, Text } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import ImageViewerModal from '../components/ImageViewerModal';
+import YoutubePlayer from 'react-native-youtube-iframe';
 
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -19,7 +20,7 @@ const images = [
   { src: 'https://picsum.photos/200/300?random=7', description: 'Boyama, estetik ve koruyucu boyama', title: 'Boyama' },
   { src: 'https://picsum.photos/200/300?random=8', description: 'Test ve kontrol, kalite güvencesi', title: 'Test ve Kontrol' },
   { src: 'https://picsum.photos/200/300?random=9', description: 'Sevkiyat, güvenli ve zamanında teslimat', title: 'Sevkiyat' },
-  { src: 'https://picsum.photos/200/300?random=10', description: 'Depolama, düzenli ve güvenli depolama', title: 'Depolama' },
+  { src: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', description: 'Sample YouTube Video', title: 'YouTube Video', videoId: 'dQw4w9WgXcQ' }, // YouTube video
 ];
 
 type RootStackParamList = {
@@ -104,9 +105,17 @@ const ListView: React.FC = () => {
           )}
         >
           <View style={styles.content}>
-            <TouchableOpacity onPress={() => handleImagePress(image.src)}>
-              <Image source={{ uri: image.src }} style={styles.image} />
-            </TouchableOpacity>
+            {image.videoId ? (
+              <YoutubePlayer
+                height={200}
+                play={false}
+                videoId={image.videoId}
+              />
+            ) : (
+              <TouchableOpacity onPress={() => handleImagePress(image.src)}>
+                <Image source={{ uri: image.src }} style={styles.image} />
+              </TouchableOpacity>
+            )}
             <Text style={styles.description}>{image.description}</Text>
             <View style={styles.buttonContainer}>
               <Button mode="contained" onPress={() => handleNext(index)} style={styles.button}>
