@@ -1,32 +1,29 @@
-import React, {useState, useEffect} from 'react';
-import {Image, View, TouchableOpacity, Text} from 'react-native';
-import {RouteProp} from '@react-navigation/native';
-import {StackNavigationProp} from '@react-navigation/stack';
-import {RootStackParamList} from '../navigation/StackNavigator';
+import React, { useState, useEffect } from 'react';
+import { Image, View, TouchableOpacity, Text } from 'react-native';
+import { RouteProp } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../navigation/StackNavigator';
 import previewstyles from '../components/Preview';
-import {uploadImage} from '../services/PreviewService';
-import NetInfo, {NetInfoState} from '@react-native-community/netinfo';
+import { uploadImage } from '../services/PreviewService';
+import NetInfo, { NetInfoState } from '@react-native-community/netinfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {getWorkById} from '../services/workService';
-import {WorkInfo} from '../models/WorkInfo';
-import {getVendorInfo} from '../services/vendorService';
-import {Dimensions} from 'react-native';
-import {FlatList} from 'react-native';
+import { getWorkById } from '../services/workService';
+import { WorkInfo } from '../models/WorkInfo';
+import { getVendorInfo } from '../services/vendorService';
+import { Dimensions } from 'react-native';
+import { FlatList } from 'react-native';
 
 global.Buffer = global.Buffer || require('buffer').Buffer;
 
 type PreviewScreenRouteProp = RouteProp<RootStackParamList, 'Önizleme'>;
-type PreviewScreenNavigationProp = StackNavigationProp<
-  RootStackParamList,
-  'Önizleme'
->;
+type PreviewScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Önizleme'>;
 
 interface PreviewScreenProps {
   route: PreviewScreenRouteProp;
   navigation: PreviewScreenNavigationProp;
 }
 
-const PreviewScreen: React.FC<PreviewScreenProps> = ({route, navigation}) => {
+const PreviewScreen: React.FC<PreviewScreenProps> = ({ route, navigation }) => {
   const {
     pictures,
     example_visual_url,
@@ -47,7 +44,7 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({route, navigation}) => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [workInfo, setWorkInfo] = useState<WorkInfo[] | null>(null);
   const [vendorInfo, setVendorInfo] = useState<any | null>(null);
-  const {width: SCREEN_WIDTH, height: SCREEN_HEIGHT} = Dimensions.get('window');
+  const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
   const [selectedIndex, setSelectedIndex] = useState(pictures.length - 1);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [existingPictures, setExistingPictures] = useState(pictures);
@@ -72,7 +69,7 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({route, navigation}) => {
     <View>
       <TouchableOpacity onPress={() => onSelect(index)}>
         <Image
-          source={{uri}}
+          source={{ uri: uri }}
           style={[
             previewstyles.smallThumbnail,
             isSelected ? previewstyles.selectedThumbnail : {},
@@ -107,7 +104,7 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({route, navigation}) => {
   useEffect(() => {
     const fetchWorkInfo = async () => {
       try {
-        const {workInfo} = await getWorkById(workId);
+        const { workInfo } = await getWorkById(workId);
         setWorkInfo(workInfo); // workInfo state'ini güncelleyin.
         if (workInfo.length > 0) {
         }
@@ -186,11 +183,12 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({route, navigation}) => {
       }
     });
 
-    navigation.navigate('WorkOrderScreen', {workId, productId});
+    navigation.navigate('WorkOrderScreen', { workId, productId });
 
     setTimeout(() => setIsButtonDisabled(false), 2000);
   };
 
+  /*
   const addPhoto = () => {
     navigation.navigate('Camera', {
       existingPictures: existingPictures,
@@ -208,6 +206,7 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({route, navigation}) => {
       description,
     });
   };
+  */
 
   const handleSelect = (index: number) => {
     setSelectedIndex(index);
@@ -218,11 +217,11 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({route, navigation}) => {
       style={[
         previewstyles.container,
         existingPictures.length === 1
-          ? {alignItems: 'center', justifyContent: 'center'}
+          ? { alignItems: 'center', justifyContent: 'center' }
           : {},
       ]}>
       <Image
-        source={{uri: existingPictures[selectedIndex]}} // Seçili fotoğrafı göster
+        source={{ uri: existingPictures[selectedIndex] }} // Seçili fotoğrafı göster
         style={{
           width: SCREEN_WIDTH,
           height: 'auto',
@@ -232,7 +231,7 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({route, navigation}) => {
       {existingPictures.length > 1 && (
         <FlatList // Alt galeri
           data={existingPictures}
-          renderItem={({item, index}) =>
+          renderItem={({ item, index }) =>
             renderPicture(
               item,
               index,
@@ -259,9 +258,11 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({route, navigation}) => {
         disabled={isButtonDisabled}>
         <Text style={previewstyles.buttonText}>Gönder</Text>
       </TouchableOpacity>
+      {/* 
       <TouchableOpacity style={previewstyles.centerButton} onPress={addPhoto}>
         <Text style={previewstyles.buttonText}>Fotoğraf Ekle</Text>
       </TouchableOpacity>
+      */}
     </View>
   );
 };

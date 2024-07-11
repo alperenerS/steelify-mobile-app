@@ -15,7 +15,6 @@ const previewstyles = StyleSheet.create({
       button: {
         position: 'absolute', 
         bottom: '3%', 
-        right: '15%',
         backgroundColor: '#008CBA',
         borderRadius: 12,
         padding: 10,
