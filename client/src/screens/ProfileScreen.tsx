@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { removeData, getData } from '../utils/storage';
@@ -7,15 +7,17 @@ import { getUserInfo } from '../services/profileService';
 import { useIsFocused } from '@react-navigation/native';
 import { Avatar, Button, Text, List, Divider, Provider as PaperProvider } from 'react-native-paper';
 
+// Import custom icons from assets
+import companyIcon from '../assets/company_icon.png';
+import personIcon from '../assets/person_icon.png';
+import phoneIcon from '../assets/phone_icon.png';
+
 type RootStackParamList = {
   Login: undefined;
   Main: undefined;
 };
 
-type ProfileScreenNavigationProp = StackNavigationProp<
-  RootStackParamList,
-  'Main'
->;
+type ProfileScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Main'>;
 
 const ProfileScreen = () => {
   const navigation = useNavigation<ProfileScreenNavigationProp>();
@@ -53,6 +55,19 @@ const ProfileScreen = () => {
     navigation.navigate('Login');
   };
 
+  const renderRoleIcon = (role: string) => {
+    switch (role) {
+      case 'Tedarikçi':
+        return <Image source={personIcon} style={styles.icon} />;
+      case 'Usta':
+        return <Image source={personIcon} style={styles.icon} />;
+      case 'Müşteri':
+        return <Image source={personIcon} style={styles.icon} />;
+      default:
+        return <Image source={personIcon} style={styles.icon} />;
+    }
+  };
+
   return (
     <PaperProvider>
       <ScrollView contentContainerStyle={styles.container}>
@@ -62,33 +77,35 @@ const ProfileScreen = () => {
               <Avatar.Text size={100} label={userInfo.name.charAt(0)} style={styles.avatar} />
               <Text style={styles.title}>{userInfo.name}</Text>
             </View>
-            <Divider style={styles.divider} />
+            {/* <Divider style={styles.divider} /> */}
             <List.Section>
               {/* <List.Item
                 title="ID"
                 description={userInfo.id.toString()}
-                left={() => <List.Icon icon="account" />}
-              /> */}
-              <Divider />
+                left={() => <Image source={personIcon} style={styles.icon} />}
+              />
+              <Divider /> */}
               <List.Item
                 title="Telefon"
                 description={userInfo.phone}
-                left={() => <List.Icon icon="microphone" />}
+                left={() => <Image source={phoneIcon} style={styles.icon} />}
+                style={styles.listItem}
               />
               <Divider />
               <List.Item
                 title="Rol"
                 description={userInfo.role}
-                left={() => <List.Icon icon="shield-account" />}
+                left={() => renderRoleIcon(userInfo.role)}
+                style={styles.listItem}
               />
               <Divider />
               <List.Item
                 title="Şirket"
                 description={userInfo.related_company}
-                left={() => <List.Icon icon="office-building" />}
+                left={() => <Image source={companyIcon} style={styles.icon} />}
+                style={styles.listItem}
               />
             </List.Section>
-            <Divider style={styles.divider} />
             <View style={styles.buttonContainer}>
               <Button mode="contained" onPress={handleLogout} style={styles.button}>
                 Çıkış Yap
@@ -123,6 +140,15 @@ const styles = StyleSheet.create({
   },
   divider: {
     marginVertical: 16,
+  },
+  icon: {
+    width: 24,
+    height: 24,
+    marginTop: 8,
+    resizeMode: 'contain',
+  },
+  listItem: {
+    paddingLeft: 0, // Adjusts the padding to align icons and text properly
   },
   buttonContainer: {
     alignItems: 'center',
