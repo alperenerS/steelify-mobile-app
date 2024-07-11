@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { View, Image, StyleSheet, ScrollView, UIManager, LayoutAnimation, Platform } from 'react-native';
 import { List, Button, Text } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -19,8 +21,29 @@ const images = [
   { src: 'https://picsum.photos/200/300?random=10', description: 'Depolama, düzenli ve güvenli depolama', title: 'Depolama' },
 ];
 
+type RootStackParamList = {
+  Camera: {
+    existingPictures: string[];
+    example_visual_url: string;
+    workId: string;
+    quality_control_id: string;
+    productId: string;
+    technical_drawing_numbering: string;
+    lower_tolerance: string;
+    upper_tolerance: string;
+    step_name: string;
+    order_number: string;
+    product_name: string;
+    vendor_id: string;
+    description: string;
+  };
+};
+
+type ListViewNavigationProp = StackNavigationProp<RootStackParamList, 'Camera'>;
+
 const ListView: React.FC = () => {
-  const [expanded, setExpanded] = useState<number | null>(0); // İlk adım açık
+  const [expanded, setExpanded] = useState<number | null>(0);
+  const navigation = useNavigation<ListViewNavigationProp>();
 
   const handlePress = (index: number) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -35,6 +58,24 @@ const ListView: React.FC = () => {
     } else {
       setExpanded(null);
     }
+  };
+
+  const openCamera = (index: number) => {
+    navigation.navigate('Camera', {
+      existingPictures: [],
+      example_visual_url: images[index].src,
+      workId: '123',
+      quality_control_id: '456',
+      productId: '789',
+      technical_drawing_numbering: 'TD123',
+      lower_tolerance: 'LT',
+      upper_tolerance: 'UT',
+      step_name: images[index].title,
+      order_number: 'ORD123',  
+      product_name: 'Product',
+      vendor_id: 'Vendor123',
+      description: images[index].description, 
+    });
   };
 
   return (
@@ -54,7 +95,7 @@ const ListView: React.FC = () => {
               <Button mode="contained" onPress={() => handleNext(index)} style={styles.button}>
                 Tamamla!
               </Button>
-              <Button mode="contained" onPress={() => {}} style={styles.button}>
+              <Button mode="contained" onPress={() => openCamera(index)} style={styles.button}>
                 Fotoğraf Çek
               </Button>
             </View>

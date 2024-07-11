@@ -2,6 +2,8 @@ import React, { useRef, useState } from 'react';
 import { View, Image, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 import Swiper from 'react-native-swiper';
 import { Button, Text } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 
 const { width: viewportWidth } = Dimensions.get('window');
 
@@ -18,9 +20,30 @@ const images = [
   { src: 'https://picsum.photos/200/300?random=10', description: 'Depolama, düzenli ve güvenli depolama', title: 'Depolama' },
 ];
 
+type RootStackParamList = {
+  Camera: {
+    existingPictures: string[];
+    example_visual_url: string;
+    workId: string;
+    quality_control_id: string;
+    productId: string;
+    technical_drawing_numbering: string;
+    lower_tolerance: string;
+    upper_tolerance: string;
+    step_name: string;
+    order_number: string;
+    product_name: string;
+    vendor_id: string;
+    description: string;
+  };
+};
+
+type GalleryViewNavigationProp = StackNavigationProp<RootStackParamList, 'Camera'>;
+
 const GalleryView: React.FC = () => {
   const swiperRef = useRef<Swiper>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const navigation = useNavigation<GalleryViewNavigationProp>();
 
   const handleNext = () => {
     if (swiperRef.current) {
@@ -36,6 +59,24 @@ const GalleryView: React.FC = () => {
     if (swiperRef.current) {
       swiperRef.current.scrollTo(index);
     }
+  };
+
+  const openCamera = () => {
+    navigation.navigate('Camera', {
+      existingPictures: [],
+      example_visual_url: images[activeIndex].src,
+      workId: '123',
+      quality_control_id: '456', 
+      productId: '789', 
+      technical_drawing_numbering: 'TD123',
+      lower_tolerance: 'LT',
+      upper_tolerance: 'UT',
+      step_name: images[activeIndex].title, 
+      order_number: 'ORD123', 
+      product_name: 'Product', 
+      vendor_id: 'Vendor123',
+      description: images[activeIndex].description,
+    });
   };
 
   return (
@@ -74,7 +115,7 @@ const GalleryView: React.FC = () => {
               <Button mode="contained" onPress={handleNext} style={styles.button}>
                 Tamamlandı!
               </Button>
-              <Button mode="contained" onPress={() => {}} style={styles.button}>
+              <Button mode="contained" onPress={openCamera} style={styles.button}>
                 Fotoğraf Çek
               </Button>
             </View>
@@ -151,12 +192,12 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   dotStyle: {
-    width: 0, // Hides the default dot
-    height: 0, // Hides the default dot
+    width: 0,
+    height: 0,
   },
   activeDotStyle: {
-    width: 0, // Hides the default dot
-    height: 0, // Hides the default dot
+    width: 0,
+    height: 0,
   },
 });
 
