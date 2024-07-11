@@ -95,6 +95,13 @@ const ListView: React.FC = () => {
           expanded={expanded === index}
           onPress={() => handlePress(index)}
           titleStyle={expanded === index ? styles.expandedTitle : styles.title}
+          right={props => (
+            <Image
+              {...props}
+              source={expanded === index ? require('../assets/chevron_down_icon.png') : require('../assets/chevron_right_icon.png')}
+              style={styles.chevronIcon}
+            />
+          )}
         >
           <View style={styles.content}>
             <TouchableOpacity onPress={() => handleImagePress(image.src)}>
@@ -153,6 +160,11 @@ const styles = StyleSheet.create({
     flex: 1,
     marginHorizontal: 5,
     backgroundColor: '#FF6F00',
+  },
+  chevronIcon: {
+    width: 24,
+    height: 24,
+    resizeMode: 'contain',
   },
 });
 
