@@ -5,6 +5,7 @@ import { Appbar, Switch, Text } from 'react-native-paper';
 import HomeScreen from '../screens/HomeScreen';
 import TasksScreen from '../screens/TasksScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import GetWorkScreen from '../screens/getWorkScreen';
 import homeIcon from '../assets/home.png';
 import tasksIcon from '../assets/tasks.png';
 import profileIcon from '../assets/profile.png';
@@ -13,6 +14,7 @@ type TabParamList = {
   Anasayfa: undefined;
   İşlerim: undefined;
   Profilim: undefined;
+  Ürünler: undefined; // Yeni sekme
 };
 
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -68,6 +70,15 @@ const TabNavigator: React.FC = () => {
       <Tab.Screen
         name="Profilim"
         component={ProfileScreen}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Image source={profileIcon} style={{ width: 30, height: 30, tintColor: color }} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Ürünler"
+        component={GetWorkScreen} // Yeni sekme bileşeni
         options={{
           tabBarIcon: ({ color }) => (
             <Image source={profileIcon} style={{ width: 30, height: 30, tintColor: color }} />

@@ -7,7 +7,7 @@ import { storeData, getData } from '../utils/storage';
 import loginstyles from '../components/Login';
 import yenalogo from '../assets/yena_logo.png';
 import { getUserInfo } from '../services/profileService';
-// import { getWorks } from '../services/workService';
+// import { getWorks } from '../services/workService'; // getWorks fonksiyonunu devre dışı bıraktığınız için yorum satırı yapıldı.
 
 type RootStackParamList = {
   Login: undefined;
@@ -33,17 +33,18 @@ const LoginScreen = () => {
 
   const handleLogin = async () => {
     try {
-      console.log('Attempting to log in with:', { phoneNumber, password });
-      const token = await login(phoneNumber, password);
-      console.log('Received token:', token);
+      const { token, odooPartnerId } = await login(phoneNumber, password);
+
 
       await storeData('userToken', token);
       await storeData('userPhone', phoneNumber);
       await storeData('userPassword', password);
+      await storeData('odooPartnerId', odooPartnerId.toString());
 
-      console.log('Fetching user info with token:', token);
+      // Ek kontrol: OdooPartnerId'nin doğru kaydedildiğinden emin olun
+      const storedOdooPartnerId = await getData('odooPartnerId');
+
       const userInfo = await getUserInfo(token);
-      console.log('Received user info:', userInfo);
 
       // console.log('Fetching works with token:', token);
       // const works = await getWorks(token);
