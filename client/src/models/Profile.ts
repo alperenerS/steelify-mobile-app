@@ -1,7 +1,7 @@
-export type Profile = {
-    id: number;
+export interface Profile {
+    email: string;
+    userType: string;
+    website: string;
     name: string;
-    phone: string;
-    related_company: string;
-    role: string;
-};
+    surname: string;
+  }

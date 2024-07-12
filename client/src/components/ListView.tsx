@@ -20,7 +20,7 @@ const images = [
   { src: 'https://picsum.photos/200/300?random=7', description: 'Boyama, estetik ve koruyucu boyama', title: 'Boyama' },
   { src: 'https://picsum.photos/200/300?random=8', description: 'Test ve kontrol, kalite güvencesi', title: 'Test ve Kontrol' },
   { src: 'https://picsum.photos/200/300?random=9', description: 'Sevkiyat, güvenli ve zamanında teslimat', title: 'Sevkiyat' },
-  { src: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', description: 'Sample YouTube Video', title: 'YouTube Video', videoId: 'dQw4w9WgXcQ' }, // YouTube video
+  { src: 'https://www.youtube.com/watch?v=t-c1i-SUV1Y', description: 'Sample YouTube Video', title: 'YouTube Video', videoId: 't-c1i-SUV1Y' }, // YouTube video
 ];
 
 type RootStackParamList = {

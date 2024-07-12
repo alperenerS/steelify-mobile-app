@@ -2,8 +2,7 @@ import axios from 'axios';
 import NetInfo from '@react-native-community/netinfo';
 import RNFS from 'react-native-fs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const BASE_URL = process.env.REACT_APP_API_URL;
+import { API_BASE_URL } from '../config';
 
 export const uploadImage = async (
   imageUri: string,
@@ -17,7 +16,7 @@ export const uploadImage = async (
   issue_text: string | null,
   issue_description: string | null,
 ) => {
-  const url = `${BASE_URL}/images`;
+  const url = `${API_BASE_URL}/images`;
   const netInfo = await NetInfo.fetch();
   const imageKey = `offlineImage-${imageUri}`;
 

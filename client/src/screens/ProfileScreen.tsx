@@ -6,6 +6,7 @@ import { removeData, getData } from '../utils/storage';
 import { getUserInfo } from '../services/profileService';
 import { useIsFocused } from '@react-navigation/native';
 import { Avatar, Button, Text, List, Divider, Provider as PaperProvider } from 'react-native-paper';
+import { Profile } from '../models/Profile';
 
 // Import custom icons from assets
 import companyIcon from '../assets/company_icon.png';
@@ -21,27 +22,20 @@ type ProfileScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Main
 
 const ProfileScreen = () => {
   const navigation = useNavigation<ProfileScreenNavigationProp>();
-  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+  const [userInfo, setUserInfo] = useState<Profile | null>(null);
   const isFocused = useIsFocused();
-
-  type UserInfo = {
-    id: number;
-    name: string;
-    phone: string;
-    role: string;
-    related_company: string;
-  };
 
   useEffect(() => {
     const fetchUserInfo = async () => {
-      const token = await getData('userToken');
-      if (token) {
-        const result = await getUserInfo(token);
-        setUserInfo(result);
+      try {
+        const token = await getData('userToken');
+        if (token) {
+          const result = await getUserInfo(token);
+          setUserInfo(result);
+        }
+      } catch (error) {
+        console.error('Failed to fetch user info:', error);
       }
-      const cachedData = await getData('userInfo');
-      const parsedCachedData = JSON.parse(cachedData);
-      return parsedCachedData;
     };
 
     if (isFocused) {
@@ -71,50 +65,48 @@ const ProfileScreen = () => {
   return (
     <PaperProvider>
       <ScrollView contentContainerStyle={styles.container}>
-        {userInfo ? (
-          <>
-            <View style={styles.header}>
+        <View style={styles.header}>
+          {userInfo ? (
+            <>
               <Avatar.Text size={100} label={userInfo.name.charAt(0)} style={styles.avatar} />
-              <Text style={styles.title}>{userInfo.name}</Text>
-            </View>
-            {/* <Divider style={styles.divider} /> */}
-            <List.Section>
-              {/* <List.Item
-                title="ID"
-                description={userInfo.id.toString()}
-                left={() => <Image source={personIcon} style={styles.icon} />}
-              />
-              <Divider /> */}
+              <Text style={styles.title}>{userInfo.name} {userInfo.surname}</Text>
+            </>
+          ) : (
+            <Avatar.Text size={100} label="?" style={styles.avatar} />
+          )}
+        </View>
+        <List.Section>
+          {userInfo && (
+            <>
               <List.Item
-                title="Telefon"
-                description={userInfo.phone}
+                title="E-mail"
+                description={userInfo.email}
                 left={() => <Image source={phoneIcon} style={styles.icon} />}
                 style={styles.listItem}
               />
               <Divider />
               <List.Item
                 title="Rol"
-                description={userInfo.role}
-                left={() => renderRoleIcon(userInfo.role)}
+                description={userInfo.userType}
+                left={() => renderRoleIcon(userInfo.userType)}
                 style={styles.listItem}
               />
               <Divider />
               <List.Item
                 title="Şirket"
-                description={userInfo.related_company}
+                description={userInfo.website}
                 left={() => <Image source={companyIcon} style={styles.icon} />}
                 style={styles.listItem}
               />
-            </List.Section>
-            <View style={styles.buttonContainer}>
-              <Button mode="contained" onPress={handleLogout} style={styles.button}>
-                Çıkış Yap
-              </Button>
-            </View>
-          </>
-        ) : (
-          <Text style={styles.loadingText}>Yükleniyor...</Text>
-        )}
+              <Divider />
+            </>
+          )}
+        </List.Section>
+        <View style={styles.buttonContainer}>
+          <Button mode="contained" onPress={handleLogout} style={styles.button}>
+            Çıkış Yap
+          </Button>
+        </View>
       </ScrollView>
     </PaperProvider>
   );
@@ -148,7 +140,7 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   listItem: {
-    paddingLeft: 0, // Adjusts the padding to align icons and text properly
+    paddingLeft: 0,
   },
   buttonContainer: {
     alignItems: 'center',

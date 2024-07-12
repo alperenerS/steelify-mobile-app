@@ -13,9 +13,9 @@ import {
 } from '../utils/storage';
 import NetInfo from '@react-native-community/netinfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { API_BASE_URL } from '../config';
 
-const BASE_URL = process.env.REACT_APP_API_URL;
-
+/*
 export const getWorks = async (
   token: string,
 ): Promise<{
@@ -31,7 +31,7 @@ export const getWorks = async (
 
   if (netInfo.isConnected && netInfo.isInternetReachable) {
     try {
-      const response = await axios.get(`${BASE_URL}/worksbyid`, {
+      const response = await axios.get(`${API_BASE_URL}/worksbyid`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -42,7 +42,7 @@ export const getWorks = async (
       const works: Work[] = response.data;
       const ids = works.map((work: Work) => work.id);
 
-      const workStepsResponse = await axios.post(`${BASE_URL}/worksteps`, {
+      const workStepsResponse = await axios.post(`${API_BASE_URL}/worksteps`, {
         ids,
       });
       if (workStepsResponse.status !== 200)
@@ -54,7 +54,7 @@ export const getWorks = async (
       );
 
       const workProductsResponse = await axios.post(
-        `${BASE_URL}/workproducts`,
+        `${API_BASE_URL}/workproducts`,
         {ids: workIds},
       );
       if (workProductsResponse.status !== 200)
@@ -94,6 +94,7 @@ export const getWorks = async (
     };
   }
 };
+*/
 
 export const getWorkById = async (
   workId: number,
@@ -104,7 +105,7 @@ export const getWorkById = async (
 
   if (netInfo.isConnected && netInfo.isInternetReachable) {
     try {
-      const response = await axios.get(`${BASE_URL}/work/${workId}`);
+      const response = await axios.get(`${API_BASE_URL}/work/${workId}`);
 
       if (response.status !== 200)
         throw new Error('Failed to fetch work by ID!');
@@ -135,7 +136,7 @@ export const getForm = async (
 
   if (netInfo.isConnected && netInfo.isInternetReachable) {
     try {
-      const response = await axios.post(`${BASE_URL}/formids`, {
+      const response = await axios.post(`${API_BASE_URL}/formids`, {
         product_id: productId,
         vendor_id: vendorId,
       });
@@ -169,7 +170,7 @@ export const postQualityControl = async (
 
   if (netInfo.isConnected && netInfo.isInternetReachable) {
     try {
-      const response = await axios.post(`${BASE_URL}/qualitycontrol`, {
+      const response = await axios.post(`${API_BASE_URL}/qualitycontrol`, {
         form_id: formId,
         work_id: workId,
       });
@@ -203,7 +204,7 @@ export const updateWorkProductStatus = async (
   status: string,
 ) => {
   try {
-    const response = await axios.put(`${BASE_URL}/workproducts/updatestatus`, {
+    const response = await axios.put(`${API_BASE_URL}/workproducts/updatestatus`, {
       work_id,
       product_id,
       status,
