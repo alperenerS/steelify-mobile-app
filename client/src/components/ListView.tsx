@@ -1,27 +1,16 @@
-import React, { useState } from 'react';
-import { View, Image, StyleSheet, ScrollView, UIManager, LayoutAnimation, Platform, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Image, StyleSheet, ScrollView, UIManager, LayoutAnimation, Platform, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { List, Button, Text } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import axios from 'axios';
 import ImageViewerModal from '../components/ImageViewerModal';
 import YoutubePlayer from 'react-native-youtube-iframe';
+import { API_BASE_URL } from '../config';
 
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
-
-const images = [
-  { src: 'https://picsum.photos/200/300?random=1', description: 'Kesim işlemleri, hassas kesim', title: 'Kesim' },
-  { src: 'https://picsum.photos/200/300?random=2', description: 'Büküm işlemleri, doğru ve hızlı büküm', title: 'Büküm' },
-  { src: 'https://picsum.photos/200/300?random=3', description: 'Galvaniz kaplama, dayanıklılık artırma', title: 'Galvaniz' },
-  { src: 'https://picsum.photos/200/300?random=4', description: 'Paketleme, güvenli ve düzenli paketleme', title: 'Paketleme' },
-  { src: 'https://picsum.photos/200/300?random=5', description: 'Kaynak işlemleri, güçlü ve güvenilir kaynak', title: 'Kaynak' },
-  { src: 'https://picsum.photos/200/300?random=6', description: 'Montaj, doğru ve hızlı montaj', title: 'Montaj' },
-  { src: 'https://picsum.photos/200/300?random=7', description: 'Boyama, estetik ve koruyucu boyama', title: 'Boyama' },
-  { src: 'https://picsum.photos/200/300?random=8', description: 'Test ve kontrol, kalite güvencesi', title: 'Test ve Kontrol' },
-  { src: 'https://picsum.photos/200/300?random=9', description: 'Sevkiyat, güvenli ve zamanında teslimat', title: 'Sevkiyat' },
-  { src: 'https://www.youtube.com/watch?v=t-c1i-SUV1Y', description: 'Sample YouTube Video', title: 'YouTube Video', videoId: 't-c1i-SUV1Y' }, // YouTube video
-];
 
 type RootStackParamList = {
   Camera: {
@@ -48,6 +37,28 @@ const ListView: React.FC = () => {
   const navigation = useNavigation<ListViewNavigationProp>();
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [productDetails, setProductDetails] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchProductDetails = async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/product-recipe/product/1`); // Placeholder productId
+        console.log('API response:', response.data);
+        setProductDetails(response.data.data);
+      } catch (error) {
+        if (error instanceof Error) {
+          console.error('Fetch product details error:', error);
+          setError(error.message);
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProductDetails();
+  }, []);
 
   const handlePress = (index: number) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -57,7 +68,7 @@ const ListView: React.FC = () => {
   const handleNext = (index: number) => {
     const nextIndex = index + 1;
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    if (nextIndex < images.length) {
+    if (nextIndex < productDetails.length) {
       setExpanded(nextIndex);
     } else {
       setExpanded(null);
@@ -67,18 +78,18 @@ const ListView: React.FC = () => {
   const openCamera = (index: number) => {
     navigation.navigate('Camera', {
       existingPictures: [],
-      example_visual_url: images[index].src,
+      example_visual_url: productDetails[index].image_url,
       workId: '123',
       quality_control_id: '456',
       productId: '789',
       technical_drawing_numbering: 'TD123',
       lower_tolerance: 'LT',
       upper_tolerance: 'UT',
-      step_name: images[index].title,
+      step_name: productDetails[index].name,
       order_number: 'ORD123',
       product_name: 'Product',
       vendor_id: 'Vendor123',
-      description: images[index].description,
+      description: productDetails[index].description,
     });
   };
 
@@ -87,12 +98,29 @@ const ListView: React.FC = () => {
     setModalVisible(true);
   };
 
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#0000ff" />
+        <Text>Yükleniyor...</Text>
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorText}>{error}</Text>
+      </View>
+    );
+  }
+
   return (
     <ScrollView style={styles.container}>
-      {images.map((image, index) => (
+      {productDetails.map((item, index) => (
         <List.Accordion
           key={index}
-          title={image.title}
+          title={item.name}
           expanded={expanded === index}
           onPress={() => handlePress(index)}
           titleStyle={expanded === index ? styles.expandedTitle : styles.title}
@@ -105,25 +133,27 @@ const ListView: React.FC = () => {
           )}
         >
           <View style={styles.content}>
-            {image.videoId ? (
+            {item.video_url ? (
               <YoutubePlayer
                 height={200}
                 play={false}
-                videoId={image.videoId}
+                videoId={item.video_url.split('v=')[1]}
               />
             ) : (
-              <TouchableOpacity onPress={() => handleImagePress(image.src)}>
-                <Image source={{ uri: image.src }} style={styles.image} />
+              <TouchableOpacity onPress={() => handleImagePress(item.image_url)}>
+                <Image source={{ uri: item.image_url }} style={styles.image} />
               </TouchableOpacity>
             )}
-            <Text style={styles.description}>{image.description}</Text>
+            <Text style={styles.description}>{item.description}</Text>
             <View style={styles.buttonContainer}>
               <Button mode="contained" onPress={() => handleNext(index)} style={styles.button}>
                 Tamamla!
               </Button>
-              <Button mode="contained" onPress={() => openCamera(index)} style={styles.button}>
-                Fotoğraf Çek
-              </Button>
+              {item.isPhotoTake && (
+                <Button mode="contained" onPress={() => openCamera(index)} style={styles.button}>
+                  Fotoğraf Çek
+                </Button>
+              )}
             </View>
           </View>
         </List.Accordion>
@@ -174,6 +204,20 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     resizeMode: 'contain',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorText: {
+    fontSize: 18,
+    color: 'red',
   },
 });
 
