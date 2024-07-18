@@ -1,11 +1,17 @@
+// src/screens/GetWorkScreen.tsx
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { getProductRecipe } from '../services/getWorkService';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { RootStackParamList } from '../navigation/StackNavigator';
+
+type GetWorkScreenNavigationProp = NavigationProp<RootStackParamList, 'ProductDetail'>;
 
 const GetWorkScreen = () => {
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const navigation = useNavigation<GetWorkScreenNavigationProp>();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -25,10 +31,13 @@ const GetWorkScreen = () => {
   }, []);
 
   const renderProduct = ({ item }: { item: any }) => (
-    <View style={styles.productContainer}>
+    <TouchableOpacity
+      style={styles.productContainer}
+      onPress={() => navigation.navigate('ProductDetail', { productId: item.id })}
+    >
       <Text style={styles.productText}>{item.product_name}</Text>
       <Text style={styles.productText}>{item.odoo_partner_name}</Text>
-    </View>
+    </TouchableOpacity>
   );
 
   if (loading) {

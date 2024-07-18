@@ -1,5 +1,6 @@
-import React, {useEffect, useState} from 'react';
-import {createStackNavigator} from '@react-navigation/stack';
+import React, { useEffect, useState } from 'react';
+import { createStackNavigator } from '@react-navigation/stack';
+import { ActivityIndicator, View } from 'react-native';
 
 import TabNavigator from './TabNavigator';
 import LoginScreen from '../screens/LoginScreen';
@@ -7,7 +8,8 @@ import WorkOrderScreen from '../screens/WorkOrderScreen';
 import PdfViewerScreen from '../screens/PdfViewerScreen';
 import CameraScreen from '../screens/CameraScreen';
 import PreviewScreen from '../screens/PreviewScreen';
-import {getData} from '../utils/storage';
+import ProductDetailScreen from '../screens/ProductDetailScreen';
+import { getData } from '../utils/storage';
 
 export type RootStackParamList = {
   Login: undefined;
@@ -50,6 +52,7 @@ export type RootStackParamList = {
     description: string;
     issue_description: string | null;
   };
+  ProductDetail: { productId: string };
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -73,7 +76,11 @@ const StackNavigator = () => {
   }, []);
 
   if (loading) {
-    return null;
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
   }
 
   return (
@@ -81,17 +88,18 @@ const StackNavigator = () => {
       <Stack.Screen
         name="Login"
         component={LoginScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="Main"
         component={TabNavigator}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <Stack.Screen name="WorkOrderScreen" component={WorkOrderScreen} />
       <Stack.Screen name="PdfViewerScreen" component={PdfViewerScreen} />
       <Stack.Screen name="Camera" component={CameraScreen} />
       <Stack.Screen name="Önizleme" component={PreviewScreen} />
+      <Stack.Screen name="ProductDetail" component={ProductDetailScreen} />
     </Stack.Navigator>
   );
 };

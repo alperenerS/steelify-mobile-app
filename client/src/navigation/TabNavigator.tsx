@@ -5,7 +5,7 @@ import { Appbar, Switch, Text } from 'react-native-paper';
 import HomeScreen from '../screens/HomeScreen';
 import TasksScreen from '../screens/TasksScreen';
 import ProfileScreen from '../screens/ProfileScreen';
-import GetWorkScreen from '../screens/getWorkScreen';
+import GetWorkScreen from '../screens/GetWorkScreen';
 import homeIcon from '../assets/home.png';
 import tasksIcon from '../assets/tasks.png';
 import profileIcon from '../assets/profile.png';
