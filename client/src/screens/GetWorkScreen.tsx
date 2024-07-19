@@ -16,7 +16,7 @@ const GetWorkScreen = () => {
     const fetchProducts = async () => {
       try {
         const response = await getProductRecipe();
-        setProducts(response.data); // API response'una göre data'yı ayarla
+        setProducts(response.data); // Adjust data according to the API response
       } catch (error) {
         if (error instanceof Error) {
           setError(error.message);
@@ -43,7 +43,7 @@ const GetWorkScreen = () => {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#0000ff" />
-        <Text>Yükleniyor...</Text>
+        <Text>Loading...</Text>
       </View>
     );
   }

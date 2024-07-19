@@ -44,7 +44,6 @@ const GalleryView: React.FC = () => {
     const fetchProductDetails = async () => {
       try {
         const response = await axios.get(`${API_BASE_URL}/product-recipe/product/1`); // Placeholder productId
-        console.log('API response:', response.data);
         setProductDetails(response.data.data);
       } catch (error) {
         if (error instanceof Error) {
