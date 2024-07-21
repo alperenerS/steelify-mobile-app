@@ -3,7 +3,6 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { View, Image, StyleSheet } from 'react-native';
 import { Appbar, Switch, Text } from 'react-native-paper';
 import HomeScreen from '../screens/HomeScreen';
-import TasksScreen from '../screens/TasksScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import GetWorkScreen from '../screens/GetWorkScreen';
 import homeIcon from '../assets/home.png';
@@ -14,7 +13,6 @@ type TabParamList = {
   Anasayfa: undefined;
   İşlerim: undefined;
   Profilim: undefined;
-  Ürünler: undefined; // Yeni sekme
 };
 
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -59,26 +57,16 @@ const TabNavigator: React.FC = () => {
       />
       <Tab.Screen
         name="İşlerim"
-        children={() => <TasksScreen isCarouselMode={isCarouselMode} setIsCarouselMode={setIsCarouselMode} />}
+        component={GetWorkScreen}
         options={{
           tabBarIcon: ({ color }) => (
             <Image source={tasksIcon} style={{ width: 30, height: 30, tintColor: color }} />
           ),
-          header: () => <CustomHeader isCarouselMode={isCarouselMode} setIsCarouselMode={setIsCarouselMode} />,
         }}
       />
       <Tab.Screen
         name="Profilim"
         component={ProfileScreen}
-        options={{
-          tabBarIcon: ({ color }) => (
-            <Image source={profileIcon} style={{ width: 30, height: 30, tintColor: color }} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Ürünler"
-        component={GetWorkScreen} // Yeni sekme bileşeni
         options={{
           tabBarIcon: ({ color }) => (
             <Image source={profileIcon} style={{ width: 30, height: 30, tintColor: color }} />
