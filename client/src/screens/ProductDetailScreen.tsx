@@ -136,7 +136,7 @@ const ProductDetailScreen: React.FC = () => {
           )}
         >
           <View style={styles.content}>
-            {item.video_url ? (
+            {item.video_url && item.video_url !== "null" ? (
               <YoutubePlayer
                 height={200}
                 play={false}
