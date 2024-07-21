@@ -45,6 +45,8 @@ const ProfileScreen = () => {
 
   const handleLogout = async () => {
     await removeData('userToken');
+    await removeData('odooPartnerId');
+    await removeData('id');
     setUserInfo(null);
     navigation.navigate('Login');
   };
