@@ -33,16 +33,13 @@ const LoginScreen = () => {
 
   const handleLogin = async () => {
     try {
-      const { token, odooPartnerId } = await login(phoneNumber, password);
-
+      const { token, odooPartnerId, id } = await login(phoneNumber, password);
 
       await storeData('userToken', token);
       await storeData('userPhone', phoneNumber);
       await storeData('userPassword', password);
       await storeData('odooPartnerId', odooPartnerId.toString());
-
-      // Ek kontrol: OdooPartnerId'nin doğru kaydedildiğinden emin olun
-      const storedOdooPartnerId = await getData('odooPartnerId');
+      await storeData('id', id.toString());
 
       const userInfo = await getUserInfo(token);
 

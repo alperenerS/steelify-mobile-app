@@ -6,10 +6,11 @@ import { API_BASE_URL } from '../config';
 
 export const getUserInfo = async (token: string): Promise<Profile | null> => {
   const netInfo = await NetInfo.fetch();
+  const userId = await getData('id');
   
   if (netInfo.isConnected && netInfo.isInternetReachable) {
     try {
-      const response = await axios.get(`${API_BASE_URL}/user/profile/1`, {
+      const response = await axios.get(`${API_BASE_URL}/user/profile/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
