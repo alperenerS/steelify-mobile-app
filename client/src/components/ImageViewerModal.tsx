@@ -5,6 +5,8 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
+  Text,
+  Dimensions,
 } from 'react-native';
 import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view';
 import { GestureHandlerStateChangeNativeEvent, TapGestureHandler, State } from 'react-native-gesture-handler';
@@ -14,6 +16,8 @@ interface ImageViewerModalProps {
   onClose: () => void;
   imageUri: string | null;
 }
+
+const { width, height } = Dimensions.get('window');
 
 const ImageViewerModal: React.FC<ImageViewerModalProps> = ({
   visible,
@@ -26,7 +30,7 @@ const ImageViewerModal: React.FC<ImageViewerModalProps> = ({
 
   const onDoubleTap = ({ nativeEvent }: { nativeEvent: GestureHandlerStateChangeNativeEvent }) => {
     if (nativeEvent.state === State.ACTIVE) {
-      setZoom(prevZoom => prevZoom === 1 ? 1.5 : 1);
+      setZoom(prevZoom => prevZoom === 1 ? 2 : 1);
     }
   };
 
@@ -36,38 +40,39 @@ const ImageViewerModal: React.FC<ImageViewerModalProps> = ({
       transparent={true}
       visible={visible}
       onRequestClose={onClose}>
-      <TouchableOpacity
-        style={styles.modalContainer}
-        onPress={onClose}
-        activeOpacity={1}>
-        <View style={styles.modalContentTouchable}>
-          <TapGestureHandler
-            ref={doubleTapRef}
-            numberOfTaps={2}
-            onHandlerStateChange={onDoubleTap}
+      <View style={styles.modalContainer}>
+        <TouchableOpacity
+          style={styles.closeButton}
+          onPress={onClose}
+        >
+          <Text style={styles.closeButtonText}>X</Text>
+        </TouchableOpacity>
+        <TapGestureHandler
+          ref={doubleTapRef}
+          numberOfTaps={2}
+          onHandlerStateChange={onDoubleTap}
+        >
+          <ReactNativeZoomableView
+            ref={zoomableViewRef}
+            maxZoom={3}
+            minZoom={1}
+            zoomStep={0.5}
+            initialZoom={zoom}
+            bindToBorders={true}
+            style={styles.zoomableView}
           >
-            <ReactNativeZoomableView
-              ref={zoomableViewRef}
-              maxZoom={3}
-              minZoom={1}
-              zoomStep={0.5}
-              initialZoom={zoom}
-              bindToBorders={true}
+            <Image
               style={styles.modalImage}
-            >
-              <Image
-                style={styles.modalImage}
-                source={
-                  imageUri
-                    ? { uri: imageUri }
-                    : require('../assets/default_image.png')
-                }
-                resizeMode='contain'
-              />
-            </ReactNativeZoomableView>
-          </TapGestureHandler>
-        </View>
-      </TouchableOpacity>
+              source={
+                imageUri
+                  ? { uri: imageUri }
+                  : require('../assets/default_image.png')
+              }
+              resizeMode='contain'
+            />
+          </ReactNativeZoomableView>
+        </TapGestureHandler>
+      </View>
     </Modal>
   );
 };
@@ -75,17 +80,31 @@ const ImageViewerModal: React.FC<ImageViewerModalProps> = ({
 const styles = StyleSheet.create({
   modalContainer: {
     flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.8)',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.8)',
   },
-  modalContentTouchable: {
-    width: '80%',
-    height: '60%',
+  closeButton: {
+    position: 'absolute',
+    top: 40,
+    right: 20,
+    zIndex: 1,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 10,
+  },
+  closeButtonText: {
+    fontSize: 18,
+    color: 'black',
+    fontWeight: 'bold',
+  },
+  zoomableView: {
+    width: width,
+    height: height,
   },
   modalImage: {
-    width: '100%',
-    height: '100%',
+    width: width,
+    height: height,
   },
 });
 
