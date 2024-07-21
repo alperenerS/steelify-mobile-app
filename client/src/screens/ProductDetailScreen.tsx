@@ -120,47 +120,55 @@ const ProductDetailScreen: React.FC = () => {
 
   return (
     <ScrollView style={styles.container}>
-      {productDetails.map((item, index) => (
-        <List.Accordion
-          key={index}
-          title={item.name}
-          expanded={expanded === index}
-          onPress={() => handlePress(index)}
-          titleStyle={expanded === index ? styles.expandedTitle : styles.title}
-          right={props => (
-            <Image
-              {...props}
-              source={expanded === index ? require('../assets/chevron_down_icon.png') : require('../assets/chevron_right_icon.png')}
-              style={styles.chevronIcon}
-            />
-          )}
-        >
-          <View style={styles.content}>
-            {item.video_url && item.video_url !== "null" ? (
-              <YoutubePlayer
-                height={200}
-                play={false}
-                videoId={item.video_url.split('v=')[1]}
+      {productDetails.map((item, index) => {
+        const hasMedia = (item.image_url && item.image_url !== "null") || (item.video_url && item.video_url !== "null");
+
+        return (
+          <List.Accordion
+            key={index}
+            title={item.name}
+            expanded={expanded === index}
+            onPress={() => handlePress(index)}
+            titleStyle={expanded === index ? styles.expandedTitle : styles.title}
+            right={props => (
+              <Image
+                {...props}
+                source={expanded === index ? require('../assets/chevron_down_icon.png') : require('../assets/chevron_right_icon.png')}
+                style={styles.chevronIcon}
               />
-            ) : (
-              <TouchableOpacity onPress={() => handleImagePress(item.image_url)}>
-                <Image source={{ uri: item.image_url }} style={styles.image} />
-              </TouchableOpacity>
             )}
-            <Text style={styles.description}>{item.description}</Text>
-            <View style={styles.buttonContainer}>
-              <Button mode="contained" onPress={() => handleNext(index)} style={styles.button}>
-                Tamamla!
-              </Button>
-              {item.isPhotoTake && (
-                <Button mode="contained" onPress={() => openCamera(index)} style={styles.button}>
-                  Fotoğraf Çek
-                </Button>
+          >
+            <View style={styles.content}>
+              {hasMedia && (
+                <>
+                  {item.video_url && item.video_url !== "null" ? (
+                    <YoutubePlayer
+                      height={200}
+                      play={false}
+                      videoId={item.video_url}
+                    />
+                  ) : (
+                    <TouchableOpacity onPress={() => handleImagePress(item.image_url)}>
+                      <Image source={{ uri: item.image_url }} style={styles.image} />
+                    </TouchableOpacity>
+                  )}
+                </>
               )}
+              <Text style={styles.description}>{item.description}</Text>
+              <View style={styles.buttonContainer}>
+                <Button mode="contained" onPress={() => handleNext(index)} style={styles.button}>
+                  Tamamla!
+                </Button>
+                {item.isPhotoTake && (
+                  <Button mode="contained" onPress={() => openCamera(index)} style={styles.button}>
+                    Fotoğraf Çek
+                  </Button>
+                )}
+              </View>
             </View>
-          </View>
-        </List.Accordion>
-      ))}
+          </List.Accordion>
+        );
+      })}
       <ImageViewerModal
         visible={modalVisible}
         imageUri={selectedImage}
