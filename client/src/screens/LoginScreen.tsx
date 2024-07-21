@@ -5,7 +5,6 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { login } from '../services/authService';
 import { storeData, getData } from '../utils/storage';
 import loginstyles from '../components/Login';
-import yenalogo from '../assets/yena_logo.png';
 import { getUserInfo } from '../services/profileService';
 // import { getWorks } from '../services/workService'; // getWorks fonksiyonunu devre dışı bıraktığınız için yorum satırı yapıldı.
 
@@ -58,7 +57,7 @@ const LoginScreen = () => {
 
   return (
     <View style={loginstyles.container}>
-      <Image source={yenalogo} style={loginstyles.logo} />
+      <Image source={{ uri: 'https://yenastorage.blob.core.windows.net/steelify/steelify_logo.png' }} style={loginstyles.logo} />
       <View style={loginstyles.inputView}>
         <TextInput
           style={loginstyles.inputText}
