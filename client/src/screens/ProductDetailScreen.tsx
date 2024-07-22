@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Image, StyleSheet, ScrollView, UIManager, LayoutAnimation, Platform, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Image, StyleSheet, ScrollView, UIManager, LayoutAnimation, Platform, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
 import { List, Button, Text } from 'react-native-paper';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import ImageViewerModal from '../components/ImageViewerModal';
 import YoutubePlayer from 'react-native-youtube-iframe';
-import { fetchProductDetails, updateStepStatus } from '../services/productDetailService';
+import { fetchProductDetails, updateStepStatus, updatePhotoStatus } from '../services/productDetailService';
 import { API_BASE_URL } from '../config';
 
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
@@ -67,8 +67,13 @@ const ProductDetailScreen: React.FC = () => {
 
   const handleNext = async (index: number) => {
     try {
-      const stepId = productDetails[index].id;
-      await updateStepStatus(stepId);
+      const step = productDetails[index];
+      if (step.photo && !step.isPhotoTake) { // Kullanıcı fotoğraf çekmediyse uyarı ver
+        Alert.alert('Uyarı', 'Fotoğraf Çekme İşlemini Tamamlayın!');
+        return;
+      }
+
+      await updateStepStatus(step.id);
 
       // Durumu güncellenen adımın 'status' alanını güncelle
       const updatedDetails = productDetails.map((item, i) =>
