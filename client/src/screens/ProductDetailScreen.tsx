@@ -53,9 +53,9 @@ const ProductDetailScreen: React.FC = () => {
           const updatedDetails = details.map((detail: any) =>
             detail.id === updatedStepId ? { ...detail, isPhotoTake: true } : detail
           );
-          setProductDetails(updatedDetails);
+          setProductDetails(updatedDetails.sort((a: any, b: any) => a.step_number - b.step_number));
         } else {
-          setProductDetails(details);
+          setProductDetails(details.sort((a: any, b: any) => a.step_number - b.step_number));
         }
       } catch (error) {
         if (error instanceof Error) {
@@ -86,7 +86,7 @@ const ProductDetailScreen: React.FC = () => {
       const updatedDetails = productDetails.map((detail, i) =>
         i === index ? { ...detail, status: 'completed' } : detail
       );
-      setProductDetails(updatedDetails);
+      setProductDetails(updatedDetails.sort((a: any, b: any) => a.step_number - b.step_number));
       const nextIndex = index + 1;
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
       if (nextIndex < productDetails.length) {
