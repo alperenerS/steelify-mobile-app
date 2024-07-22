@@ -97,7 +97,12 @@ const previewstyles = StyleSheet.create({
       deleteButtonText: {
         color: 'white', 
         fontWeight: 'bold'
-      }
+      },
+      successText: {
+        color: 'green',
+        marginTop: 10,
+        textAlign: 'center',
+      },
   });
   
 

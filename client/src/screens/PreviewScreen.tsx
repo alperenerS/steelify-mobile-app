@@ -83,7 +83,7 @@ const PreviewScreen: React.FC<PreviewScreenProps> = ({ route, navigation }) => {
       console.error('Failed to update photo status:', error);
     }
 
-    navigation.navigate('ProductDetail', { productId });
+    navigation.navigate('ProductDetail', { productId, photoSent: true, updatedStepId: stepId }); // photoSent parametresi ile geri dön
 
     setTimeout(() => setIsButtonDisabled(false), 2000);
   };

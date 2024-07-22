@@ -54,7 +54,7 @@ export type RootStackParamList = {
     stepId: number;
 
   };
-  ProductDetail: { productId: string };
+  ProductDetail: { productId: string; photoSent?: boolean; updatedStepId?: number }; // Parametreleri ekleyin
 };
 
 const Stack = createStackNavigator<RootStackParamList>();

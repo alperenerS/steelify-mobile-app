@@ -5,7 +5,7 @@ import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import ImageViewerModal from '../components/ImageViewerModal';
 import YoutubePlayer from 'react-native-youtube-iframe';
-import { fetchProductDetails, updateStepStatus, updatePhotoStatus } from '../services/productDetailService';
+import { fetchProductDetails, updateStepStatus } from '../services/productDetailService';
 import { API_BASE_URL } from '../config';
 
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
@@ -24,7 +24,11 @@ type RootStackParamList = {
     description: string;
     stepId: string; // stepId ekliyoruz
   };
-  ProductDetail: { productId: string };
+  ProductDetail: { 
+    productId: string;
+    photoSent?: boolean;
+    updatedStepId?: string;
+  };
 };
 
 type ProductDetailNavigationProp = StackNavigationProp<RootStackParamList, 'Camera'>;
@@ -33,20 +37,26 @@ type ProductDetailRouteProp = RouteProp<RootStackParamList, 'ProductDetail'>;
 const ProductDetailScreen: React.FC = () => {
   const navigation = useNavigation<ProductDetailNavigationProp>();
   const route = useRoute<ProductDetailRouteProp>();
-  const { productId } = route.params;
+  const { productId, photoSent, updatedStepId } = route.params;
   const [expanded, setExpanded] = useState<number | null>(0);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [productDetails, setProductDetails] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [photoSent, setPhotoSent] = useState<boolean>(false); // Yeni state
 
   useEffect(() => {
     const fetchDetails = async () => {
       try {
         const details = await fetchProductDetails(productId);
-        setProductDetails(details);
+        if (photoSent && updatedStepId) {
+          const updatedDetails = details.map((detail: any) =>
+            detail.id === updatedStepId ? { ...detail, isPhotoTake: true } : detail
+          );
+          setProductDetails(updatedDetails);
+        } else {
+          setProductDetails(details);
+        }
       } catch (error) {
         if (error instanceof Error) {
           console.error('Fetch product details error:', error);
@@ -58,7 +68,7 @@ const ProductDetailScreen: React.FC = () => {
     };
 
     fetchDetails();
-  }, [productId]);
+  }, [productId, photoSent, updatedStepId]);
 
   const handlePress = (index: number) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -67,20 +77,16 @@ const ProductDetailScreen: React.FC = () => {
 
   const handleNext = async (index: number) => {
     try {
-      const step = productDetails[index];
-      if (step.photo && !step.isPhotoTake) { // Kullanıcı fotoğraf çekmediyse uyarı ver
-        Alert.alert('Uyarı', 'Fotoğraf Çekme İşlemini Tamamlayın!');
+      const stepId = productDetails[index].id;
+      if (productDetails[index].photo && !productDetails[index].isPhotoTake) {
+        Alert.alert("Fotoğraf Çekme İşlemini Tamamlayın!");
         return;
       }
-
-      await updateStepStatus(step.id);
-
-      // Durumu güncellenen adımın 'status' alanını güncelle
-      const updatedDetails = productDetails.map((item, i) =>
-        i === index ? { ...item, status: 'completed' } : item
+      await updateStepStatus(stepId);
+      const updatedDetails = productDetails.map((detail, i) =>
+        i === index ? { ...detail, status: 'completed' } : detail
       );
       setProductDetails(updatedDetails);
-
       const nextIndex = index + 1;
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
       if (nextIndex < productDetails.length) {
@@ -103,9 +109,8 @@ const ProductDetailScreen: React.FC = () => {
       product_name: 'Product',
       vendor_id: 'Vendor123',
       description: productDetails[index].description,
-      stepId: productDetails[index].id, // stepId'yi ekliyoruz
+      stepId: productDetails[index].id,
     });
-    setPhotoSent(false); // Yeni kamera açıldığında fotoğraf gönderildiğini sıfırlıyoruz
   };
 
   const handleImagePress = (imageSrc: string) => {
@@ -132,11 +137,6 @@ const ProductDetailScreen: React.FC = () => {
 
   return (
     <ScrollView style={styles.container}>
-      {photoSent && ( // Fotoğraf gönderildiğinde gösterilecek mesaj
-        <View style={styles.photoSentContainer}>
-          <Text style={styles.photoSentText}>Fotoğraf başarıyla gönderildi!</Text>
-        </View>
-      )}
       {productDetails.map((item, index) => {
         const hasMedia = (item.image_url && item.image_url !== "null") || (item.video_url && item.video_url !== "null");
 
@@ -146,10 +146,7 @@ const ProductDetailScreen: React.FC = () => {
             title={item.name}
             expanded={expanded === index}
             onPress={() => handlePress(index)}
-            titleStyle={[
-              expanded === index ? styles.expandedTitle : styles.title,
-              item.status === 'completed' ? styles.completedTitle : null, // Tamamlanmış adım için yeşil renk
-            ]}
+            titleStyle={item.status === 'completed' ? styles.completedTitle : (expanded === index ? styles.expandedTitle : styles.title)}
             right={props => (
               <Image
                 {...props}
@@ -209,7 +206,7 @@ const styles = StyleSheet.create({
     color: '#57B1DB',
   },
   completedTitle: {
-    color: 'green', // Tamamlanmış adımlar için yeşil renk
+    color: 'green',
   },
   content: {
     padding: 10,
@@ -252,16 +249,6 @@ const styles = StyleSheet.create({
   errorText: {
     fontSize: 18,
     color: 'red',
-  },
-  photoSentContainer: {
-    padding: 10,
-    backgroundColor: '#d4edda',
-    borderRadius: 5,
-    margin: 10,
-    alignItems: 'center',
-  },
-  photoSentText: {
-    color: '#155724',
   },
 });
 
