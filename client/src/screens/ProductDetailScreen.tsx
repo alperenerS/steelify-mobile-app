@@ -3,9 +3,9 @@ import { View, Image, StyleSheet, ScrollView, UIManager, LayoutAnimation, Platfo
 import { List, Button, Text } from 'react-native-paper';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import axios from 'axios';
 import ImageViewerModal from '../components/ImageViewerModal';
 import YoutubePlayer from 'react-native-youtube-iframe';
+import { fetchProductDetails, updateStepStatus, updatePhotoStatus } from '../services/productDetailService';
 import { API_BASE_URL } from '../config';
 
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
@@ -46,10 +46,10 @@ const ProductDetailScreen: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchProductDetails = async () => {
+    const fetchDetails = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/product-recipe/product/${productId}`);
-        setProductDetails(response.data.data);
+        const details = await fetchProductDetails(productId);
+        setProductDetails(details);
       } catch (error) {
         if (error instanceof Error) {
           console.error('Fetch product details error:', error);
@@ -60,7 +60,7 @@ const ProductDetailScreen: React.FC = () => {
       }
     };
 
-    fetchProductDetails();
+    fetchDetails();
   }, [productId]);
 
   const handlePress = (index: number) => {
@@ -68,13 +68,19 @@ const ProductDetailScreen: React.FC = () => {
     setExpanded(expanded === index ? null : index);
   };
 
-  const handleNext = (index: number) => {
-    const nextIndex = index + 1;
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    if (nextIndex < productDetails.length) {
-      setExpanded(nextIndex);
-    } else {
-      setExpanded(null);
+  const handleNext = async (index: number) => {
+    try {
+      const stepId = productDetails[index].id;
+      await updateStepStatus(stepId);
+      const nextIndex = index + 1;
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+      if (nextIndex < productDetails.length) {
+        setExpanded(nextIndex);
+      } else {
+        setExpanded(null);
+      }
+    } catch (error) {
+      console.error('Failed to update step status:', error);
     }
   };
 
