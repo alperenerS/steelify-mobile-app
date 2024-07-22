@@ -159,7 +159,7 @@ const ProductDetailScreen: React.FC = () => {
                 <Button mode="contained" onPress={() => handleNext(index)} style={styles.button}>
                   Tamamla!
                 </Button>
-                {item.isPhotoTake && (
+                {item.photo && (
                   <Button mode="contained" onPress={() => openCamera(index)} style={styles.button}>
                     Fotoğraf Çek
                   </Button>
