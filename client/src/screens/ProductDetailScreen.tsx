@@ -40,6 +40,7 @@ const ProductDetailScreen: React.FC = () => {
   const [productDetails, setProductDetails] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [photoSent, setPhotoSent] = useState<boolean>(false); // Yeni state
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -68,6 +69,13 @@ const ProductDetailScreen: React.FC = () => {
     try {
       const stepId = productDetails[index].id;
       await updateStepStatus(stepId);
+
+      // Durumu güncellenen adımın 'status' alanını güncelle
+      const updatedDetails = productDetails.map((item, i) =>
+        i === index ? { ...item, status: 'completed' } : item
+      );
+      setProductDetails(updatedDetails);
+
       const nextIndex = index + 1;
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
       if (nextIndex < productDetails.length) {
@@ -92,6 +100,7 @@ const ProductDetailScreen: React.FC = () => {
       description: productDetails[index].description,
       stepId: productDetails[index].id, // stepId'yi ekliyoruz
     });
+    setPhotoSent(false); // Yeni kamera açıldığında fotoğraf gönderildiğini sıfırlıyoruz
   };
 
   const handleImagePress = (imageSrc: string) => {
@@ -118,6 +127,11 @@ const ProductDetailScreen: React.FC = () => {
 
   return (
     <ScrollView style={styles.container}>
+      {photoSent && ( // Fotoğraf gönderildiğinde gösterilecek mesaj
+        <View style={styles.photoSentContainer}>
+          <Text style={styles.photoSentText}>Fotoğraf başarıyla gönderildi!</Text>
+        </View>
+      )}
       {productDetails.map((item, index) => {
         const hasMedia = (item.image_url && item.image_url !== "null") || (item.video_url && item.video_url !== "null");
 
@@ -127,7 +141,10 @@ const ProductDetailScreen: React.FC = () => {
             title={item.name}
             expanded={expanded === index}
             onPress={() => handlePress(index)}
-            titleStyle={expanded === index ? styles.expandedTitle : styles.title}
+            titleStyle={[
+              expanded === index ? styles.expandedTitle : styles.title,
+              item.status === 'completed' ? styles.completedTitle : null, // Tamamlanmış adım için yeşil renk
+            ]}
             right={props => (
               <Image
                 {...props}
@@ -186,6 +203,9 @@ const styles = StyleSheet.create({
   expandedTitle: {
     color: '#57B1DB',
   },
+  completedTitle: {
+    color: 'green', // Tamamlanmış adımlar için yeşil renk
+  },
   content: {
     padding: 10,
   },
@@ -227,6 +247,16 @@ const styles = StyleSheet.create({
   errorText: {
     fontSize: 18,
     color: 'red',
+  },
+  photoSentContainer: {
+    padding: 10,
+    backgroundColor: '#d4edda',
+    borderRadius: 5,
+    margin: 10,
+    alignItems: 'center',
+  },
+  photoSentText: {
+    color: '#155724',
   },
 });
 
