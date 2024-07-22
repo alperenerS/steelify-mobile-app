@@ -5,7 +5,7 @@ import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import ImageViewerModal from '../components/ImageViewerModal';
 import YoutubePlayer from 'react-native-youtube-iframe';
-import { fetchProductDetails, updateStepStatus, updatePhotoStatus } from '../services/productDetailService';
+import { fetchProductDetails, updateStepStatus } from '../services/productDetailService';
 import { API_BASE_URL } from '../config';
 
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
@@ -16,17 +16,13 @@ type RootStackParamList = {
   Camera: {
     existingPictures: string[];
     example_visual_url: string;
-    workId: string;
-    quality_control_id: string;
     productId: string;
-    technical_drawing_numbering: string;
-    lower_tolerance: string;
-    upper_tolerance: string;
     step_name: string;
     order_number: string;
     product_name: string;
     vendor_id: string;
     description: string;
+    stepId: string; // stepId ekliyoruz
   };
   ProductDetail: { productId: string };
 };
@@ -88,17 +84,13 @@ const ProductDetailScreen: React.FC = () => {
     navigation.navigate('Camera', {
       existingPictures: [],
       example_visual_url: productDetails[index].image_url,
-      workId: '123',
-      quality_control_id: '456',
-      productId: '789',
-      technical_drawing_numbering: 'TD123',
-      lower_tolerance: 'LT',
-      upper_tolerance: 'UT',
+      productId,
       step_name: productDetails[index].name,
       order_number: 'ORD123',
       product_name: 'Product',
       vendor_id: 'Vendor123',
       description: productDetails[index].description,
+      stepId: productDetails[index].id, // stepId'yi ekliyoruz
     });
   };
 

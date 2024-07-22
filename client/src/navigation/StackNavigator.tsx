@@ -40,7 +40,7 @@ export type RootStackParamList = {
     example_visual_url: string | null;
     workId: number;
     quality_control_id: number;
-    productId: number;
+    productId: string;
     technical_drawing_numbering: string;
     lower_tolerance: string;
     upper_tolerance: string;
@@ -51,6 +51,8 @@ export type RootStackParamList = {
     issue_text: string | null;
     description: string;
     issue_description: string | null;
+    stepId: number;
+
   };
   ProductDetail: { productId: string };
 };
