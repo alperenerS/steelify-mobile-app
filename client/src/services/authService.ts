@@ -16,6 +16,9 @@ export const login = async (phoneNumber: string, password: string): Promise<{ to
       throw new Error('Giriş başarısız!');
     }
   } catch (error) {
+    if (axios.isAxiosError(error) && error.response && error.response.status === 404) {
+      throw new Error('Böyle bir hesap bulunamadı');
+    }
     console.error('Login error:', error);
     throw error;
   }
