@@ -16,10 +16,10 @@ const GetWorkScreen = () => {
     const fetchProducts = async () => {
       try {
         const response = await getProductRecipe();
-        setProducts(response.data); // Adjust data according to the API response
+        setProducts(response.data);
       } catch (error) {
         if (error instanceof Error) {
-          setError(error.message);
+          setError("Herhangi bir iş bulunamadı!");
         }
       } finally {
         setLoading(false);
