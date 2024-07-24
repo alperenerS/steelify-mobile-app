@@ -34,13 +34,14 @@ export type RootStackParamList = {
     product_name: string | null;
     vendor_id: number;
     description: string;
+    stepId: number;
   };
   Önizleme: {
     pictures: string[];
     example_visual_url: string | null;
     workId: number;
     quality_control_id: number;
-    productId: string;
+    productId: number;
     technical_drawing_numbering: string;
     lower_tolerance: string;
     upper_tolerance: string;
@@ -54,7 +55,7 @@ export type RootStackParamList = {
     stepId: number;
 
   };
-  ProductDetail: { productId: string; photoSent?: boolean; updatedStepId?: number }; // Parametreleri ekleyin
+  ProductDetail: { productId: number; photoSent?: boolean; updatedStepId?: number };
 };
 
 const Stack = createStackNavigator<RootStackParamList>();

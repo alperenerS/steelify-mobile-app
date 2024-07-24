@@ -241,7 +241,7 @@ const WorkOrderScreen = ({route}: {route: WorkOrderScreenRouteProp}) => {
                             justifyContent: 'center',
                             alignItems: 'center',
                           }}>
-                          <TouchableOpacity
+                          {/* <TouchableOpacity
                             onPress={async () =>{
                               const hasCameraPermission=await checkCameraPermission();
                               if(hasCameraPermission){
@@ -276,7 +276,7 @@ const WorkOrderScreen = ({route}: {route: WorkOrderScreenRouteProp}) => {
                               source={cameraIcon}
                               style={{width: 40, height: 40}}
                             />
-                          </TouchableOpacity>
+                          </TouchableOpacity> */}
                           <Text style={workstyles.text2}>Take a photo</Text>
                         </View>
                       </View>

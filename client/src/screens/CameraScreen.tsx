@@ -1,6 +1,6 @@
-import React, { useRef, useState } from 'react';
-import { View, Image, TouchableOpacity, Text, StyleSheet, GestureResponderEvent } from 'react-native';
-import { Camera, useCameraDevices } from 'react-native-vision-camera';
+import React, { useRef, useState, useEffect } from 'react';
+import { View, Image, TouchableOpacity, Text, StyleSheet, GestureResponderEvent, Alert } from 'react-native';
+import { Camera, useCameraDevices, CameraPermissionStatus } from 'react-native-vision-camera';
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/StackNavigator';
@@ -20,7 +20,7 @@ interface CameraScreenProps {
 
 const CameraScreen: React.FC<CameraScreenProps> = ({ route, navigation }) => {
   const cameraRef = useRef<Camera | null>(null);
-  const { existingPictures, example_visual_url, workId, quality_control_id, productId, technical_drawing_numbering, lower_tolerance, upper_tolerance, step_name, order_number, product_name, vendor_id, description } = route.params;
+  const { existingPictures, example_visual_url, workId, quality_control_id, productId, technical_drawing_numbering, lower_tolerance, upper_tolerance, step_name, order_number, product_name, vendor_id, description, stepId } = route.params;
   const [modalVisible, setModalVisible] = useState(false);
   const [accessModalVisible, setAccessModalVisible] = useState(true);
   const [reportModalVisible, setReportModalVisible] = useState(false);
@@ -33,6 +33,17 @@ const CameraScreen: React.FC<CameraScreenProps> = ({ route, navigation }) => {
   const [isActive, setIsActive] = useState(false);
   const [cameraType, setCameraType] = useState("back");
 
+  useEffect(() => {
+    const requestCameraPermission = async () => {
+      const permission = await Camera.requestCameraPermission();
+      if (permission === 'denied') {
+        Alert.alert('Kamera izni reddedildi', 'Kamerayı kullanmak için lütfen ayarlardan izin verin.');
+      }
+    };
+
+    requestCameraPermission();
+  }, []);
+
   React.useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
@@ -40,7 +51,6 @@ const CameraScreen: React.FC<CameraScreenProps> = ({ route, navigation }) => {
           <TouchableOpacity style={camerastyles.reportButton} onPress={() => setReportModalVisible(true)}>
             <Image source={require('../assets/report_icon.png')} style={camerastyles.reportIcon} />
           </TouchableOpacity>
-          <Text style={{ color: 'black', paddingRight: 10 }}>Technical Drawing No: {String(technical_drawing_numbering)}</Text>
         </View>
       ),
     });
@@ -62,7 +72,7 @@ const CameraScreen: React.FC<CameraScreenProps> = ({ route, navigation }) => {
       const imagePath = `file://${data.path}`;
       const updatedPictures = [...existingPictures, imagePath];
       setPictures(updatedPictures);
-      navigation.navigate('Önizleme', { pictures: updatedPictures, example_visual_url, workId, quality_control_id, productId, technical_drawing_numbering, lower_tolerance, upper_tolerance, step_name, order_number, product_name, vendor_id, issue_text: selectedOption, description, issue_description: popupDescription, stepId: route.params.stepId });
+      navigation.navigate('Önizleme', { pictures: updatedPictures, example_visual_url, workId, quality_control_id, productId, technical_drawing_numbering, lower_tolerance, upper_tolerance, step_name, order_number, product_name, vendor_id, issue_text: selectedOption, description, issue_description: popupDescription, stepId });
     }
   };
 
